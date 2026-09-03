@@ -2,11 +2,11 @@
 
 Interactive, browser-based demonstrations for introductory computational linguistics.
 
-**First module:** [How a Language Model Learns](https://desenlin.github.io/computational-linguistics-lab/modules/ngram/)
+**Live collection:** [Computational Linguistics Lab](https://desenlin.com/computational-linguistics-lab/)
 
 The project is designed for instructors and students who want to experiment with computational ideas without installing software or using an external API. Every calculation runs locally in the browser.
 
-## Available module
+## Available modules
 
 ### How a Language Model Learns
 
@@ -20,6 +20,18 @@ A guided 20–30 minute activity in which students:
 - evaluate a new sentence using token probabilities and perplexity.
 
 The module assumes only introductory probability. No programming is required.
+
+### What Counts as a Word?
+
+A guided 20–30 minute activity in which students:
+
+- compare whitespace, word-and-punctuation, and configurable rule-based tokenizers;
+- test decisions about contractions and hyphenated forms;
+- observe how tokenization changes token and vocabulary counts;
+- step through a simplified byte-pair encoding procedure; and
+- stress-test word-boundary assumptions beyond English.
+
+The module focuses on conceptual interpretation. No programming is required.
 
 ## Run locally
 
@@ -41,9 +53,10 @@ npm test
 
 - Edit `modules/ngram/corpora.js` to add or revise teaching corpora.
 - Edit `modules/ngram/index.html` to change instructions and reflection questions.
-- Reuse the structure under `modules/ngram/` when creating another demonstration.
+- Edit `modules/tokenization/examples.js` to revise boundary examples.
+- Add one entry to `modules/catalog.js` when creating another demonstration.
 
-The sample corpora are deliberately small and repetitive so that students can trace model behavior by hand. They are instructional datasets, not representative language samples.
+The sample corpora and multilingual examples are deliberately compact so students can trace behavior by hand. They are instructional examples, not representative language samples or substitutes for language-specific analysis.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the module conventions.
 

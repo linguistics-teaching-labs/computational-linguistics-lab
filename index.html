@@ -13,6 +13,7 @@
       <span class="brand-mark" aria-hidden="true">CL</span>
       <span>Computational Linguistics Lab</span>
     </a>
+    <nav class="module-nav" data-module-nav data-root="./" aria-label="Module navigation"></nav>
     <a class="repo-link" href="https://github.com/desenlin/computational-linguistics-lab" target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a>
   </header>
 
@@ -23,21 +24,11 @@
       <p>Short, guided demonstrations for introductory computational linguistics. Everything runs locally in the browser—no account, installation, or programming required.</p>
     </section>
 
-    <section class="module-grid" aria-label="Available modules">
-      <article class="module-card featured-card">
-        <div class="module-number" aria-hidden="true">01</div>
-        <div class="module-card-body">
-          <div class="module-meta"><span>Language modeling</span><span>20–30 minutes</span></div>
-          <h2>How a Language Model Learns</h2>
-          <p>Build unigram, bigram, and trigram models from a small corpus. Inspect their counts, test smoothing, generate text, and diagnose what the models miss.</p>
-          <ul class="skill-list" aria-label="Concepts covered">
-            <li>Conditional probability</li>
-            <li>Context</li>
-            <li>Data sparsity</li>
-          </ul>
-          <a class="primary-action" href="modules/ngram/">Open the lab <span aria-hidden="true">→</span></a>
-        </div>
-      </article>
+    <section id="module-grid" class="module-grid" aria-label="Available modules">
+      <noscript>
+        <p><a href="modules/ngram/">Module 1: How a Language Model Learns</a></p>
+        <p><a href="modules/tokenization/">Module 2: What Counts as a Word?</a></p>
+      </noscript>
     </section>
 
     <section class="collection-note" aria-labelledby="built-to-extend">
@@ -50,5 +41,6 @@
     <span>Created by Desen Lin as an open instructional prototype.</span>
     <span>Code: MIT · Teaching content: CC BY 4.0</span>
   </footer>
+  <script type="module" src="assets/site.js"></script>
 </body>
 </html>

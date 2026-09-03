@@ -82,6 +82,38 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
 .repo-link:hover { color: #fff; }
 
+.module-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.module-nav a {
+  padding: 0.42rem 0.65rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #dcebf3;
+  font-size: 0.78rem;
+  font-weight: 720;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.module-nav a:hover,
+.module-nav a[aria-current="page"] {
+  border-color: rgba(255,255,255,.35);
+  color: #fff;
+  background: rgba(255,255,255,.1);
+}
+
+.module-nav-number {
+  margin-right: 0.3rem;
+  color: #ffb184;
+  font-variant-numeric: tabular-nums;
+}
+
 .collection-main {
   width: min(1120px, 90vw);
   margin: 0 auto;
@@ -118,7 +150,11 @@ h1, h2, h3 {
   font-size: 1.15rem;
 }
 
-.module-grid { margin-top: 4.5rem; }
+.module-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 4.5rem;
+}
 
 .module-card {
   display: grid;
@@ -139,6 +175,8 @@ h1, h2, h3 {
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
+
+.module-card[data-module="tokenization"] .module-number { background: #c55124; }
 
 .module-card-body { padding: 2.5rem; }
 
@@ -214,6 +252,9 @@ h1, h2, h3 {
 @media (max-width: 680px) {
   .site-header { padding: 0 1rem; }
   .brand span:last-child { font-size: 0.9rem; }
+  .collection-page .module-nav { order: 3; width: 100%; padding-bottom: 0.7rem; justify-content: flex-start; overflow-x: auto; }
+  .collection-page .site-header { flex-wrap: wrap; padding-top: 0.7rem; }
+  .module-nav-label { display: none; }
   .repo-link { font-size: 0; }
   .repo-link span { font-size: 1rem; }
   .collection-main { width: min(100% - 2rem, 1120px); padding: 3.5rem 0; }
