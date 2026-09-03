@@ -135,8 +135,9 @@ function renderSmoothing() {
 function generateSentence() {
   generationNumber += 1;
   const random = seededRandom(Date.now() + generationNumber);
+  const seedWords = tokenize(elements.seedInput.value, model.lowercase);
   const words = model.generate(elements.seedInput.value, 18, random);
-  if (!words.length) {
+  if (!words.length || (seedWords.length > 0 && words.length === seedWords.length)) {
     elements.generatedOutput.textContent = "The model could not continue from that opening. Try smoothing or a context found in the corpus.";
     return;
   }
