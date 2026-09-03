@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A guided interactive lab about Naive Bayes text classification, features, errors, domain shift, and shortcuts.">
+  <title>How Text Classifiers Make Mistakes · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="../../assets/lab.css">
+  <link rel="stylesheet" href="classification.css">
+</head>
+<body class="lab-page classification-page">
+  <header class="site-header lab-header">
+    <a class="brand" href="../../">
+      <span class="brand-mark" aria-hidden="true">CL</span>
+      <span>Computational Linguistics Lab</span>
+    </a>
+    <nav class="module-nav" data-module-nav data-root="../../" data-active="classification" aria-label="Module navigation"></nav>
+    <span class="module-time">Module 05 · 20–30 min</span>
+  </header>
+
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
+      <p class="eyebrow">Text classification</p>
+      <h1>How Text Classifiers Make Mistakes</h1>
+      <p class="guide-intro">Train a small Naive Bayes classifier, inspect its evidence, and diagnose errors rather than treating accuracy as the whole story.</p>
+      <nav class="step-nav" aria-label="Lab steps">
+        <a href="#training"><span>1</span> Train the model</a>
+        <a href="#prediction"><span>2</span> Inspect a prediction</a>
+        <a href="#evaluation"><span>3</span> Evaluate errors</a>
+        <a href="#audit"><span>4</span> Audit shortcuts</a>
+      </nav>
+      <details class="objectives">
+        <summary>Learning objectives</summary>
+        <ul>
+          <li>Explain how priors and word likelihoods support a prediction.</li>
+          <li>Compare unigram and bigram features.</li>
+          <li>Read a confusion matrix and inspect individual errors.</li>
+          <li>Recognize domain shift and spurious shortcuts.</li>
+        </ul>
+      </details>
+    </aside>
+
+    <div class="lab-workspace">
+      <section class="lab-section" id="training" aria-labelledby="training-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 1</span>
+          <div><h2 id="training-title">Train on a tiny corpus</h2><p>The model counts features separately in favorable and unfavorable reviews.</p></div>
+        </div>
+
+        <div class="control-grid classifier-controls">
+          <label class="field"><span>Training corpus</span><select id="corpus-select"></select></label>
+          <fieldset class="order-control feature-control">
+            <legend>Feature representation</legend>
+            <div class="segmented-control two-options">
+              <label><input type="radio" name="features" value="unigram" checked><span>Unigrams<small>Single words</small></span></label>
+              <label><input type="radio" name="features" value="bigram"><span>Add bigrams<small>Words + adjacent pairs</small></span></label>
+            </div>
+          </fieldset>
+        </div>
+        <p id="corpus-note" class="field-note"></p>
+
+        <label class="range-field smoothing-field" for="alpha-slider">
+          <span><strong>Additive smoothing α</strong><output id="alpha-value" for="alpha-slider">1.00</output></span>
+          <input id="alpha-slider" type="range" min="0.25" max="2" step="0.25" value="1">
+          <small>Higher smoothing makes rare and unseen feature counts less extreme.</small>
+        </label>
+
+        <div class="training-summary" aria-label="Training corpus summary">
+          <div><small>Training reviews</small><strong id="training-count">—</strong></div>
+          <div><small>Favorable</small><strong id="favorable-count">—</strong></div>
+          <div><small>Unfavorable</small><strong id="unfavorable-count">—</strong></div>
+          <div><small>Feature vocabulary</small><strong id="feature-count">—</strong></div>
+        </div>
+
+        <details class="training-examples">
+          <summary>Inspect the labeled training examples</summary>
+          <div class="table-wrap"><table><thead><tr><th>Label</th><th>Text</th></tr></thead><tbody id="training-table"></tbody></table></div>
+        </details>
+        <div class="feature-extremes">
+          <div><span>Strongest favorable associations</span><div id="favorable-features" class="feature-chips"></div></div>
+          <div><span>Strongest unfavorable associations</span><div id="unfavorable-features" class="feature-chips"></div></div>
+        </div>
+      </section>
+
+      <section class="lab-section" id="prediction" aria-labelledby="prediction-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 2</span>
+          <div><h2 id="prediction-title">Inspect one prediction</h2><p>Naive Bayes combines a class prior with the likelihood of every recognized feature.</p></div>
+        </div>
+
+        <label class="field"><span>Review to classify</span><textarea id="review-input" rows="3">the ending was not satisfying</textarea></label>
+        <div class="prediction-layout">
+          <div id="prediction-result" class="prediction-result" aria-live="polite"></div>
+          <div id="probability-bars" class="probability-bars" aria-label="Predicted class probabilities"></div>
+        </div>
+        <p id="unknown-note" class="unknown-note"></p>
+
+        <div class="table-wrap evidence-wrap">
+          <table>
+            <thead><tr><th>Recognized feature</th><th>Count</th><th>Favorable likelihood</th><th>Unfavorable likelihood</th><th>Direction</th></tr></thead>
+            <tbody id="evidence-table"></tbody>
+          </table>
+        </div>
+        <div class="formula-card"><strong>Why “naive”?</strong> The model multiplies feature likelihoods as if the features were conditionally independent given the label. Words in real sentences are not independent.</div>
+      </section>
+
+      <section class="lab-section" id="evaluation" aria-labelledby="evaluation-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 3</span>
+          <div><h2 id="evaluation-title">Evaluate more than accuracy</h2><p>A confusion matrix summarizes outcomes; the individual cases explain them.</p></div>
+        </div>
+
+        <div class="evaluation-overview">
+          <div class="accuracy-card"><small>Test accuracy</small><strong id="accuracy-value">—</strong><span id="accuracy-count">—</span></div>
+          <div class="confusion-wrap">
+            <p>Rows are actual labels; columns are predictions.</p>
+            <table class="confusion-matrix">
+              <thead><tr><th>Actual ↓ / Predicted →</th><th>Favorable</th><th>Unfavorable</th></tr></thead>
+              <tbody>
+                <tr><th>Favorable</th><td id="confusion-ff">0</td><td id="confusion-fu">0</td></tr>
+                <tr><th>Unfavorable</th><td id="confusion-uf">0</td><td id="confusion-uu">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="table-wrap test-cases-wrap">
+          <table class="test-cases"><thead><tr><th>Result</th><th>Test review</th><th>Actual</th><th>Predicted</th><th>Confidence</th></tr></thead><tbody id="test-table"></tbody></table>
+        </div>
+        <p class="field-note">Select a test review to audit it below.</p>
+      </section>
+
+      <section class="lab-section" id="audit" aria-labelledby="audit-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 4</span>
+          <div><h2 id="audit-title">Audit an error or shortcut</h2><p>Errors can reveal missing features, ambiguous labels, small samples, or correlations that will not survive deployment.</p></div>
+        </div>
+
+        <div id="audit-card" class="audit-card" aria-live="polite"></div>
+        <div class="audit-grid">
+          <div><span>Feature problem</span><p>Bag-of-words features lose syntax and may mishandle negation or contrast.</p></div>
+          <div><span>Data problem</span><p>A small or unrepresentative corpus makes accidental correlations look predictive.</p></div>
+          <div><span>Evaluation problem</span><p>One accuracy number can conceal which classes and examples fail.</p></div>
+        </div>
+
+        <details class="prompt-card">
+          <summary>Does a high probability mean the model is correct?</summary>
+          <div><p>No. It means the model strongly prefers one label under its learned counts and assumptions. Confidence can remain high under domain shift or shortcut learning.</p></div>
+        </details>
+
+        <div class="exit-ticket">
+          <p class="callout-label">Exit question</p>
+          <h3>Which intervention would most improve the error you inspected?</h3>
+          <p>Choose better features, better training data, or a clearer labeling rule—and justify the choice with evidence from the model.</p>
+        </div>
+      </section>
+
+      <footer class="lab-footer">
+        <p>Created by Desen Lin as an open instructional prototype.</p>
+        <a href="https://github.com/desenlin/computational-linguistics-lab" target="_blank" rel="noopener">Fork or improve this module <span aria-hidden="true">↗</span></a>
+      </footer>
+    </div>
+  </main>
+
+  <script type="module" src="../../assets/module-nav.js"></script>
+  <script type="module" src="activity.js"></script>
+</body>
+</html>

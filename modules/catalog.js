@@ -42,5 +42,27 @@ export const modules = [
     description: "Construct an edit-distance matrix, inspect the optimal alignment, and test how units and operation costs shape a similarity judgment.",
     concepts: ["Alignment", "Edit operations", "Measurement"],
     href: "modules/edit-distance/"
+  },
+  {
+    id: "classification",
+    number: "05",
+    shortTitle: "Classification",
+    title: "How Text Classifiers Make Mistakes",
+    topic: "Text classification",
+    duration: "20–30 minutes",
+    description: "Train a small Naive Bayes classifier, inspect feature evidence and a confusion matrix, and diagnose negation failures, domain shift, and shortcut learning.",
+    concepts: ["Bayes’ rule", "Evaluation", "Error analysis"],
+    href: "modules/classification/"
+  },
+  {
+    id: "embeddings",
+    number: "06",
+    shortTitle: "Embeddings",
+    title: "Meaning as Geometry: Word-Embedding Explorer",
+    topic: "Distributional semantics",
+    duration: "20–30 minutes",
+    description: "Explore semantic neighborhoods, cosine similarity, vector analogies, and model-dependent associations in a transparent teaching embedding.",
+    concepts: ["Cosine similarity", "Vector arithmetic", "Representation bias"],
+    href: "modules/embeddings/"
   }
 ];

@@ -53,6 +53,28 @@ A guided 20–30 minute activity in which students:
 - change insertion, deletion, and substitution costs; and
 - explain why similarity in form is not the same as similarity in meaning.
 
+### How Text Classifiers Make Mistakes
+
+A guided 20–30 minute activity in which students:
+
+- train a multinomial Naive Bayes classifier on a small labeled corpus;
+- compare unigram features with unigrams plus bigrams;
+- inspect class probabilities and feature likelihoods;
+- interpret a confusion matrix and audit individual test cases; and
+- diagnose negation failures, domain shift, and spurious shortcuts.
+
+### Meaning as Geometry: Word-Embedding Explorer
+
+A guided 20–30 minute activity in which students:
+
+- inspect nearest neighbors in a transparent teaching embedding;
+- compare vectors using cosine similarity;
+- solve selected analogies with vector arithmetic;
+- examine model-dependent associations with profession words; and
+- test why removing one association direction is not a complete solution to bias.
+
+The included embeddings are synthetic instructional data. They make the calculations traceable and should not be interpreted as empirical evidence about English.
+
 ## Run locally
 
 Because the project uses JavaScript modules, serve the repository with any simple local web server. For example:
@@ -76,6 +98,8 @@ npm test
 - Edit `modules/tokenization/examples.js` to revise boundary examples.
 - Edit `modules/parsing/grammar.js` to revise the teaching grammar and sentences.
 - Edit `modules/edit-distance/examples.js` to add new form comparisons.
+- Edit `modules/classification/data.js` to revise labeled training and test cases.
+- Edit `modules/embeddings/data.js` to revise the synthetic teaching embedding.
 - Add one entry to `modules/catalog.js` when creating another demonstration.
 
 The sample corpora and multilingual examples are deliberately compact so students can trace behavior by hand. They are instructional examples, not representative language samples or substitutes for language-specific analysis.

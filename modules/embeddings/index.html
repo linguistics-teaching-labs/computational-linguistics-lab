@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A guided interactive lab about word embeddings, cosine similarity, analogies, semantic neighborhoods, and representational bias.">
+  <title>Meaning as Geometry · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="../../assets/lab.css">
+  <link rel="stylesheet" href="embeddings.css">
+</head>
+<body class="lab-page embeddings-page">
+  <header class="site-header lab-header">
+    <a class="brand" href="../../">
+      <span class="brand-mark" aria-hidden="true">CL</span>
+      <span>Computational Linguistics Lab</span>
+    </a>
+    <nav class="module-nav" data-module-nav data-root="../../" data-active="embeddings" aria-label="Module navigation"></nav>
+    <span class="module-time">Module 06 · 20–30 min</span>
+  </header>
+
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
+      <p class="eyebrow">Distributional semantics</p>
+      <h1>Meaning as Geometry</h1>
+      <p class="guide-intro">Explore neighbors, similarities, and analogies in a small word-embedding space—then examine what its geometry can inherit from data.</p>
+      <nav class="step-nav" aria-label="Lab steps">
+        <a href="#neighbors"><span>1</span> Find neighbors</a>
+        <a href="#similarity"><span>2</span> Compare vectors</a>
+        <a href="#analogies"><span>3</span> Solve an analogy</a>
+        <a href="#associations"><span>4</span> Audit associations</a>
+      </nav>
+      <details class="objectives">
+        <summary>Learning objectives</summary>
+        <ul>
+          <li>Interpret an embedding as a vector learned from distributional patterns.</li>
+          <li>Use cosine similarity to compare directions.</li>
+          <li>Explain analogy solving as vector arithmetic.</li>
+          <li>Recognize projections and associations as model-dependent evidence.</li>
+        </ul>
+      </details>
+    </aside>
+
+    <div class="lab-workspace">
+      <section class="lab-section" id="neighbors" aria-labelledby="neighbors-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 1</span>
+          <div><h2 id="neighbors-title">Find a word’s neighborhood</h2><p>Words used in similar contexts tend to point in similar directions.</p></div>
+        </div>
+
+        <div class="embedding-note"><strong>Teaching data:</strong> this module uses a small synthetic embedding constructed to make the calculations traceable. Its values are demonstrations, not empirical claims about English.</div>
+        <label class="field word-picker"><span>Focal word</span><select id="focal-word"></select></label>
+        <div class="neighbor-layout">
+          <div>
+            <div class="subheading-row"><h3>Nearest neighbors</h3><span>Cosine similarity</span></div>
+            <div id="neighbor-bars" class="neighbor-bars"></div>
+          </div>
+          <div class="map-panel">
+            <div class="subheading-row"><h3>Two-dimensional map</h3><span>Illustrative projection</span></div>
+            <svg id="embedding-map" class="embedding-map" viewBox="0 0 100 100" role="img" aria-labelledby="map-title map-description">
+              <title id="map-title">Map of the teaching word embeddings</title>
+              <desc id="map-description">Words are positioned in a simplified two-dimensional projection and colored by broad semantic group.</desc>
+            </svg>
+            <div class="map-legend"><span class="royalty">Royalty</span><span class="family">Family</span><span class="professions">Professions</span><span class="arts">Arts</span><span class="animals">Animals</span></div>
+          </div>
+        </div>
+        <div class="formula-card"><strong>Distributional hypothesis:</strong> words occurring in similar linguistic contexts often acquire similar representations. Similarity of use is informative, but it is not a complete theory of meaning.</div>
+      </section>
+
+      <section class="lab-section" id="similarity" aria-labelledby="similarity-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 2</span>
+          <div><h2 id="similarity-title">Compare two directions</h2><p>Cosine similarity measures the angle between vectors rather than their raw distance from the origin.</p></div>
+        </div>
+
+        <div class="pair-controls">
+          <label class="field"><span>First word</span><select id="first-word"></select></label>
+          <span class="comparison-symbol" aria-hidden="true">↔</span>
+          <label class="field"><span>Second word</span><select id="second-word"></select></label>
+        </div>
+        <div class="cosine-summary">
+          <div><small>Cosine similarity</small><strong id="cosine-value">—</strong></div>
+          <p id="cosine-interpretation"></p>
+        </div>
+        <div class="vector-wrap"><table class="vector-table"><thead id="vector-head"></thead><tbody id="vector-body"></tbody></table></div>
+        <p class="field-note">The coordinate names are intentionally opaque: individual dimensions in a real embedding generally do not have simple, stable linguistic labels.</p>
+      </section>
+
+      <section class="lab-section" id="analogies" aria-labelledby="analogies-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 3</span>
+          <div><h2 id="analogies-title">Solve an analogy with arithmetic</h2><p>Apply the displacement from A to B to a new starting word C, then search for the nearest vector.</p></div>
+        </div>
+
+        <div id="analogy-presets" class="analogy-presets" aria-label="Analogy examples"></div>
+        <div class="analogy-controls">
+          <label class="field"><span>A</span><select id="analogy-a"></select></label>
+          <span aria-hidden="true">→</span>
+          <label class="field"><span>B</span><select id="analogy-b"></select></label>
+          <span aria-hidden="true">::</span>
+          <label class="field"><span>C</span><select id="analogy-c"></select></label>
+          <span aria-hidden="true">→ ?</span>
+        </div>
+        <div class="analogy-equation"><code id="analogy-equation"></code><strong id="analogy-answer">—</strong></div>
+        <div id="analogy-candidates" class="analogy-candidates"></div>
+
+        <details class="prompt-card">
+          <summary>Does every semantic relation become a clean vector offset?</summary>
+          <div><p>No. Results depend on the corpus, training objective, vocabulary, and whether a relation is represented consistently. Famous analogies are selected successes, not a guarantee about language.</p></div>
+        </details>
+      </section>
+
+      <section class="lab-section" id="associations" aria-labelledby="associations-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 4</span>
+          <div><h2 id="associations-title">Audit an association axis</h2><p>Compare profession vectors with two anchors. The score reflects this embedding’s geometry—not a property of the people or occupations.</p></div>
+        </div>
+
+        <label class="toggle-row neutralize-toggle">
+          <input id="neutralize-toggle" type="checkbox">
+          <span><strong>Remove the anchor direction</strong><small>Project each profession vector away from the direction separating “man” and “woman.”</small></span>
+        </label>
+        <div class="association-axis"><span>Closer to “man”</span><i></i><span>Closer to “woman”</span></div>
+        <div id="association-chart" class="association-chart"></div>
+        <div id="association-note" class="association-note"></div>
+
+        <div class="audit-grid">
+          <div><span>Observation</span><p>An embedding can preserve regularities and stereotypes found in its training contexts.</p></div>
+          <div><span>Intervention</span><p>Removing one direction changes these scores but may damage useful relations or leave other associations intact.</p></div>
+          <div><span>Responsibility</span><p>Audit the data, representation, task, subgroups, and consequences—not only one diagnostic number.</p></div>
+        </div>
+
+        <div class="exit-ticket">
+          <p class="callout-label">Exit question</p>
+          <h3>What does a nearest neighbor or association score justify?</h3>
+          <p>State one valid interpretation and one conclusion that would go beyond the evidence in this teaching embedding.</p>
+        </div>
+      </section>
+
+      <footer class="lab-footer">
+        <p>Created by Desen Lin as an open instructional prototype.</p>
+        <a href="https://github.com/desenlin/computational-linguistics-lab" target="_blank" rel="noopener">Fork or improve this module <span aria-hidden="true">↗</span></a>
+      </footer>
+    </div>
+  </main>
+
+  <script type="module" src="../../assets/module-nav.js"></script>
+  <script type="module" src="activity.js"></script>
+</body>
+</html>

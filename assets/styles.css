@@ -190,6 +190,8 @@ h1, h2, h3 {
 .module-card[data-module="tokenization"] .module-number { background: #c55124; }
 .module-card[data-module="parsing"] .module-number { background: #6d4aa1; }
 .module-card[data-module="edit-distance"] .module-number { background: #2e6171; }
+.module-card[data-module="classification"] .module-number { background: #a45128; }
+.module-card[data-module="embeddings"] .module-number { background: #176b87; }
 
 .module-card-body { padding: 2.5rem; }
 
