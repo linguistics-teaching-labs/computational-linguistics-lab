@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A guided interactive lab about edit distance, dynamic programming, alignment, and linguistic similarity.">
+  <title>How Far Apart Are Two Forms? · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="../../assets/lab.css">
+  <link rel="stylesheet" href="edit-distance.css">
+</head>
+<body class="lab-page distance-page">
+  <header class="site-header lab-header">
+    <a class="brand" href="../../">
+      <span class="brand-mark" aria-hidden="true">CL</span>
+      <span>Computational Linguistics Lab</span>
+    </a>
+    <nav class="module-nav" data-module-nav data-root="../../" data-active="edit-distance" aria-label="Module navigation"></nav>
+    <span class="module-time">Module 04 · 20–30 min</span>
+  </header>
+
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
+      <p class="eyebrow">Linguistic similarity</p>
+      <h1>How Far Apart Are Two Forms?</h1>
+      <p class="guide-intro">Transform one sequence into another, inspect the cheapest path, and question what the resulting distance measures.</p>
+      <nav class="step-nav" aria-label="Lab steps">
+        <a href="#units"><span>1</span> Choose units</a>
+        <a href="#matrix"><span>2</span> Fill the matrix</a>
+        <a href="#costs"><span>3</span> Change costs</a>
+        <a href="#alignment"><span>4</span> Interpret distance</a>
+      </nav>
+      <details class="objectives">
+        <summary>Learning objectives</summary>
+        <ul>
+          <li>Compute edit distance with dynamic programming.</li>
+          <li>Trace an optimal alignment.</li>
+          <li>Explain how units and operation costs define a measure.</li>
+          <li>Distinguish similarity in form from similarity in meaning.</li>
+        </ul>
+      </details>
+    </aside>
+
+    <div class="lab-workspace">
+      <section class="lab-section" id="units" aria-labelledby="units-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 1</span>
+          <div><h2 id="units-title">Choose the units</h2><p>The algorithm compares sequences. The analyst decides what each element represents.</p></div>
+        </div>
+
+        <label class="field">
+          <span>Example</span>
+          <select id="distance-example"></select>
+        </label>
+        <p id="distance-note" class="field-note"></p>
+
+        <fieldset class="order-control">
+          <legend>Comparison unit</legend>
+          <div class="segmented-control unit-control">
+            <label><input type="radio" name="unit" value="character" checked><span>Characters<small>Spaces omitted</small></span></label>
+            <label><input type="radio" name="unit" value="word"><span>Words<small>Punctuation separate</small></span></label>
+            <label><input type="radio" name="unit" value="sound"><span>Sound symbols<small>Space-separated IPA</small></span></label>
+          </div>
+        </fieldset>
+
+        <div class="sequence-inputs">
+          <label class="field"><span>Source form</span><input id="source-form" type="text" value="kitten" autocomplete="off"></label>
+          <label class="field"><span>Target form</span><input id="target-form" type="text" value="sitting" autocomplete="off"></label>
+        </div>
+        <label class="toggle-row case-toggle">
+          <input id="distance-lowercase" type="checkbox" checked>
+          <span><strong>Ignore capitalization</strong><small>Normalize both sequences before comparison.</small></span>
+        </label>
+
+        <div class="unit-preview">
+          <div><span>Source units</span><div id="source-units" class="unit-chips"></div></div>
+          <div><span>Target units</span><div id="target-units" class="unit-chips"></div></div>
+        </div>
+      </section>
+
+      <section class="lab-section" id="matrix" aria-labelledby="matrix-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 2</span>
+          <div><h2 id="matrix-title">Fill the matrix</h2><p>Each cell stores the cheapest cost of aligning two prefixes.</p></div>
+        </div>
+
+        <label class="range-field" for="cell-slider">
+          <span><strong>Interior cells calculated</strong><output id="cell-count" for="cell-slider">0</output></span>
+          <input id="cell-slider" type="range" min="0" max="42" step="1" value="0">
+        </label>
+        <div class="action-row matrix-actions">
+          <button id="reveal-matrix" class="button secondary" type="button">Complete the matrix</button>
+          <span id="matrix-progress" class="status-text"></span>
+        </div>
+
+        <div class="distance-matrix-wrap">
+          <table id="distance-matrix" class="distance-matrix" aria-label="Edit-distance matrix"></table>
+        </div>
+        <div id="cell-explanation" class="formula-card"></div>
+      </section>
+
+      <section class="lab-section" id="costs" aria-labelledby="costs-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 3</span>
+          <div><h2 id="costs-title">Change the costs</h2><p>A distance is not neutral: it formalizes which differences matter and by how much.</p></div>
+        </div>
+
+        <div class="cost-grid">
+          <label class="cost-control"><span>Insertion <output id="insertion-value">1.00</output></span><input id="insertion-cost" type="range" min="0.25" max="2" step="0.25" value="1"></label>
+          <label class="cost-control"><span>Deletion <output id="deletion-value">1.00</output></span><input id="deletion-cost" type="range" min="0.25" max="2" step="0.25" value="1"></label>
+          <label class="cost-control"><span>Substitution <output id="substitution-value">1.00</output></span><input id="substitution-cost" type="range" min="0.25" max="3" step="0.25" value="1"></label>
+        </div>
+
+        <div class="comparison-callout">
+          <p class="callout-label">Suggested experiment</p>
+          <p>Raise substitution cost above 2.00. Does the optimal path still substitute different characters, or does it prefer a deletion followed by an insertion?</p>
+        </div>
+      </section>
+
+      <section class="lab-section" id="alignment" aria-labelledby="alignment-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 4</span>
+          <div><h2 id="alignment-title">Trace and interpret the alignment</h2><p>The final number is the cost of one cheapest path—not a universal measure of linguistic similarity.</p></div>
+        </div>
+
+        <div class="distance-summary">
+          <div><small>Minimum distance</small><strong id="distance-value">—</strong></div>
+          <div><small>Non-matching operations</small><strong id="edit-count">—</strong></div>
+          <div><small>Unit</small><strong id="unit-label">—</strong></div>
+        </div>
+
+        <div id="alignment-strip" class="alignment-strip" aria-live="polite"></div>
+        <div id="operation-summary" class="operation-summary"></div>
+
+        <details class="prompt-card">
+          <summary>Can edit distance measure meaning?</summary>
+          <div>
+            <p>Not by itself. <em>Cat</em> and <em>bat</em> differ by one character, but that does not make their meanings more similar than words with larger spelling distances.</p>
+            <p class="answer"><strong>General lesson:</strong> before interpreting a distance, identify its units, allowable operations, costs, and the linguistic property it is supposed to represent.</p>
+          </div>
+        </details>
+
+        <div class="exit-ticket">
+          <p class="callout-label">Exit question</p>
+          <h3>Which modeling choice changed your result most: the units or the operation costs?</h3>
+          <p>Describe one comparison from the lab and state what the distance does—and does not—justify.</p>
+        </div>
+      </section>
+
+      <footer class="lab-footer">
+        <p>Created by Desen Lin as an open instructional prototype.</p>
+        <a href="https://github.com/desenlin/computational-linguistics-lab" target="_blank" rel="noopener">Fork or improve this module <span aria-hidden="true">↗</span></a>
+      </footer>
+    </div>
+  </main>
+
+  <script type="module" src="../../assets/module-nav.js"></script>
+  <script type="module" src="activity.js"></script>
+</body>
+</html>

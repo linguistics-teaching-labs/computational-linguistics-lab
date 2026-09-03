@@ -33,6 +33,26 @@ A guided 20–30 minute activity in which students:
 
 The module focuses on conceptual interpretation. No programming is required.
 
+### Why Can a Sentence Have Two Structures?
+
+A guided 20–30 minute activity in which students:
+
+- inspect a compact context-free grammar;
+- reveal a CKY parsing chart from short spans to the full sentence;
+- compare noun-attachment and verb-attachment parse trees;
+- adjust attachment preferences and observe the ranking change; and
+- distinguish possible structures from their interpretations.
+
+### How Far Apart Are Two Forms?
+
+A guided 20–30 minute activity in which students:
+
+- compare forms as characters, words, or space-separated sound symbols;
+- reveal an edit-distance matrix one cell at a time;
+- trace one minimum-cost alignment;
+- change insertion, deletion, and substitution costs; and
+- explain why similarity in form is not the same as similarity in meaning.
+
 ## Run locally
 
 Because the project uses JavaScript modules, serve the repository with any simple local web server. For example:
@@ -54,6 +74,8 @@ npm test
 - Edit `modules/ngram/corpora.js` to add or revise teaching corpora.
 - Edit `modules/ngram/index.html` to change instructions and reflection questions.
 - Edit `modules/tokenization/examples.js` to revise boundary examples.
+- Edit `modules/parsing/grammar.js` to revise the teaching grammar and sentences.
+- Edit `modules/edit-distance/examples.js` to add new form comparisons.
 - Add one entry to `modules/catalog.js` when creating another demonstration.
 
 The sample corpora and multilingual examples are deliberately compact so students can trace behavior by hand. They are instructional examples, not representative language samples or substitutes for language-specific analysis.

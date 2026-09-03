@@ -43,10 +43,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .site-header {
   min-height: 72px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0 5vw;
+  padding: 0.8rem 5vw 0.7rem;
   color: #fff;
   background: var(--navy);
   border-bottom: 3px solid var(--orange);
@@ -83,18 +84,28 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .repo-link:hover { color: #fff; }
 
 .module-nav {
+  order: 3;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  margin-left: auto;
+  justify-content: flex-start;
+  gap: 0.65rem;
+  width: 100%;
+  overflow-x: auto;
+  margin: 0;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255,255,255,.18);
+  scrollbar-width: thin;
 }
 
 .module-nav a {
-  padding: 0.42rem 0.65rem;
-  border: 1px solid transparent;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 0.48rem 0.78rem;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 999px;
   color: #dcebf3;
+  background: rgba(255,255,255,.06);
   font-size: 0.78rem;
   font-weight: 720;
   text-decoration: none;
@@ -103,9 +114,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
 .module-nav a:hover,
 .module-nav a[aria-current="page"] {
-  border-color: rgba(255,255,255,.35);
+  border-color: rgba(255,255,255,.65);
   color: #fff;
-  background: rgba(255,255,255,.1);
+  background: rgba(255,255,255,.16);
 }
 
 .module-nav-number {
@@ -177,6 +188,8 @@ h1, h2, h3 {
 }
 
 .module-card[data-module="tokenization"] .module-number { background: #c55124; }
+.module-card[data-module="parsing"] .module-number { background: #6d4aa1; }
+.module-card[data-module="edit-distance"] .module-number { background: #2e6171; }
 
 .module-card-body { padding: 2.5rem; }
 
@@ -252,9 +265,9 @@ h1, h2, h3 {
 @media (max-width: 680px) {
   .site-header { padding: 0 1rem; }
   .brand span:last-child { font-size: 0.9rem; }
-  .collection-page .module-nav { order: 3; width: 100%; padding-bottom: 0.7rem; justify-content: flex-start; overflow-x: auto; }
-  .collection-page .site-header { flex-wrap: wrap; padding-top: 0.7rem; }
-  .module-nav-label { display: none; }
+  .site-header { padding-top: 0.7rem; padding-bottom: 0.65rem; }
+  .module-nav { gap: 0.5rem; padding-top: 0.6rem; }
+  .module-nav a { padding: 0.44rem 0.68rem; }
   .repo-link { font-size: 0; }
   .repo-link span { font-size: 1rem; }
   .collection-main { width: min(100% - 2rem, 1120px); padding: 3.5rem 0; }

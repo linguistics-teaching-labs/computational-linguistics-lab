@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A guided interactive lab about syntactic ambiguity, constituency, and CKY chart parsing.">
+  <title>Why Can a Sentence Have Two Structures? · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="../../assets/lab.css">
+  <link rel="stylesheet" href="parsing.css">
+</head>
+<body class="lab-page parsing-page">
+  <header class="site-header lab-header">
+    <a class="brand" href="../../">
+      <span class="brand-mark" aria-hidden="true">CL</span>
+      <span>Computational Linguistics Lab</span>
+    </a>
+    <nav class="module-nav" data-module-nav data-root="../../" data-active="parsing" aria-label="Module navigation"></nav>
+    <span class="module-time">Module 03 · 20–30 min</span>
+  </header>
+
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
+      <p class="eyebrow">Syntax and parsing</p>
+      <h1>Why Can a Sentence Have Two Structures?</h1>
+      <p class="guide-intro">Build larger constituents from smaller spans, then compare the structures licensed by one grammar.</p>
+      <nav class="step-nav" aria-label="Lab steps">
+        <a href="#sentence"><span>1</span> Choose a sentence</a>
+        <a href="#chart"><span>2</span> Build the chart</a>
+        <a href="#trees"><span>3</span> Compare trees</a>
+        <a href="#interpret"><span>4</span> Interpret ambiguity</a>
+      </nav>
+      <details class="objectives">
+        <summary>Learning objectives</summary>
+        <ul>
+          <li>Identify constituents licensed by a grammar.</li>
+          <li>Explain how a chart reuses smaller analyses.</li>
+          <li>Distinguish structural from lexical ambiguity.</li>
+          <li>Interpret probabilistic ranking as a preference, not a new parse.</li>
+        </ul>
+      </details>
+    </aside>
+
+    <div class="lab-workspace">
+      <section class="lab-section" id="sentence" aria-labelledby="sentence-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 1</span>
+          <div><h2 id="sentence-title">Choose a sentence</h2><p>The parser knows only the vocabulary and phrase-structure rules shown below.</p></div>
+        </div>
+
+        <label class="field">
+          <span>Example</span>
+          <select id="sentence-select"></select>
+        </label>
+        <p id="sentence-question" class="field-note"></p>
+        <label class="field">
+          <span>Sentence to parse</span>
+          <input id="sentence-input" type="text" value="I saw the student with the telescope" autocomplete="off">
+          <small>Known words: I, the, a, student, dog, telescope, park, saw, watched, with, in.</small>
+        </label>
+        <div id="parse-status" class="parse-status" role="status" aria-live="polite"></div>
+
+        <details class="grammar-panel">
+          <summary>Inspect the grammar</summary>
+          <div class="grammar-grid">
+            <table>
+              <thead><tr><th>Phrase rules</th><th>Weight</th></tr></thead>
+              <tbody>
+                <tr><td><code>S → NP VP</code></td><td>1.00</td></tr>
+                <tr><td><code>NP → Det N</code></td><td>1.00</td></tr>
+                <tr><td><code>VP → V NP</code></td><td>1.00</td></tr>
+                <tr><td><code>PP → P NP</code></td><td>1.00</td></tr>
+                <tr><td><code>NP → NP PP</code></td><td id="noun-rule-weight">0.50</td></tr>
+                <tr><td><code>VP → VP PP</code></td><td id="verb-rule-weight">0.50</td></tr>
+              </tbody>
+            </table>
+            <div class="category-key">
+              <p><strong>Categories</strong></p>
+              <p><code>S</code> sentence · <code>NP</code> noun phrase · <code>VP</code> verb phrase · <code>PP</code> prepositional phrase</p>
+              <p><code>Det</code> determiner · <code>N</code> noun · <code>V</code> verb · <code>P</code> preposition</p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="lab-section" id="chart" aria-labelledby="chart-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 2</span>
+          <div><h2 id="chart-title">Build the chart</h2><p>CKY combines adjacent spans from short to long instead of repeatedly solving the same subproblem.</p></div>
+        </div>
+
+        <label class="range-field" for="span-slider">
+          <span><strong>Reveal spans up to length</strong><output id="span-count" for="span-slider">1</output></span>
+          <input id="span-slider" type="range" min="1" max="7" step="1" value="1">
+        </label>
+        <div class="action-row chart-actions">
+          <button id="reveal-chart" class="button secondary" type="button">Reveal the full chart</button>
+          <span id="chart-progress" class="status-text"></span>
+        </div>
+
+        <div class="chart-legend"><span class="has-constituent">Constituent found</span><span class="no-constituent">No category licensed</span></div>
+        <div id="cky-chart" class="cky-chart" aria-live="polite"></div>
+
+        <div id="chart-explanation" class="formula-card"></div>
+      </section>
+
+      <section class="lab-section" id="trees" aria-labelledby="trees-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 3</span>
+          <div><h2 id="trees-title">Compare the complete trees</h2><p>The grammar can license more than one structure for the same word sequence.</p></div>
+        </div>
+
+        <label class="range-field preference-field" for="preference-slider">
+          <span><strong>Noun-attachment preference</strong><output id="preference-value" for="preference-slider">50%</output></span>
+          <input id="preference-slider" type="range" min="5" max="95" step="5" value="50">
+          <small><span>Favor attachment to the verb</span><span>Favor attachment to the noun</span></small>
+        </label>
+
+        <div id="parse-summary" class="parse-summary"></div>
+        <div id="tree-comparison" class="tree-comparison" aria-live="polite"></div>
+      </section>
+
+      <section class="lab-section" id="interpret" aria-labelledby="interpret-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 4</span>
+          <div><h2 id="interpret-title">Interpret the ambiguity</h2><p>A probability changes the ranking of licensed structures; it does not remove the ambiguity from the sentence.</p></div>
+        </div>
+
+        <div class="interpretation-grid">
+          <div><span>Grammar</span><p>Determines which structures are possible.</p></div>
+          <div><span>Parser</span><p>Finds the structures efficiently.</p></div>
+          <div><span>Weights</span><p>Rank the structures using learned or assumed preferences.</p></div>
+        </div>
+
+        <details class="prompt-card">
+          <summary>Does the chart contain meanings?</summary>
+          <div>
+            <p>No. It records categories that can cover each span. Humans use lexical meaning, discourse, and world knowledge to favor an interpretation.</p>
+            <p class="answer"><strong>Try it:</strong> compare the telescope and park examples. The same structural ambiguity can support different real-world interpretations.</p>
+          </div>
+        </details>
+
+        <div class="exit-ticket">
+          <p class="callout-label">Exit question</p>
+          <h3>Where in the two trees does the ambiguity become visible?</h3>
+          <p>Name the constituent to which the prepositional phrase attaches and explain the resulting interpretation.</p>
+        </div>
+      </section>
+
+      <footer class="lab-footer">
+        <p>Created by Desen Lin as an open instructional prototype.</p>
+        <a href="https://github.com/desenlin/computational-linguistics-lab" target="_blank" rel="noopener">Fork or improve this module <span aria-hidden="true">↗</span></a>
+      </footer>
+    </div>
+  </main>
+
+  <script type="module" src="../../assets/module-nav.js"></script>
+  <script type="module" src="activity.js"></script>
+</body>
+</html>
