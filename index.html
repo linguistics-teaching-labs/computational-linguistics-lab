@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive, browser-based demonstrations for introductory computational linguistics.">
+  <title>Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body class="collection-page">
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Computational Linguistics Lab home">
+      <span class="brand-mark" aria-hidden="true">CL</span>
+      <span>Computational Linguistics Lab</span>
+    </a>
+    <a class="repo-link" href="https://github.com/desenlin/computational-linguistics-lab" target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main class="collection-main">
+    <section class="collection-intro" aria-labelledby="page-title">
+      <p class="eyebrow">Open teaching modules</p>
+      <h1 id="page-title">Explore how computers learn patterns in language.</h1>
+      <p>Short, guided demonstrations for introductory computational linguistics. Everything runs locally in the browser—no account, installation, or programming required.</p>
+    </section>
+
+    <section class="module-grid" aria-label="Available modules">
+      <article class="module-card featured-card">
+        <div class="module-number" aria-hidden="true">01</div>
+        <div class="module-card-body">
+          <div class="module-meta"><span>Language modeling</span><span>20–30 minutes</span></div>
+          <h2>How a Language Model Learns</h2>
+          <p>Build unigram, bigram, and trigram models from a small corpus. Inspect their counts, test smoothing, generate text, and diagnose what the models miss.</p>
+          <ul class="skill-list" aria-label="Concepts covered">
+            <li>Conditional probability</li>
+            <li>Context</li>
+            <li>Data sparsity</li>
+          </ul>
+          <a class="primary-action" href="modules/ngram/">Open the lab <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    </section>
+
+    <section class="collection-note" aria-labelledby="built-to-extend">
+      <h2 id="built-to-extend">Built to be extended</h2>
+      <p>Each demonstration is a self-contained module with editable teaching text and data. Instructors can fork the repository, revise an activity, or add a new module without maintaining a server.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Created by Desen Lin as an open instructional prototype.</span>
+    <span>Code: MIT · Teaching content: CC BY 4.0</span>
+  </footer>
+</body>
+</html>

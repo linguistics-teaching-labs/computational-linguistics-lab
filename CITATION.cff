@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use or adapt this instructional project, please cite it as below."
+title: "Computational Linguistics Lab"
+type: software
+authors:
+  - family-names: Lin
+    given-names: Desen
+repository-code: "https://github.com/desenlin/computational-linguistics-lab"
+url: "https://desenlin.github.io/computational-linguistics-lab/"
+license: MIT
+version: 1.0.0
+date-released: 2026-09-03
+abstract: "Interactive, browser-based demonstrations for introductory computational linguistics."
+keywords:
+  - computational linguistics
+  - natural language processing
+  - language modeling
+  - n-gram
+  - open educational resource

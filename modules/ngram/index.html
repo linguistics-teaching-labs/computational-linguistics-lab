@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A guided interactive lab for building and testing n-gram language models.">
+  <title>How a Language Model Learns · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="module.css">
+</head>
+<body class="lab-page">
+  <header class="site-header lab-header">
+    <a class="brand" href="../../">
+      <span class="brand-mark" aria-hidden="true">CL</span>
+      <span>Computational Linguistics Lab</span>
+    </a>
+    <span class="module-time">Module 01 · 20–30 min</span>
+  </header>
+
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
+      <p class="eyebrow">Language modeling</p>
+      <h1>How a Language Model Learns</h1>
+      <p class="guide-intro">Build a model from counts, then test where its knowledge ends.</p>
+      <nav class="step-nav" aria-label="Lab steps">
+        <a href="#observe"><span>1</span> Observe the data</a>
+        <a href="#predict"><span>2</span> Predict from context</a>
+        <a href="#sparsity"><span>3</span> Confront missing data</a>
+        <a href="#generate"><span>4</span> Generate and critique</a>
+        <a href="#evaluate"><span>5</span> Test a sentence</a>
+      </nav>
+      <details class="objectives">
+        <summary>Learning objectives</summary>
+        <ul>
+          <li>Estimate conditional probabilities from counts.</li>
+          <li>Explain how context creates both information and sparsity.</li>
+          <li>Describe what smoothing changes.</li>
+          <li>Distinguish statistical fit from linguistic competence.</li>
+        </ul>
+      </details>
+    </aside>
+
+    <div class="lab-workspace">
+      <section class="lab-section" id="observe" aria-labelledby="observe-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 1</span>
+          <div><h2 id="observe-title">Observe the data</h2><p>A language model begins with examples—not rules about meaning.</p></div>
+        </div>
+
+        <div class="control-grid corpus-controls">
+          <label class="field">
+            <span>Teaching corpus</span>
+            <select id="corpus-select"></select>
+          </label>
+          <label class="toggle-row">
+            <input id="lowercase-toggle" type="checkbox" checked>
+            <span><strong>Ignore capitalization</strong><small>Treat “The” and “the” as the same token.</small></span>
+          </label>
+        </div>
+        <p id="corpus-description" class="field-note"></p>
+        <label class="field">
+          <span>Corpus text</span>
+          <textarea id="corpus-text" rows="8" spellcheck="true"></textarea>
+        </label>
+        <div class="action-row">
+          <button class="button secondary" id="apply-corpus" type="button">Rebuild model</button>
+          <span id="model-status" class="status-text" role="status" aria-live="polite"></span>
+        </div>
+
+        <div class="metric-grid" aria-label="Corpus summary">
+          <div class="metric"><span id="sentence-count">0</span><small>sentences</small></div>
+          <div class="metric"><span id="token-count">0</span><small>word tokens</small></div>
+          <div class="metric"><span id="type-count">0</span><small>word types</small></div>
+          <div class="metric"><span id="type-token-ratio">0</span><small>types ÷ tokens</small></div>
+        </div>
+        <div class="token-window">
+          <div class="subheading-row"><h3>First tokens</h3><span>Each chip is one observation</span></div>
+          <div id="token-preview" class="token-list" aria-label="Token preview"></div>
+        </div>
+      </section>
+
+      <section class="lab-section" id="predict" aria-labelledby="predict-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 2</span>
+          <div><h2 id="predict-title">Predict from context</h2><p>Change how many previous words the model remembers.</p></div>
+        </div>
+
+        <fieldset class="order-control">
+          <legend>Model order</legend>
+          <div class="segmented-control">
+            <label><input type="radio" name="order" value="1"><span>Unigram<small>0-word context</small></span></label>
+            <label><input type="radio" name="order" value="2" checked><span>Bigram<small>1-word context</small></span></label>
+            <label><input type="radio" name="order" value="3"><span>Trigram<small>2-word context</small></span></label>
+          </div>
+        </fieldset>
+
+        <label class="field context-field">
+          <span>Words already observed</span>
+          <input id="context-input" type="text" value="the student" autocomplete="off">
+          <small id="context-help">For a bigram, only the final word is used.</small>
+        </label>
+
+        <div class="prediction-panel">
+          <div class="subheading-row"><h3>Possible next words</h3><span id="active-context"></span></div>
+          <div id="prediction-chart" class="bar-chart" aria-live="polite"></div>
+          <p id="prediction-empty" class="empty-state" hidden>This context never appears in the corpus, so the model has no counts to use.</p>
+        </div>
+
+        <div id="count-explanation" class="formula-card"></div>
+
+        <details class="prompt-card">
+          <summary>Try it: does more context always help?</summary>
+          <div>
+            <p>Enter <strong>“the student”</strong>. Compare the three model orders. Which model makes the narrowest prediction, and which one has the most evidence?</p>
+            <p class="answer"><strong>Interpretation:</strong> More context can make a prediction more specific, but it also leaves fewer matching observations. A longer context is not automatically a better estimate.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="lab-section" id="sparsity" aria-labelledby="sparsity-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 3</span>
+          <div><h2 id="sparsity-title">Confront missing data</h2><p>A zero count does not necessarily mean an impossible sentence.</p></div>
+        </div>
+        <label class="toggle-row smoothing-toggle">
+          <input id="smoothing-toggle" type="checkbox">
+          <span><strong>Use add-one smoothing</strong><small>Add one imagined observation to every possible next word.</small></span>
+        </label>
+        <div class="comparison-callout">
+          <p class="callout-label">Suggested experiment</p>
+          <p>Choose the trigram model and enter <strong>“the careful professor”</strong>. Turn smoothing off and on. This sequence is plausible, but the small corpus may never have observed it.</p>
+        </div>
+        <div id="smoothing-formula" class="formula-card"></div>
+        <details class="prompt-card">
+          <summary>What did smoothing claim?</summary>
+          <div>
+            <p>Smoothing did not discover a linguistic rule. It redistributed probability so unseen events were no longer treated as impossible.</p>
+            <p class="answer"><strong>Tradeoff:</strong> Giving probability to unseen events requires taking some probability away from observed events.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="lab-section" id="generate" aria-labelledby="generate-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 4</span>
+          <div><h2 id="generate-title">Generate and critique</h2><p>Sample one next word at a time from the model’s probabilities.</p></div>
+        </div>
+        <div class="generation-controls">
+          <label class="field">
+            <span>Optional opening words</span>
+            <input id="seed-input" type="text" value="the model" autocomplete="off">
+          </label>
+          <button class="button primary" id="generate-button" type="button">Generate a sentence</button>
+        </div>
+        <blockquote id="generated-output" class="generated-output">Select a model and generate a sentence.</blockquote>
+        <div class="critique-grid">
+          <div><span>Form</span><p>Does it resemble an English sentence?</p></div>
+          <div><span>Meaning</span><p>Does it express a coherent idea?</p></div>
+          <div><span>Evidence</span><p>Which phrases were copied or recombined?</p></div>
+        </div>
+      </section>
+
+      <section class="lab-section" id="evaluate" aria-labelledby="evaluate-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 5</span>
+          <div><h2 id="evaluate-title">Test a new sentence</h2><p>Trace the probability assigned to each word—including any zero.</p></div>
+        </div>
+        <label class="field">
+          <span>Test sentence</span>
+          <input id="test-input" type="text" value="the student tests the model" autocomplete="off">
+        </label>
+        <button class="button secondary" id="evaluate-button" type="button">Evaluate sentence</button>
+
+        <div class="evaluation-summary">
+          <div><small>Sentence probability</small><strong id="sentence-probability">—</strong></div>
+          <div><small>Perplexity <button class="info-button" type="button" aria-describedby="perplexity-note">?</button></small><strong id="perplexity">—</strong></div>
+        </div>
+        <p id="perplexity-note" class="field-note">Lower perplexity means the model was less surprised by this sentence. Compare values only for models evaluated on the same text.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Context</th><th>Next token</th><th>Probability</th></tr></thead>
+            <tbody id="evaluation-rows"></tbody>
+          </table>
+        </div>
+
+        <div class="exit-ticket">
+          <p class="callout-label">Exit question</p>
+          <h3>What does an n-gram model know—and what does it only appear to know?</h3>
+          <p>Use one observation from the lab to support your answer.</p>
+        </div>
+      </section>
+
+      <footer class="lab-footer">
+        <p>Created by Desen Lin as an open instructional prototype.</p>
+        <a href="https://github.com/desenlin/computational-linguistics-lab" target="_blank" rel="noopener">Fork or improve this module <span aria-hidden="true">↗</span></a>
+      </footer>
+    </div>
+  </main>
+
+  <script type="module" src="activity.js"></script>
+</body>
+</html>
