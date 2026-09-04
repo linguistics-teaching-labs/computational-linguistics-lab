@@ -2,9 +2,16 @@
 
 Interactive, browser-based demonstrations for introductory computational linguistics.
 
-**Live collection:** [Computational Linguistics Lab](https://desenlin.com/computational-linguistics-lab/)
+**Live collection:** [Computational Linguistics Lab](https://linguistics-teaching-labs.github.io/computational-linguistics-lab/)
+
+**Repository:** [linguistics-teaching-labs/computational-linguistics-lab](https://github.com/linguistics-teaching-labs/computational-linguistics-lab)
 
 The project is designed for instructors and students who want to experiment with computational ideas without installing software or using an external API. Every calculation runs locally in the browser.
+
+## Project co-owners
+
+- [Desen Lin](https://github.com/desenlin)
+- [Wei Lai](https://github.com/weilaiPhonetics)
 
 ## Available modules
 
