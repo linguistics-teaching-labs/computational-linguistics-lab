@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: Lin
     given-names: Desen
-repository-code: "https://github.com/desenlin/computational-linguistics-lab"
-url: "https://desenlin.com/computational-linguistics-lab/"
+repository-code: "https://github.com/linguistics-teaching-labs/computational-linguistics-lab"
+url: "https://linguistics-teaching-labs.github.io/computational-linguistics-lab/"
 license: MIT
 version: 1.0.0
 date-released: 2026-09-03
