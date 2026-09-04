@@ -405,12 +405,15 @@ td code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 .lab-footer {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 1rem;
   padding: 1.25rem .5rem;
   color: var(--ink-soft);
   font-size: .82rem;
 }
+.lab-footer > div { display: grid; gap: .4rem; max-width: 650px; }
 .lab-footer p { margin: 0; }
+.lab-footer .footer-disclaimer { color: var(--ink-soft); }
 .lab-footer a { color: var(--blue); font-weight: 700; text-decoration: none; }
 
 @media (max-width: 960px) {

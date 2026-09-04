@@ -14,7 +14,6 @@
       <span>Computational Linguistics Lab</span>
     </a>
     <nav class="module-nav" data-module-nav data-root="./" aria-label="Module navigation"></nav>
-    <a class="repo-link" href="https://github.com/linguistics-teaching-labs/computational-linguistics-lab" target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a>
   </header>
 
   <main class="collection-main">
@@ -24,7 +23,14 @@
       <p>Short, guided demonstrations for introductory computational linguistics. Everything runs locally in the browser—no account, installation, or programming required.</p>
     </section>
 
-    <section id="module-grid" class="module-grid" aria-label="Available modules">
+    <div class="catalog-toolbar">
+      <p><strong>6</strong> standalone activities</p>
+      <label for="module-order">Arrange by
+        <select id="module-order" name="order"></select>
+      </label>
+    </div>
+
+    <section id="module-grid" class="module-grid" aria-label="Available modules" aria-live="polite">
       <noscript>
         <p><a href="modules/ngram/">Module 1: How a Language Model Learns</a></p>
         <p><a href="modules/tokenization/">Module 2: What Counts as a Word?</a></p>
@@ -42,8 +48,14 @@
   </main>
 
   <footer class="site-footer">
-    <span>Created by Desen Lin as an open instructional prototype.</span>
-    <span>Code: MIT · Teaching content: CC BY 4.0</span>
+    <div class="footer-attribution">
+      <p>Created by <a href="https://github.com/desenlin">Desen Lin</a> and <a href="https://github.com/weilaiPhonetics">Wei Lai</a> as an open instructional project.</p>
+      <p class="footer-disclaimer">Designed for instruction and exploratory research. Results use simplified methods and teaching data and should not be treated as production analysis or evidence for consequential decisions.</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/linguistics-teaching-labs/computational-linguistics-lab" target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a>
+      <span>Code: MIT · Teaching content: CC BY 4.0</span>
+    </div>
   </footer>
   <script type="module" src="assets/site.js"></script>
 </body>

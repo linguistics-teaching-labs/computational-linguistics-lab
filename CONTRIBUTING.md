@@ -13,7 +13,9 @@ Each module should:
 5. use editable, appropriately licensed data; and
 6. remain usable with a keyboard and on a narrow screen.
 
-New modules should live in their own directory under `modules/`. Keep instructional content close to the module and place only genuinely shared styles or assets in `assets/`. Add the module's title, concepts, duration, and relative URL to `modules/catalog.js`; the collection page and shared navigation use that catalog.
+New modules should live in their own directory under `modules/`. Keep instructional content close to the module and place only genuinely shared styles or assets in `assets/`. Add the module's sequence, title, concepts, duration, and relative URL to `modules/catalog.js`; the collection page and shared navigation use that catalog.
+
+The `sequence` field controls the recommended teaching order and supplies the displayed module number. Homepage alternatives are defined once in `moduleOrderOptions` and `getModules()`. Add a new ordering rule there rather than duplicating sorting logic in the page or navigation scripts.
 
 ## Testing a change
 

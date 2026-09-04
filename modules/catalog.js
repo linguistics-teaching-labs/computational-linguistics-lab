@@ -1,7 +1,7 @@
 export const modules = [
   {
     id: "ngram",
-    number: "01",
+    sequence: 1,
     shortTitle: "Language models",
     title: "How a Language Model Learns",
     topic: "Language modeling",
@@ -12,7 +12,7 @@ export const modules = [
   },
   {
     id: "tokenization",
-    number: "02",
+    sequence: 2,
     shortTitle: "Tokenization",
     title: "What Counts as a Word?",
     topic: "Tokens and subwords",
@@ -23,7 +23,7 @@ export const modules = [
   },
   {
     id: "parsing",
-    number: "03",
+    sequence: 3,
     shortTitle: "Parsing",
     title: "Why Can a Sentence Have Two Structures?",
     topic: "Syntax and parsing",
@@ -34,7 +34,7 @@ export const modules = [
   },
   {
     id: "edit-distance",
-    number: "04",
+    sequence: 4,
     shortTitle: "Edit distance",
     title: "How Far Apart Are Two Forms?",
     topic: "Linguistic similarity",
@@ -45,7 +45,7 @@ export const modules = [
   },
   {
     id: "classification",
-    number: "05",
+    sequence: 5,
     shortTitle: "Classification",
     title: "How Text Classifiers Make Mistakes",
     topic: "Text classification",
@@ -56,7 +56,7 @@ export const modules = [
   },
   {
     id: "embeddings",
-    number: "06",
+    sequence: 6,
     shortTitle: "Embeddings",
     title: "Meaning as Geometry: Word-Embedding Explorer",
     topic: "Distributional semantics",
@@ -66,3 +66,27 @@ export const modules = [
     href: "modules/embeddings/"
   }
 ];
+
+export const defaultModuleOrder = "sequence";
+
+export const moduleOrderOptions = [
+  { id: "sequence", label: "Teaching sequence" },
+  { id: "newest", label: "Newest module first" },
+  { id: "title", label: "Title, A–Z" },
+  { id: "topic", label: "Topic, A–Z" }
+];
+
+const collator = new Intl.Collator("en", { sensitivity: "base" });
+
+export function moduleNumber(module) {
+  return String(module.sequence).padStart(2, "0");
+}
+
+export function getModules(order = defaultModuleOrder) {
+  const sorted = [...modules];
+
+  if (order === "newest") return sorted.sort((a, b) => b.sequence - a.sequence);
+  if (order === "title") return sorted.sort((a, b) => collator.compare(a.title, b.title));
+  if (order === "topic") return sorted.sort((a, b) => collator.compare(a.topic, b.topic));
+  return sorted.sort((a, b) => a.sequence - b.sequence);
+}

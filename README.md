@@ -8,6 +8,12 @@ Interactive, browser-based demonstrations for introductory computational linguis
 
 The project is designed for instructors and students who want to experiment with computational ideas without installing software or using an external API. Every calculation runs locally in the browser.
 
+## Intended use and limitations
+
+This project is designed for instruction and exploratory research. Its algorithms, corpora, annotations, and synthetic data are deliberately compact so learners can inspect the calculations. Outputs should not be treated as production NLP results, representative descriptions of language communities, or evidence for consequential decisions.
+
+The intended-use statement describes the scope of the demonstrations; it does not narrow the permissions granted by the project's open-source and open-content licenses.
+
 ## Project co-owners
 
 - [Desen Lin](https://github.com/desenlin)
@@ -107,11 +113,21 @@ npm test
 - Edit `modules/edit-distance/examples.js` to add new form comparisons.
 - Edit `modules/classification/data.js` to revise labeled training and test cases.
 - Edit `modules/embeddings/data.js` to revise the synthetic teaching embedding.
-- Add one entry to `modules/catalog.js` when creating another demonstration.
+- Add one entry to `modules/catalog.js` when creating another demonstration. Set its `sequence` value to control the default teaching order.
+- Edit `moduleOrderOptions` and `getModules()` in `modules/catalog.js` to add or revise homepage ordering choices. The current choices are teaching sequence, newest first, title, and topic.
 
 The sample corpora and multilingual examples are deliberately compact so students can trace behavior by hand. They are instructional examples, not representative language samples or substitutes for language-specific analysis.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the module conventions.
+
+## Potential future modules
+
+- **Speech Sounds Made Visible:** waveforms, spectrograms, fundamental frequency, and vowel formants.
+- **From Sounds to Phonemes:** phonological features, minimal pairs, and feature-based similarity.
+- **How Attention Distributes Context:** a small, model-independent attention-weight explorer.
+- **Coreference and Discourse:** compare candidate antecedents and diagnose ambiguity across sentences.
+- **Corpus Frequencies and Collocations:** contrast raw counts, normalized frequency, pointwise mutual information, and data-size effects.
+- **Evaluating Language Technology:** work through precision, recall, F1, agreement, and subgroup error analysis.
 
 ## Citation
 
