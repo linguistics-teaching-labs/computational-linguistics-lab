@@ -16,8 +16,8 @@ The intended-use statement describes the scope of the demonstrations; it does no
 
 ## Project co-owners
 
-- [Desen Lin](https://github.com/desenlin)
 - [Wei Lai](https://github.com/weilaiPhonetics)
+- [Desen Lin](https://github.com/desenlin)
 
 ## Available modules
 
