@@ -1,7 +1,7 @@
 import {
   getModulesByCategory,
   moduleCategories
-} from "../modules/catalog.js?v=20260904-3";
+} from "../modules/catalog.js?v=20260904-4";
 
 function buildNavigation(navigation) {
   const root = navigation.dataset.root ?? "./";

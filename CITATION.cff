@@ -10,7 +10,7 @@ authors:
 repository-code: "https://github.com/linguistics-teaching-labs/computational-linguistics-lab"
 url: "https://linguistics-teaching-labs.github.io/computational-linguistics-lab/"
 license: MIT
-version: 1.1.0
+version: 1.2.0
 date-released: 2026-09-04
 abstract: "Interactive, browser-based demonstrations for introductory computational linguistics."
 keywords:
@@ -22,4 +22,7 @@ keywords:
   - phonology
   - corpus linguistics
   - model evaluation
+  - attention
+  - coreference
+  - discourse
   - open educational resource

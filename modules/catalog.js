@@ -108,6 +108,28 @@ export const modules = [
     description: "Move a decision threshold, read a confusion matrix, compare precision and recall, and audit how errors differ across synthetic user groups.",
     concepts: ["Precision and recall", "Thresholds", "Error disparities"],
     href: "modules/evaluation/"
+  },
+  {
+    id: "attention",
+    sequence: 11,
+    shortTitle: "Attention",
+    title: "How Attention Distributes Context",
+    topic: "Attention mechanisms",
+    category: "models-evaluation",
+    description: "Adjust raw scores, temperature, and masking to see how softmax weights combine token information into a transparent context representation.",
+    concepts: ["Softmax", "Attention masks", "Weighted context"],
+    href: "modules/attention/"
+  },
+  {
+    id: "coreference",
+    sequence: 12,
+    shortTitle: "Coreference",
+    title: "Coreference and Discourse",
+    topic: "Discourse processing",
+    category: "structure-meaning",
+    description: "Compare candidate antecedents, change discourse-salience weights, and test how pronoun interpretations affect coherence across sentences.",
+    concepts: ["Antecedents", "Discourse salience", "Coherence"],
+    href: "modules/coreference/"
   }
 ];
 

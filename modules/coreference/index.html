@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive lab about antecedent selection, pronoun ambiguity, discourse salience, and coherence across sentences.">
+  <title>Coreference and Discourse · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css?v=20260904-4">
+  <link rel="stylesheet" href="../../assets/lab.css">
+  <link rel="stylesheet" href="coreference.css">
+</head>
+<body class="lab-page coreference-page">
+  <header class="site-header lab-header"><a class="brand" href="../../"><span class="brand-mark" aria-hidden="true">CL</span><span>Computational Linguistics Lab</span></a><nav class="module-nav" data-module-nav data-root="../../" data-active="coreference" aria-label="Module navigation"></nav></header>
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
+      <p class="eyebrow">Discourse processing</p>
+      <h1>Coreference and Discourse</h1>
+      <p class="guide-intro">Rank possible antecedents, expose competing cues, and test how a pronoun changes the interpretation of a discourse.</p>
+      <nav class="step-nav" aria-label="Lab steps"><a href="#discourse"><span>1</span> Read a discourse</a><a href="#evidence"><span>2</span> Inspect evidence</a><a href="#salience"><span>3</span> Change salience</a><a href="#coherence"><span>4</span> Test interpretations</a></nav>
+      <details class="objectives"><summary>Learning objectives</summary><ul><li>Identify plausible antecedents for a referring expression.</li><li>Compare recency, prominence, compatibility, and repetition.</li><li>Distinguish a ranking from a resolved ground truth.</li><li>Use later discourse to assess coherence.</li></ul></details>
+    </aside>
+    <div class="lab-workspace">
+      <section class="lab-section" id="discourse" aria-labelledby="discourse-title">
+        <div class="section-heading"><span class="step-badge">Step 1</span><div><h2 id="discourse-title">Find what the pronoun could refer to</h2><p>A referring expression can retrieve a person, object, or discourse entity introduced earlier.</p></div></div>
+        <div class="discourse-choice"><label class="field"><span>Teaching example</span><select id="coreference-example"></select></label><div class="discourse-card"><p><span id="discourse-before"></span><mark id="discourse-pronoun"></mark><span id="discourse-after"></span></p></div></div>
+      </section>
+      <section class="lab-section" id="evidence" aria-labelledby="evidence-title">
+        <div class="section-heading"><span class="step-badge">Step 2</span><div><h2 id="evidence-title">Inspect four sources of evidence</h2><p>Values range from zero to one. They summarize a teaching analysis rather than universal linguistic facts.</p></div></div>
+        <div class="table-wrap"><table class="candidate-feature-table"><thead><tr><th>Candidate</th><th>Recency</th><th>Subject prominence</th><th>Compatibility</th><th>Prior mentions</th></tr></thead><tbody id="candidate-features"></tbody></table></div>
+        <p class="feature-key">Compatibility combines form and simplified world knowledge; prior mentions approximate discourse persistence.</p>
+      </section>
+      <section class="lab-section" id="salience" aria-labelledby="salience-title">
+        <div class="section-heading"><span class="step-badge">Step 3</span><div><h2 id="salience-title">Change the salience model</h2><p>Each candidate receives a weighted sum of its evidence, followed by softmax normalization.</p></div></div>
+        <div class="salience-heading"><p>Increase a factor to make it more influential.</p><button id="reset-salience" class="button secondary" type="button">Reset weights</button></div>
+        <div id="salience-controls" class="salience-controls"></div>
+        <div class="ranking-layout"><div id="candidate-ranking" class="candidate-ranking" aria-live="polite"></div><div class="ambiguity-card"><strong id="ambiguity-label">—</strong><span id="ambiguity-margin">—</span></div></div>
+        <div class="formula-card"><strong>Candidate score:</strong> Σ(feature value × feature weight). Probabilities support comparison; they do not prove which interpretation a speaker intended.</div>
+      </section>
+      <section class="lab-section" id="coherence" aria-labelledby="coherence-title">
+        <div class="section-heading"><span class="step-badge">Step 4</span><div><h2 id="coherence-title">Follow an interpretation forward</h2><p>Later sentences can reinforce, revise, or leave an antecedent choice unresolved.</p></div></div>
+        <div class="interpretation-layout"><label class="field"><span>Interpret the pronoun as referring to</span><select id="interpretation-select"></select></label><div class="interpretation-output"><small>Paraphrase</small><strong id="interpretation-paraphrase"></strong><small>Possible continuation</small><p id="interpretation-continuation"></p><p id="interpretation-explanation"></p></div></div>
+        <details class="prompt-card"><summary>Why not always choose the nearest noun?</summary><div><p>Recency is useful, but number, animacy, grammatical role, repeated mention, world knowledge, and later discourse can favor a different candidate.</p></div></details>
+        <div class="exit-ticket"><p class="callout-label">Exit question</p><h3>Which example remains genuinely ambiguous?</h3><p>Use at least two competing cues and one coherent continuation to justify your answer.</p></div>
+      </section>
+      <footer class="lab-footer"><div><p>Created and maintained by <a href="https://github.com/weilaiPhonetics">Wei Lai</a> and <a href="https://github.com/desenlin">Desen Lin</a> as an instructional project.</p><p class="footer-disclaimer">Designed for instruction and exploratory research; feature values and salience scores are simplified teaching data, not empirical estimates about language users.</p></div><a href="https://github.com/linguistics-teaching-labs/computational-linguistics-lab" target="_blank" rel="noopener">View source or contribute <span aria-hidden="true">↗</span></a></footer>
+    </div>
+  </main>
+  <script type="module" src="../../assets/module-nav.js?v=20260904-4"></script>
+  <script type="module" src="activity.js"></script>
+</body>
+</html>

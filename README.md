@@ -128,6 +128,28 @@ A guided activity in which students:
 - observe threshold tradeoffs; and
 - audit differences between aggregate and subgroup performance.
 
+### How Attention Distributes Context
+
+A guided activity in which students:
+
+- adjust transparent token-to-token compatibility scores;
+- convert raw scores into normalized weights with softmax;
+- compare concentrated and diffuse attention using temperature;
+- test bidirectional and causal attention masks; and
+- build a weighted context vector from synthetic token features.
+
+The activity does not call or imitate a commercial language model. Its scores and vectors are synthetic teaching data designed to make the calculation inspectable.
+
+### Coreference and Discourse
+
+A guided activity in which students:
+
+- identify plausible antecedents for pronouns and other referring expressions;
+- compare recency, grammatical prominence, compatibility, and repeated mention;
+- adjust the influence of each discourse-salience factor;
+- distinguish an antecedent ranking from an intended interpretation; and
+- use possible continuations to evaluate coherence across sentences.
+
 ## Run locally
 
 Because the project uses JavaScript modules, serve the repository with any simple local web server. For example:
@@ -157,6 +179,8 @@ npm test
 - Edit `modules/phonology/features.js` to revise the teaching inventory, features, and minimal pairs.
 - Edit `modules/corpus/data.js` to revise the original teaching corpora.
 - Edit `modules/evaluation/data.js` to revise the synthetic predictions and reference labels.
+- Edit `modules/attention/examples.js` to revise the synthetic scores, masks, and context vectors.
+- Edit `modules/coreference/examples.js` to revise discourses, antecedent candidates, and continuations.
 - Add one entry to `modules/catalog.js` when creating another demonstration. Assign its subject `category` and set its `sequence` value to control the default catalog order.
 - Edit `moduleOrderOptions` and `getModules()` in `modules/catalog.js` to add or revise homepage ordering choices. The current choices are catalog order, newest first, title, and topic.
 
@@ -165,11 +189,6 @@ The shared header groups modules by subject using the same catalog. Homepage sub
 The sample corpora and multilingual examples are deliberately compact so students can trace behavior by hand. They are instructional examples, not representative language samples or substitutes for language-specific analysis.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the module conventions.
-
-## Further module candidates
-
-- **How Attention Distributes Context:** a small, model-independent attention-weight explorer.
-- **Coreference and Discourse:** compare candidate antecedents and diagnose ambiguity across sentences.
 
 ## Citation
 

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A transparent interactive lab about attention scores, softmax weights, masking, temperature, and weighted context.">
+  <title>How Attention Distributes Context · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css?v=20260904-4">
+  <link rel="stylesheet" href="../../assets/lab.css">
+  <link rel="stylesheet" href="attention.css">
+</head>
+<body class="lab-page attention-page">
+  <header class="site-header lab-header"><a class="brand" href="../../"><span class="brand-mark" aria-hidden="true">CL</span><span>Computational Linguistics Lab</span></a><nav class="module-nav" data-module-nav data-root="../../" data-active="attention" aria-label="Module navigation"></nav></header>
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
+      <p class="eyebrow">Attention mechanisms</p>
+      <h1>How Attention Distributes Context</h1>
+      <p class="guide-intro">Turn raw compatibility scores into weights and observe how a model-like calculation combines information across tokens.</p>
+      <nav class="step-nav" aria-label="Lab steps"><a href="#example"><span>1</span> Choose context</a><a href="#scores"><span>2</span> Set scores</a><a href="#weights"><span>3</span> Normalize weights</a><a href="#context"><span>4</span> Combine information</a></nav>
+      <details class="objectives"><summary>Learning objectives</summary><ul><li>Distinguish raw attention scores from normalized weights.</li><li>Explain the effects of temperature and masking.</li><li>Calculate a weighted context representation.</li><li>Recognize that attention weights are not complete explanations.</li></ul></details>
+    </aside>
+    <div class="lab-workspace">
+      <section class="lab-section" id="example" aria-labelledby="example-title">
+        <div class="section-heading"><span class="step-badge">Step 1</span><div><h2 id="example-title">Choose a focus token and context</h2><p>Each example supplies synthetic scores and simple feature vectors so every calculation remains inspectable.</p></div></div>
+        <div class="attention-example-grid"><label class="field"><span>Teaching example</span><select id="attention-example"></select></label><div class="sentence-card"><small>Focus token: <mark id="focus-token"></mark></small><p id="attention-sentence"></p></div></div>
+      </section>
+      <section class="lab-section" id="scores" aria-labelledby="scores-title">
+        <div class="section-heading"><span class="step-badge">Step 2</span><div><h2 id="scores-title">Adjust raw compatibility scores</h2><p>A larger score makes a token more competitive, but scores are not probabilities.</p></div></div>
+        <div class="mode-row"><label class="field"><span>Visible context</span><select id="attention-mode"><option value="bidirectional">Bidirectional: all tokens visible</option><option value="causal">Causal: later tokens masked</option></select></label><button id="reset-scores" class="button secondary" type="button">Reset example</button></div>
+        <div id="score-controls" class="score-controls"></div>
+      </section>
+      <section class="lab-section" id="weights" aria-labelledby="weights-title">
+        <div class="section-heading"><span class="step-badge">Step 3</span><div><h2 id="weights-title">Normalize scores with softmax</h2><p>Softmax turns available scores into nonnegative weights that sum to one.</p></div></div>
+        <label class="temperature-control" for="temperature-slider"><span>Temperature <output id="temperature-value">1.0</output></span><input id="temperature-slider" type="range" min="0.3" max="2" step="0.1" value="1"><small>Lower values concentrate attention; higher values distribute it more evenly.</small></label>
+        <div class="attention-summary"><span>Weight sum: <strong id="weight-sum">1.000</strong></span><span>Effective tokens: <strong id="effective-tokens">—</strong></span></div>
+        <div id="attention-weights" class="attention-weights" aria-live="polite"></div>
+        <div class="formula-card"><strong>For each visible token:</strong> weightᵢ = exp(scoreᵢ ÷ temperature) ÷ Σ exp(scoreⱼ ÷ temperature). “Effective tokens” is exp(entropy): a larger value indicates that weight is spread across more positions.</div>
+      </section>
+      <section class="lab-section" id="context" aria-labelledby="context-title">
+        <div class="section-heading"><span class="step-badge">Step 4</span><div><h2 id="context-title">Build a weighted context</h2><p>Each token contributes its feature vector in proportion to its attention weight.</p></div></div>
+        <div class="context-layout"><div id="context-vector" class="context-vector"></div><p id="attention-interpretation" class="attention-interpretation"></p></div>
+        <details class="prompt-card"><summary>Does the largest attention weight explain the model?</summary><div><p>Not by itself. A weight shows where one calculation distributes emphasis. Values, later layers, residual connections, and the chosen representation also affect an output.</p></div></details>
+        <div class="exit-ticket"><p class="callout-label">Exit question</p><h3>When does a weight change without changing the raw scores?</h3><p>Use temperature or masking to create an example, then explain why the context representation changes.</p></div>
+      </section>
+      <footer class="lab-footer"><div><p>Created and maintained by <a href="https://github.com/weilaiPhonetics">Wei Lai</a> and <a href="https://github.com/desenlin">Desen Lin</a> as an instructional project.</p><p class="footer-disclaimer">Designed for instruction and exploratory research; all attention scores and vectors are synthetic teaching data, not outputs from a commercial or trained language model.</p></div><a href="https://github.com/linguistics-teaching-labs/computational-linguistics-lab" target="_blank" rel="noopener">View source or contribute <span aria-hidden="true">↗</span></a></footer>
+    </div>
+  </main>
+  <script type="module" src="../../assets/module-nav.js?v=20260904-4"></script>
+  <script type="module" src="activity.js"></script>
+</body>
+</html>

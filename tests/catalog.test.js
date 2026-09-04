@@ -22,6 +22,8 @@ test("module identifiers and sequence values are unique", () => {
 test("subject groups cover every module exactly once", () => {
   const groupedIds = moduleCategories.flatMap(category => getModulesByCategory(category.id).map(module => module.id));
   assert.deepEqual(groupedIds.sort(), modules.map(module => module.id).sort());
+  assert.equal(modules.find(module => module.id === "attention").category, "models-evaluation");
+  assert.equal(modules.find(module => module.id === "coreference").category, "structure-meaning");
 });
 
 test("catalog filtering searches content and combines with subject", () => {

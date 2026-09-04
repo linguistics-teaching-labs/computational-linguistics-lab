@@ -314,6 +314,8 @@ h1, h2, h3 {
 .module-card[data-module="phonology"] .module-number { background: #6d4aa1; }
 .module-card[data-module="corpus"] .module-number { background: #17695d; }
 .module-card[data-module="evaluation"] .module-number { background: #934628; }
+.module-card[data-module="attention"] .module-number { background: #a45128; }
+.module-card[data-module="coreference"] .module-number { background: #5b3c8a; }
 
 .module-card-body {
   display: flex;
