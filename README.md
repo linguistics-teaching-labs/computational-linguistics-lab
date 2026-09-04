@@ -23,7 +23,7 @@ The intended-use statement describes the scope of the demonstrations; it does no
 
 ### How a Language Model Learns
 
-A guided 20–30 minute activity in which students:
+A guided activity in which students:
 
 - inspect a small teaching corpus and its tokens;
 - compare unigram, bigram, and trigram predictions;
@@ -36,7 +36,7 @@ The module assumes only introductory probability. No programming is required.
 
 ### What Counts as a Word?
 
-A guided 20–30 minute activity in which students:
+A guided activity in which students:
 
 - compare whitespace, word-and-punctuation, and configurable rule-based tokenizers;
 - test decisions about contractions and hyphenated forms;
@@ -48,7 +48,7 @@ The module focuses on conceptual interpretation. No programming is required.
 
 ### Why Can a Sentence Have Two Structures?
 
-A guided 20–30 minute activity in which students:
+A guided activity in which students:
 
 - inspect a compact context-free grammar;
 - reveal a CKY parsing chart from short spans to the full sentence;
@@ -58,7 +58,7 @@ A guided 20–30 minute activity in which students:
 
 ### How Far Apart Are Two Forms?
 
-A guided 20–30 minute activity in which students:
+A guided activity in which students:
 
 - compare forms as characters, words, or space-separated sound symbols;
 - reveal an edit-distance matrix one cell at a time;
@@ -68,7 +68,7 @@ A guided 20–30 minute activity in which students:
 
 ### How Text Classifiers Make Mistakes
 
-A guided 20–30 minute activity in which students:
+A guided activity in which students:
 
 - train a multinomial Naive Bayes classifier on a small labeled corpus;
 - compare unigram features with unigrams plus bigrams;
@@ -78,7 +78,7 @@ A guided 20–30 minute activity in which students:
 
 ### Meaning as Geometry: Word-Embedding Explorer
 
-A guided 20–30 minute activity in which students:
+A guided activity in which students:
 
 - inspect nearest neighbors in a transparent teaching embedding;
 - compare vectors using cosine similarity;
@@ -157,8 +157,10 @@ npm test
 - Edit `modules/phonology/features.js` to revise the teaching inventory, features, and minimal pairs.
 - Edit `modules/corpus/data.js` to revise the original teaching corpora.
 - Edit `modules/evaluation/data.js` to revise the synthetic predictions and reference labels.
-- Add one entry to `modules/catalog.js` when creating another demonstration. Set its `sequence` value to control the default teaching order.
-- Edit `moduleOrderOptions` and `getModules()` in `modules/catalog.js` to add or revise homepage ordering choices. The current choices are teaching sequence, newest first, title, and topic.
+- Add one entry to `modules/catalog.js` when creating another demonstration. Assign its subject `category` and set its `sequence` value to control the default catalog order.
+- Edit `moduleOrderOptions` and `getModules()` in `modules/catalog.js` to add or revise homepage ordering choices. The current choices are catalog order, newest first, title, and topic.
+
+The shared header groups modules by subject using the same catalog. Homepage subject filters and search also read from that file, so a new activity does not require navigation changes on individual pages.
 
 The sample corpora and multilingual examples are deliberately compact so students can trace behavior by hand. They are instructional examples, not representative language samples or substitutes for language-specific analysis.
 

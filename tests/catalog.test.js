@@ -1,15 +1,37 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { getModules, moduleNumber, modules, moduleOrderOptions } from "../modules/catalog.js";
+import {
+  filterModules,
+  getModules,
+  getModulesByCategory,
+  moduleCategories,
+  moduleNumber,
+  modules,
+  moduleOrderOptions
+} from "../modules/catalog.js";
 
 test("module identifiers and sequence values are unique", () => {
   assert.equal(new Set(modules.map(({ id }) => id)).size, modules.length);
   assert.equal(new Set(modules.map(({ sequence }) => sequence)).size, modules.length);
   assert.ok(modules.every(module => !("duration" in module)));
+  const categoryIds = new Set(moduleCategories.map(({ id }) => id));
+  assert.ok(modules.every(module => categoryIds.has(module.category)));
 });
 
-test("teaching sequence is the default catalog order", () => {
+test("subject groups cover every module exactly once", () => {
+  const groupedIds = moduleCategories.flatMap(category => getModulesByCategory(category.id).map(module => module.id));
+  assert.deepEqual(groupedIds.sort(), modules.map(module => module.id).sort());
+});
+
+test("catalog filtering searches content and combines with subject", () => {
+  assert.deepEqual(filterModules({ query: "spectrogram" }).map(module => module.id), ["acoustics"]);
+  assert.deepEqual(filterModules({ category: "speech-sound" }).map(module => module.id), ["acoustics", "phonology"]);
+  assert.deepEqual(filterModules({ query: "features", category: "speech-sound" }).map(module => module.id), ["phonology"]);
+  assert.deepEqual(filterModules({ query: "no matching concept" }), []);
+});
+
+test("sequence is the default catalog order", () => {
   assert.deepEqual(getModules().map(({ sequence }) => sequence), Array.from({ length: modules.length }, (_, index) => index + 1));
   assert.equal(moduleNumber(modules[0]), "01");
 });

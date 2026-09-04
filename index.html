@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Interactive, browser-based demonstrations for introductory computational linguistics.">
   <title>Computational Linguistics Lab</title>
-  <link rel="stylesheet" href="assets/styles.css?v=20260904-2">
+  <link rel="stylesheet" href="assets/styles.css?v=20260904-3">
 </head>
 <body class="collection-page">
   <header class="site-header">
@@ -24,11 +24,18 @@
     </section>
 
     <div class="catalog-toolbar">
-      <p><strong id="module-count">10</strong> standalone activities</p>
-      <label for="module-order">Arrange by
-        <select id="module-order" name="order"></select>
-      </label>
+      <p id="catalog-count" aria-live="polite"><strong id="module-count">10</strong> <span id="module-count-label">standalone activities</span></p>
+      <div class="catalog-controls">
+        <label class="module-search" for="module-search">Search
+          <input id="module-search" name="q" type="search" placeholder="Title or concept" autocomplete="off">
+        </label>
+        <label for="module-order">Arrange by
+          <select id="module-order" name="order"></select>
+        </label>
+      </div>
     </div>
+
+    <div id="category-filters" class="category-filters" role="group" aria-label="Filter modules by subject"></div>
 
     <section id="module-grid" class="module-grid" aria-label="Available modules" aria-live="polite">
       <noscript>
@@ -61,6 +68,6 @@
       <span>Code: MIT · Teaching content: CC BY 4.0</span>
     </div>
   </footer>
-  <script type="module" src="assets/site.js?v=20260904-2"></script>
+  <script type="module" src="assets/site.js?v=20260904-3"></script>
 </body>
 </html>

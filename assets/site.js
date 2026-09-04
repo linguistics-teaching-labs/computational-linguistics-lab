@@ -1,14 +1,29 @@
 import {
   defaultModuleOrder,
-  getModules,
+  filterModules,
   moduleNumber,
+  moduleCategories,
+  modules,
   moduleOrderOptions
-} from "../modules/catalog.js";
-import "./module-nav.js";
+} from "../modules/catalog.js?v=20260904-3";
+import "./module-nav.js?v=20260904-3";
 
 const grid = document.querySelector("#module-grid");
 const orderSelect = document.querySelector("#module-order");
 const moduleCount = document.querySelector("#module-count");
+const moduleCountLabel = document.querySelector("#module-count-label");
+const searchInput = document.querySelector("#module-search");
+const categoryFilters = document.querySelector("#category-filters");
+
+const requested = new URLSearchParams(window.location.search);
+const requestedOrder = requested.get("order");
+let order = moduleOrderOptions.some(({ id }) => id === requestedOrder)
+  ? requestedOrder
+  : defaultModuleOrder;
+let category = moduleCategories.some(({ id }) => id === requested.get("category"))
+  ? requested.get("category")
+  : "";
+let query = requested.get("q") ?? "";
 
 function createModuleCard(module) {
   const card = document.createElement("article");
@@ -56,8 +71,53 @@ function createModuleCard(module) {
   return card;
 }
 
-function renderModules(order) {
-  grid.replaceChildren(...getModules(order).map(createModuleCard));
+function updateURL() {
+  const url = new URL(window.location.href);
+  if (order === defaultModuleOrder) url.searchParams.delete("order");
+  else url.searchParams.set("order", order);
+  if (category) url.searchParams.set("category", category);
+  else url.searchParams.delete("category");
+  if (query.trim()) url.searchParams.set("q", query.trim());
+  else url.searchParams.delete("q");
+  window.history.replaceState({}, "", url);
+}
+
+function renderModules() {
+  const visibleModules = filterModules({ query, category, order });
+  if (visibleModules.length) {
+    grid.replaceChildren(...visibleModules.map(createModuleCard));
+  } else {
+    const empty = document.createElement("div");
+    empty.className = "catalog-empty";
+    const heading = document.createElement("h2");
+    heading.textContent = "No modules match those filters.";
+    const note = document.createElement("p");
+    note.textContent = "Try another subject or a broader search term.";
+    const reset = document.createElement("button");
+    reset.type = "button";
+    reset.textContent = "Clear filters";
+    reset.addEventListener("click", () => {
+      category = "";
+      query = "";
+      searchInput.value = "";
+      updateCategoryButtons();
+      renderModules();
+      updateURL();
+    });
+    empty.append(heading, note, reset);
+    grid.replaceChildren(empty);
+  }
+
+  moduleCount.textContent = visibleModules.length;
+  moduleCountLabel.textContent = visibleModules.length === modules.length
+    ? "standalone activities"
+    : `of ${modules.length} activities`;
+}
+
+function updateCategoryButtons() {
+  for (const button of categoryFilters.querySelectorAll("button")) {
+    button.setAttribute("aria-pressed", String(button.dataset.category === category));
+  }
 }
 
 for (const option of moduleOrderOptions) {
@@ -67,19 +127,33 @@ for (const option of moduleOrderOptions) {
   orderSelect.append(element);
 }
 
-const requestedOrder = new URLSearchParams(window.location.search).get("order");
-const initialOrder = moduleOrderOptions.some(({ id }) => id === requestedOrder)
-  ? requestedOrder
-  : defaultModuleOrder;
+for (const option of [{ id: "", label: "All subjects" }, ...moduleCategories]) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.dataset.category = option.id;
+  button.textContent = option.label;
+  button.addEventListener("click", () => {
+    category = option.id;
+    updateCategoryButtons();
+    renderModules();
+    updateURL();
+  });
+  categoryFilters.append(button);
+}
 
-orderSelect.value = initialOrder;
-moduleCount.textContent = getModules().length;
-renderModules(initialOrder);
+orderSelect.value = order;
+searchInput.value = query;
+updateCategoryButtons();
+renderModules();
 
 orderSelect.addEventListener("change", () => {
-  renderModules(orderSelect.value);
-  const url = new URL(window.location.href);
-  if (orderSelect.value === defaultModuleOrder) url.searchParams.delete("order");
-  else url.searchParams.set("order", orderSelect.value);
-  window.history.replaceState({}, "", url);
+  order = orderSelect.value;
+  renderModules();
+  updateURL();
+});
+
+searchInput.addEventListener("input", () => {
+  query = searchInput.value;
+  renderModules();
+  updateURL();
 });
