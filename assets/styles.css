@@ -124,7 +124,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   padding: 4.75rem 0 4.5rem;
 }
 
-.collection-intro { max-width: 760px; }
+.collection-intro { max-width: 920px; }
 
 .eyebrow {
   margin: 0 0 0.6rem;
@@ -142,13 +142,13 @@ h1, h2, h3 {
 }
 
 .collection-intro h1 {
-  max-width: 680px;
+  max-width: 900px;
   margin-bottom: 1rem;
   font-size: clamp(2.15rem, 5vw, 3.85rem);
 }
 
 .collection-intro > p:last-child {
-  max-width: 680px;
+  max-width: 760px;
   margin: 0;
   color: var(--ink-soft);
   font-size: 1.05rem;

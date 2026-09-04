@@ -5,7 +5,6 @@ export const modules = [
     shortTitle: "Language models",
     title: "How a Language Model Learns",
     topic: "Language modeling",
-    duration: "20–30 minutes",
     description: "Build unigram, bigram, and trigram models from a small corpus. Inspect their counts, test smoothing, generate text, and diagnose what the models miss.",
     concepts: ["Conditional probability", "Context", "Data sparsity"],
     href: "modules/ngram/"
@@ -16,7 +15,6 @@ export const modules = [
     shortTitle: "Tokenization",
     title: "What Counts as a Word?",
     topic: "Tokens and subwords",
-    duration: "20–30 minutes",
     description: "Compare boundary rules, stress-test them across writing systems, and watch a small subword vocabulary emerge through repeated pair merges.",
     concepts: ["Word boundaries", "Morphology", "Subword units"],
     href: "modules/tokenization/"
@@ -27,7 +25,6 @@ export const modules = [
     shortTitle: "Parsing",
     title: "Why Can a Sentence Have Two Structures?",
     topic: "Syntax and parsing",
-    duration: "20–30 minutes",
     description: "Reveal a CKY chart span by span, compare competing parse trees, and see how attachment preferences change a probabilistic ranking.",
     concepts: ["Constituency", "Ambiguity", "Dynamic programming"],
     href: "modules/parsing/"
@@ -38,7 +35,6 @@ export const modules = [
     shortTitle: "Edit distance",
     title: "How Far Apart Are Two Forms?",
     topic: "Linguistic similarity",
-    duration: "20–30 minutes",
     description: "Construct an edit-distance matrix, inspect the optimal alignment, and test how units and operation costs shape a similarity judgment.",
     concepts: ["Alignment", "Edit operations", "Measurement"],
     href: "modules/edit-distance/"
@@ -49,7 +45,6 @@ export const modules = [
     shortTitle: "Classification",
     title: "How Text Classifiers Make Mistakes",
     topic: "Text classification",
-    duration: "20–30 minutes",
     description: "Train a small Naive Bayes classifier, inspect feature evidence and a confusion matrix, and diagnose negation failures, domain shift, and shortcut learning.",
     concepts: ["Bayes’ rule", "Evaluation", "Error analysis"],
     href: "modules/classification/"
@@ -60,7 +55,6 @@ export const modules = [
     shortTitle: "Embeddings",
     title: "Meaning as Geometry: Word-Embedding Explorer",
     topic: "Distributional semantics",
-    duration: "20–30 minutes",
     description: "Explore semantic neighborhoods, cosine similarity, vector analogies, and model-dependent associations in a transparent teaching embedding.",
     concepts: ["Cosine similarity", "Vector arithmetic", "Representation bias"],
     href: "modules/embeddings/"
@@ -71,7 +65,6 @@ export const modules = [
     shortTitle: "Acoustic phonetics",
     title: "Speech Sounds Made Visible",
     topic: "Acoustic phonetics",
-    duration: "20–30 minutes",
     description: "Generate an inspectable vowel-like signal and connect its waveform, spectrum, and spectrogram to fundamental frequency and formant patterns.",
     concepts: ["Waveforms", "Fundamental frequency", "Formants"],
     href: "modules/acoustics/"
@@ -82,7 +75,6 @@ export const modules = [
     shortTitle: "Phonology",
     title: "From Sounds to Phonemes",
     topic: "Phonological features",
-    duration: "20–30 minutes",
     description: "Compare speech sounds as feature bundles, inspect minimal pairs, and build natural classes from shared phonological properties.",
     concepts: ["Distinctive features", "Minimal pairs", "Natural classes"],
     href: "modules/phonology/"
@@ -93,7 +85,6 @@ export const modules = [
     shortTitle: "Corpus statistics",
     title: "Corpus Frequencies and Collocations",
     topic: "Corpus linguistics",
-    duration: "20–30 minutes",
     description: "Compare raw and normalized frequency, inspect concordance lines, and test how association measures and sample size shape corpus claims.",
     concepts: ["Normalized frequency", "Concordance", "PMI"],
     href: "modules/corpus/"
@@ -104,7 +95,6 @@ export const modules = [
     shortTitle: "Evaluation",
     title: "Evaluating Language Technology",
     topic: "Model evaluation",
-    duration: "20–30 minutes",
     description: "Move a decision threshold, read a confusion matrix, compare precision and recall, and audit how errors differ across synthetic user groups.",
     concepts: ["Precision and recall", "Thresholds", "Error disparities"],
     href: "modules/evaluation/"

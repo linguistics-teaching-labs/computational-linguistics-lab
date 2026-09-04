@@ -6,6 +6,7 @@ import { getModules, moduleNumber, modules, moduleOrderOptions } from "../module
 test("module identifiers and sequence values are unique", () => {
   assert.equal(new Set(modules.map(({ id }) => id)).size, modules.length);
   assert.equal(new Set(modules.map(({ sequence }) => sequence)).size, modules.length);
+  assert.ok(modules.every(module => !("duration" in module)));
 });
 
 test("teaching sequence is the default catalog order", () => {
