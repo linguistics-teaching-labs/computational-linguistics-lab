@@ -88,6 +88,46 @@ A guided 20–30 minute activity in which students:
 
 The included embeddings are synthetic instructional data. They make the calculations traceable and should not be interpreted as empirical evidence about English.
 
+### Speech Sounds Made Visible
+
+A guided activity in which students:
+
+- generate a transparent vowel-like signal without recording or uploading audio;
+- distinguish a waveform, spectrum, and spectrogram;
+- change fundamental frequency and connect it to periodicity;
+- inspect illustrative vowel formant targets; and
+- distinguish synthetic teaching values from measured speech data.
+
+### From Sounds to Phonemes
+
+A guided activity in which students:
+
+- compare speech segments as bundles of phonological features;
+- identify which features distinguish two sounds;
+- use English minimal pairs as evidence for phonemic contrast;
+- build natural classes from shared features; and
+- identify limits of a compact, English-oriented feature inventory.
+
+### Corpus Frequencies and Collocations
+
+A guided activity in which students:
+
+- change corpus composition and sample size;
+- distinguish tokens, types, raw counts, and normalized frequency;
+- inspect target words in concordance lines;
+- rank adjacent pairs with pointwise mutual information; and
+- evaluate an association using frequency, context, and sampling evidence.
+
+### Evaluating Language Technology
+
+A guided activity in which students:
+
+- convert synthetic system scores into decisions with a threshold;
+- trace true positives, false positives, true negatives, and false negatives;
+- compare precision, recall, accuracy, and F1;
+- observe threshold tradeoffs; and
+- audit differences between aggregate and subgroup performance.
+
 ## Run locally
 
 Because the project uses JavaScript modules, serve the repository with any simple local web server. For example:
@@ -113,6 +153,10 @@ npm test
 - Edit `modules/edit-distance/examples.js` to add new form comparisons.
 - Edit `modules/classification/data.js` to revise labeled training and test cases.
 - Edit `modules/embeddings/data.js` to revise the synthetic teaching embedding.
+- Edit `modules/acoustics/acoustics.js` to revise the illustrative vowel profiles and signal model.
+- Edit `modules/phonology/features.js` to revise the teaching inventory, features, and minimal pairs.
+- Edit `modules/corpus/data.js` to revise the original teaching corpora.
+- Edit `modules/evaluation/data.js` to revise the synthetic predictions and reference labels.
 - Add one entry to `modules/catalog.js` when creating another demonstration. Set its `sequence` value to control the default teaching order.
 - Edit `moduleOrderOptions` and `getModules()` in `modules/catalog.js` to add or revise homepage ordering choices. The current choices are teaching sequence, newest first, title, and topic.
 
@@ -120,14 +164,10 @@ The sample corpora and multilingual examples are deliberately compact so student
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the module conventions.
 
-## Potential future modules
+## Further module candidates
 
-- **Speech Sounds Made Visible:** waveforms, spectrograms, fundamental frequency, and vowel formants.
-- **From Sounds to Phonemes:** phonological features, minimal pairs, and feature-based similarity.
 - **How Attention Distributes Context:** a small, model-independent attention-weight explorer.
 - **Coreference and Discourse:** compare candidate antecedents and diagnose ambiguity across sentences.
-- **Corpus Frequencies and Collocations:** contrast raw counts, normalized frequency, pointwise mutual information, and data-size effects.
-- **Evaluating Language Technology:** work through precision, recall, F1, agreement, and subgroup error analysis.
 
 ## Citation
 

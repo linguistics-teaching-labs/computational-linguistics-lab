@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive lab about phonemes, minimal pairs, phonological features, and natural classes.">
+  <title>From Sounds to Phonemes · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css"><link rel="stylesheet" href="../../assets/lab.css"><link rel="stylesheet" href="phonology.css">
+</head>
+<body class="lab-page phonology-page">
+  <header class="site-header lab-header"><a class="brand" href="../../"><span class="brand-mark" aria-hidden="true">CL</span><span>Computational Linguistics Lab</span></a><nav class="module-nav" data-module-nav data-root="../../" data-active="phonology" aria-label="Module navigation"></nav></header>
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a><p class="eyebrow">Phonology</p><h1>From Sounds to Phonemes</h1>
+      <p class="guide-intro">Compare segments as bundles of properties, test minimal contrasts, and build natural classes from shared features.</p>
+      <nav class="step-nav" aria-label="Lab steps"><a href="#compare"><span>1</span> Compare sounds</a><a href="#contrast"><span>2</span> Test a contrast</a><a href="#classes"><span>3</span> Build a class</a><a href="#limits"><span>4</span> Question the model</a></nav>
+      <details class="objectives"><summary>Learning objectives</summary><ul><li>Represent speech segments as feature bundles.</li><li>Use minimal pairs as evidence for contrast.</li><li>Identify natural classes through shared features.</li><li>Recognize that feature systems are analytical models.</li></ul></details>
+    </aside>
+    <div class="lab-workspace">
+      <section class="lab-section" id="compare" aria-labelledby="compare-title">
+        <div class="section-heading"><span class="step-badge">Step 1</span><div><h2 id="compare-title">Compare two segments</h2><p>Changing one property can create a close contrast; crossing segment types changes the relevant representation.</p></div></div>
+        <div class="control-grid sound-controls"><label class="field"><span>First sound</span><select id="sound-a"></select></label><label class="field"><span>Second sound</span><select id="sound-b"></select></label></div>
+        <div class="feature-layout"><div id="feature-distance" class="feature-distance" aria-live="polite"></div><div class="table-wrap"><table class="feature-table"><thead><tr><th>Feature</th><th>Sound A</th><th>Sound B</th><th>Relation</th></tr></thead><tbody id="feature-comparison"></tbody></table></div></div>
+      </section>
+      <section class="lab-section" id="contrast" aria-labelledby="contrast-title">
+        <div class="section-heading"><span class="step-badge">Step 2</span><div><h2 id="contrast-title">Use a minimal pair as evidence</h2><p>If two forms differ in one sound and have different meanings, the contrast can distinguish words in that language.</p></div></div>
+        <label class="field"><span>English teaching example</span><select id="minimal-pair"></select></label><div id="pair-display" class="pair-display"></div><div id="pair-explanation" class="pair-explanation" aria-live="polite"></div>
+        <details class="prompt-card"><summary>Does a written letter establish a phonemic contrast?</summary><div><p>No. Minimal-pair reasoning concerns differences in pronunciation and meaning. Spelling can obscure or exaggerate sound contrasts.</p></div></details>
+      </section>
+      <section class="lab-section" id="classes" aria-labelledby="classes-title">
+        <div class="section-heading"><span class="step-badge">Step 3</span><div><h2 id="classes-title">Build a natural class</h2><p>Combine two properties and inspect which segments share both in this compact inventory.</p></div></div>
+        <div class="class-builder"><label class="filter-card"><span>Filter 1</span><select id="filter-feature-a" aria-label="First feature"></select><select id="filter-value-a" aria-label="First feature value"></select></label><label class="filter-card"><span>Filter 2</span><select id="filter-feature-b" aria-label="Second feature"></select><select id="filter-value-b" aria-label="Second feature value"></select></label></div>
+        <div class="class-summary"><strong>Matching class</strong><span id="class-count"></span></div><div id="class-results" class="class-results" aria-live="polite"></div>
+      </section>
+      <section class="lab-section" id="limits" aria-labelledby="limits-title">
+        <div class="section-heading"><span class="step-badge">Step 4</span><div><h2 id="limits-title">Question the representation</h2><p>An inventory and feature system summarize an analysis; they do not replace acoustic data or language-specific evidence.</p></div></div>
+        <div class="comparison-callout"><p class="callout-label">Scope</p><p>This module uses a compact English-oriented teaching inventory and broad feature labels. Actual inventories, allophony, transcription conventions, and theoretical feature systems vary across languages and analyses.</p></div>
+        <div class="exit-ticket"><p class="callout-label">Exit question</p><h3>What evidence supports calling two sounds separate phonemes?</h3><p>Use a minimal pair and one feature comparison, then identify one limitation of the evidence.</p></div>
+      </section>
+      <footer class="lab-footer"><div><p>Created by <a href="https://github.com/desenlin">Desen Lin</a> and <a href="https://github.com/weilaiPhonetics">Wei Lai</a> as an open instructional project.</p><p class="footer-disclaimer">Designed for instruction and exploratory research; outputs are simplified teaching demonstrations, not production linguistic analysis.</p></div><a href="https://github.com/linguistics-teaching-labs/computational-linguistics-lab" target="_blank" rel="noopener">View source or contribute <span aria-hidden="true">↗</span></a></footer>
+    </div>
+  </main>
+  <script type="module" src="../../assets/module-nav.js"></script><script type="module" src="activity.js"></script>
+</body>
+</html>

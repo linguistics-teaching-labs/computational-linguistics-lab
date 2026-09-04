@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A guided acoustic-phonetics lab for exploring vowel waveforms, spectra, spectrograms, pitch, and formants.">
+  <title>Speech Sounds Made Visible · Computational Linguistics Lab</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="../../assets/lab.css">
+  <link rel="stylesheet" href="acoustics.css">
+</head>
+<body class="lab-page acoustics-page">
+  <header class="site-header lab-header">
+    <a class="brand" href="../../"><span class="brand-mark" aria-hidden="true">CL</span><span>Computational Linguistics Lab</span></a>
+    <nav class="module-nav" data-module-nav data-root="../../" data-active="acoustics" aria-label="Module navigation"></nav>
+  </header>
+
+  <main class="lab-shell">
+    <aside class="lab-guide" aria-label="Activity guide">
+      <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
+      <p class="eyebrow">Acoustic phonetics</p>
+      <h1>Speech Sounds Made Visible</h1>
+      <p class="guide-intro">Generate an inspectable vowel-like signal and connect what you hear to time, frequency, pitch, and resonance.</p>
+      <nav class="step-nav" aria-label="Lab steps">
+        <a href="#source"><span>1</span> Shape a vowel</a>
+        <a href="#wave"><span>2</span> Read a waveform</a>
+        <a href="#frequency"><span>3</span> Find energy</a>
+        <a href="#formants"><span>4</span> Interpret formants</a>
+      </nav>
+      <details class="objectives"><summary>Learning objectives</summary><ul>
+        <li>Distinguish waveform, spectrum, and spectrogram.</li>
+        <li>Relate fundamental frequency to periodicity and perceived pitch.</li>
+        <li>Use F1 and F2 as acoustic cues to vowel quality.</li>
+        <li>Separate an illustrative synthesis from measured speech.</li>
+      </ul></details>
+    </aside>
+
+    <div class="lab-workspace">
+      <section class="lab-section" id="source" aria-labelledby="source-title">
+        <div class="section-heading"><span class="step-badge">Step 1</span><div><h2 id="source-title">Shape a vowel-like signal</h2><p>A periodic source supplies harmonics; resonances strengthen energy near the formants.</p></div></div>
+        <div class="control-grid acoustic-controls">
+          <label class="field"><span>Illustrative vowel profile</span><select id="vowel-select"></select></label>
+          <div id="vowel-summary" class="vowel-summary" aria-live="polite"></div>
+          <label class="acoustic-range" for="f0-slider"><span>Fundamental frequency (F0)<output id="f0-value">120 Hz</output></span><input id="f0-slider" type="range" min="80" max="240" step="5" value="120"><small>Change repetition rate without changing the formant targets.</small></label>
+          <label class="acoustic-range" for="duration-slider"><span>Duration<output id="duration-value">0.35 s</output></span><input id="duration-slider" type="range" min="0.2" max="0.8" step="0.05" value="0.35"><small>Longer signals show more repeated cycles.</small></label>
+        </div>
+        <div class="audio-row"><button id="play-vowel" class="button primary" type="button">Play synthetic vowel</button><p>Audio is generated locally after you press Play; the activity does not use a microphone or upload sound.</p></div>
+      </section>
+
+      <section class="lab-section" id="wave" aria-labelledby="wave-title">
+        <div class="section-heading"><span class="step-badge">Step 2</span><div><h2 id="wave-title">Read change through time</h2><p>The waveform shows air-pressure variation. Closely spaced cycles correspond to a higher F0.</p></div></div>
+        <div class="plot-card"><h3>Waveform</h3><p>Move the F0 control and compare the spacing of repeating cycles.</p><canvas id="waveform-canvas" width="760" height="220" role="img" aria-label="Waveform of the generated vowel-like signal"></canvas></div>
+        <details class="prompt-card"><summary>Does a taller waveform mean a higher pitch?</summary><div><p>No. Height represents amplitude. Pitch is more closely related to how often the pattern repeats each second.</p></div></details>
+      </section>
+
+      <section class="lab-section" id="frequency" aria-labelledby="frequency-title">
+        <div class="section-heading"><span class="step-badge">Step 3</span><div><h2 id="frequency-title">Find energy in frequency</h2><p>A spectrum summarizes one interval; a spectrogram repeats that analysis across time.</p></div></div>
+        <div class="plot-grid">
+          <div class="plot-card"><h3>Spectrum</h3><p>Dashed lines mark the profile's three formant targets.</p><canvas id="spectrum-canvas" width="760" height="240" role="img" aria-label="Frequency spectrum with formant markers"></canvas></div>
+          <div class="plot-card"><h3>Spectrogram</h3><p>Darker orange regions contain relatively more energy.</p><canvas id="spectrogram-canvas" width="760" height="240" role="img" aria-label="Spectrogram of the synthetic vowel-like signal"></canvas></div>
+        </div>
+      </section>
+
+      <section class="lab-section" id="formants" aria-labelledby="formants-title">
+        <div class="section-heading"><span class="step-badge">Step 4</span><div><h2 id="formants-title">Interpret formants cautiously</h2><p>F1 and F2 provide useful cues to vowel quality, but speakers and contexts vary.</p></div></div>
+        <div class="formant-layout">
+          <div class="formant-card"><table><thead><tr><th>Resonance</th><th>Target</th></tr></thead><tbody id="formant-table"></tbody></table></div>
+          <div class="formant-note"><p id="acoustic-interpretation"></p></div>
+        </div>
+        <div class="formula-card"><strong>Teaching-data warning:</strong> these fixed formant values and synthesized signals are illustrative. They are not measurements of a population, dialect, or individual speaker.</div>
+        <div class="exit-ticket"><p class="callout-label">Exit question</p><h3>Which display answers which question?</h3><p>Choose waveform, spectrum, or spectrogram for studying periodicity, frequency composition, and change across time—and justify each choice.</p></div>
+      </section>
+
+      <footer class="lab-footer"><div><p>Created by <a href="https://github.com/desenlin">Desen Lin</a> and <a href="https://github.com/weilaiPhonetics">Wei Lai</a> as an open instructional project.</p><p class="footer-disclaimer">Designed for instruction and exploratory research; outputs are simplified teaching demonstrations, not production linguistic analysis.</p></div><a href="https://github.com/linguistics-teaching-labs/computational-linguistics-lab" target="_blank" rel="noopener">View source or contribute <span aria-hidden="true">↗</span></a></footer>
+    </div>
+  </main>
+  <script type="module" src="../../assets/module-nav.js"></script>
+  <script type="module" src="activity.js"></script>
+</body>
+</html>

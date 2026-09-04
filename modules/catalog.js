@@ -64,6 +64,50 @@ export const modules = [
     description: "Explore semantic neighborhoods, cosine similarity, vector analogies, and model-dependent associations in a transparent teaching embedding.",
     concepts: ["Cosine similarity", "Vector arithmetic", "Representation bias"],
     href: "modules/embeddings/"
+  },
+  {
+    id: "acoustics",
+    sequence: 7,
+    shortTitle: "Acoustic phonetics",
+    title: "Speech Sounds Made Visible",
+    topic: "Acoustic phonetics",
+    duration: "20–30 minutes",
+    description: "Generate an inspectable vowel-like signal and connect its waveform, spectrum, and spectrogram to fundamental frequency and formant patterns.",
+    concepts: ["Waveforms", "Fundamental frequency", "Formants"],
+    href: "modules/acoustics/"
+  },
+  {
+    id: "phonology",
+    sequence: 8,
+    shortTitle: "Phonology",
+    title: "From Sounds to Phonemes",
+    topic: "Phonological features",
+    duration: "20–30 minutes",
+    description: "Compare speech sounds as feature bundles, inspect minimal pairs, and build natural classes from shared phonological properties.",
+    concepts: ["Distinctive features", "Minimal pairs", "Natural classes"],
+    href: "modules/phonology/"
+  },
+  {
+    id: "corpus",
+    sequence: 9,
+    shortTitle: "Corpus statistics",
+    title: "Corpus Frequencies and Collocations",
+    topic: "Corpus linguistics",
+    duration: "20–30 minutes",
+    description: "Compare raw and normalized frequency, inspect concordance lines, and test how association measures and sample size shape corpus claims.",
+    concepts: ["Normalized frequency", "Concordance", "PMI"],
+    href: "modules/corpus/"
+  },
+  {
+    id: "evaluation",
+    sequence: 10,
+    shortTitle: "Evaluation",
+    title: "Evaluating Language Technology",
+    topic: "Model evaluation",
+    duration: "20–30 minutes",
+    description: "Move a decision threshold, read a confusion matrix, compare precision and recall, and audit how errors differ across synthetic user groups.",
+    concepts: ["Precision and recall", "Thresholds", "Error disparities"],
+    href: "modules/evaluation/"
   }
 ];
 

@@ -8,6 +8,7 @@ import "./module-nav.js";
 
 const grid = document.querySelector("#module-grid");
 const orderSelect = document.querySelector("#module-order");
+const moduleCount = document.querySelector("#module-count");
 
 function createModuleCard(module) {
   const card = document.createElement("article");
@@ -24,7 +25,7 @@ function createModuleCard(module) {
 
   const meta = document.createElement("div");
   meta.className = "module-meta";
-  for (const item of [module.topic, module.duration]) {
+  for (const item of [module.topic]) {
     const span = document.createElement("span");
     span.textContent = item;
     meta.append(span);
@@ -72,6 +73,7 @@ const initialOrder = moduleOrderOptions.some(({ id }) => id === requestedOrder)
   : defaultModuleOrder;
 
 orderSelect.value = initialOrder;
+moduleCount.textContent = getModules().length;
 renderModules(initialOrder);
 
 orderSelect.addEventListener("change", () => {

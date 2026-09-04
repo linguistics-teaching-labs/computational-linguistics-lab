@@ -1,0 +1,45 @@
+.acoustics-page .eyebrow { color: #8a4b20; }
+.acoustics-page .step-badge { color: #7c421c; background: #fff0e8; }
+.acoustics-page .step-nav span { background: #b35b28; }
+
+.acoustic-controls { align-items: end; }
+.acoustic-range { display: grid; gap: .45rem; }
+.acoustic-range > span { display: flex; justify-content: space-between; gap: 1rem; font-size: .88rem; font-weight: 760; }
+.acoustic-range output { color: #8a4b20; font-weight: 820; font-variant-numeric: tabular-nums; }
+.acoustic-range input { width: 100%; accent-color: #b35b28; }
+.acoustic-range small { color: var(--ink-soft); font-size: .78rem; }
+
+.vowel-summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: .05rem .8rem;
+  min-height: 104px;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #fff8f3;
+}
+.vowel-summary strong { grid-row: 1 / 3; color: #88461f; font-size: 2.4rem; font-family: Georgia, serif; }
+.vowel-summary span { font-weight: 780; }
+.vowel-summary small { color: var(--ink-soft); }
+.audio-row { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+.audio-row p { margin: 0; color: var(--ink-soft); font-size: .82rem; }
+
+.plot-card { margin-top: 1rem; overflow: hidden; border: 1px solid var(--line); border-radius: 11px; background: #f8fbfc; }
+.plot-card h3 { margin: 0; padding: .8rem 1rem 0; font-size: 1rem; }
+.plot-card p { margin: .2rem 1rem .7rem; color: var(--ink-soft); font-size: .82rem; }
+.plot-card canvas { display: block; width: 100%; height: auto; }
+.plot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.formant-layout { display: grid; grid-template-columns: minmax(180px, .35fr) 1fr; gap: 1rem; }
+.formant-card { padding: 1rem; border: 1px solid var(--line); border-radius: 11px; background: #fff8f3; }
+.formant-card table { margin: 0; }
+.formant-card th { color: #8a4b20; background: transparent; }
+.formant-note { padding: 1rem 1.1rem; border-left: 4px solid #b35b28; background: #f8fbfc; }
+.formant-note p { margin: 0; color: var(--ink-soft); }
+
+@media (max-width: 720px) {
+  .acoustic-controls, .plot-grid, .formant-layout { grid-template-columns: 1fr; }
+  .audio-row { align-items: flex-start; flex-direction: column; }
+}

@@ -5,14 +5,6 @@
   z-index: 10;
 }
 
-.module-time {
-  color: #dcebf3;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
 .lab-shell {
   display: grid;
   grid-template-columns: minmax(260px, 330px) minmax(0, 900px);
@@ -426,7 +418,6 @@ td code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 @media (max-width: 680px) {
-  .module-time { display: none; }
   .lab-shell { width: min(100% - 1rem, 900px); padding-top: 1.25rem; }
   .back-link { margin-bottom: 1.5rem; }
   .lab-section { padding: 1.25rem; border-radius: 12px; }

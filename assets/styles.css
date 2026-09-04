@@ -217,6 +217,10 @@ h1, h2, h3 {
 .module-card[data-module="edit-distance"] .module-number { background: #2e6171; }
 .module-card[data-module="classification"] .module-number { background: #a45128; }
 .module-card[data-module="embeddings"] .module-number { background: #176b87; }
+.module-card[data-module="acoustics"] .module-number { background: #b35b28; }
+.module-card[data-module="phonology"] .module-number { background: #6d4aa1; }
+.module-card[data-module="corpus"] .module-number { background: #17695d; }
+.module-card[data-module="evaluation"] .module-number { background: #934628; }
 
 .module-card-body {
   display: flex;

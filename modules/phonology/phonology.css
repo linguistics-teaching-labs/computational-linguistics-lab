@@ -1,0 +1,41 @@
+.phonology-page .eyebrow { color: #6d4aa1; }
+.phonology-page .step-badge { color: #5b3c8a; background: #f1ebfa; }
+.phonology-page .step-nav span { background: #6d4aa1; }
+
+.sound-controls { align-items: end; }
+.feature-layout { display: grid; grid-template-columns: minmax(150px, .3fr) 1fr; gap: 1rem; margin-top: 1rem; }
+.feature-distance { display: grid; align-content: center; min-height: 150px; padding: 1rem; border-radius: 11px; color: #fff; background: #5b3c8a; }
+.feature-distance strong { font-size: 2.7rem; line-height: 1; }
+.feature-distance span { font-weight: 760; }
+.feature-distance small { margin-top: .3rem; color: #e5d9f5; }
+.feature-table { margin: 0; }
+.feature-table th:first-child { width: 28%; }
+.feature-table td:last-child { color: var(--ink-soft); font-size: .76rem; font-weight: 760; text-transform: uppercase; }
+.feature-table tr.feature-difference td { background: #f8f2ff; }
+.feature-table tr.feature-difference td:last-child { color: #643d91; }
+
+.pair-display { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; margin: 1rem 0; }
+.pair-display > div { display: grid; justify-items: center; padding: 1.2rem; border: 1px solid var(--line); border-radius: 11px; background: #f8f2ff; }
+.pair-display strong { color: #5b3c8a; font-size: 1.7rem; }
+.pair-display span { color: var(--ink-soft); font-family: Georgia, serif; }
+.pair-display b { color: #6d4aa1; font-size: 1.4rem; }
+.pair-explanation { padding: 1rem; border-left: 4px solid #6d4aa1; background: #f8fbfc; }
+.pair-explanation p { margin: 0; }
+.pair-explanation p + p { margin-top: .45rem; color: var(--ink-soft); }
+
+.class-builder { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.filter-card { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; padding: 1rem; border: 1px solid var(--line); border-radius: 10px; background: #f8fbfc; }
+.filter-card > span { grid-column: 1 / -1; color: #5b3c8a; font-size: .76rem; font-weight: 820; letter-spacing: .06em; text-transform: uppercase; }
+.filter-card select { min-width: 0; min-height: 42px; border: 1px solid var(--line-dark); border-radius: 8px; background: #fff; padding: .5rem; }
+.class-summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1rem 0 .6rem; color: var(--ink-soft); }
+.class-results { display: flex; flex-wrap: wrap; gap: .5rem; min-height: 78px; padding: 1rem; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+.class-results span { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; color: #fff; background: #6d4aa1; font-family: Georgia, serif; font-size: 1.15rem; }
+.class-results p { margin: 0; color: var(--ink-soft); }
+
+@media (max-width: 720px) {
+  .feature-layout, .class-builder { grid-template-columns: 1fr; }
+  .pair-display { gap: .5rem; }
+  .pair-display > div { padding: .9rem .5rem; }
+  .filter-card { grid-template-columns: 1fr; }
+  .filter-card > span { grid-column: auto; }
+}

@@ -1,0 +1,28 @@
+.evaluation-page .eyebrow { color: #9a4d24; }
+.evaluation-page .step-badge { color: #8b421d; background: #fff0e8; }
+.evaluation-page .step-nav span { background: #a45128; }
+.threshold-control { display: grid; gap: .55rem; margin-bottom: 1rem; }
+.threshold-control > span { display: flex; justify-content: space-between; gap: 1rem; font-weight: 780; }
+.threshold-control output { min-width: 3rem; padding: .15rem .45rem; border-radius: 6px; color: #fff; background: #a45128; text-align: center; }
+.threshold-control input { width: 100%; accent-color: #a45128; }
+.threshold-scale { display: flex; justify-content: space-between; color: var(--ink-soft); font-size: .75rem; }
+.metric-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--line); }
+.metric-strip > div { display: grid; gap: .1rem; padding: .9rem; background: #f8fbfc; }
+.metric-strip small { color: var(--ink-soft); font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; }
+.metric-strip strong { color: #8b421d; font-size: 1.45rem; }
+.matrix-wrap { max-width: 620px; margin: 0 auto 1rem; }
+.evaluation-matrix td { text-align: center; font-size: 1.55rem; font-weight: 840; background: #f8fbfc; }
+.evaluation-matrix td.correct-cell { color: #17695d; background: #e8f7f2; }
+.evaluation-matrix td.error-cell { color: #934628; background: #ffebe3; }
+.case-wrap { max-height: 470px; overflow-y: auto; }
+.case-wrap tr.error td { background: #fff8f3; }
+.outcome { display: inline-flex; padding: .18rem .45rem; border-radius: 999px; font-size: .7rem; font-weight: 800; white-space: nowrap; }
+.outcome.tp, .outcome.tn { color: #17695d; background: #e1f4ef; }
+.outcome.fp, .outcome.fn { color: #8b421d; background: #ffebe3; }
+.threshold-table tr.selected td { background: #fff0e8; font-weight: 780; }
+.tradeoff-note, .disparity-note { margin: .8rem 0 0; padding: .8rem 1rem; border-left: 4px solid #a45128; background: #fff8f3; color: var(--ink-soft); font-size: .84rem; }
+.metric-definitions { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; margin-top: 1rem; }
+.metric-definitions > div { padding: .9rem; border: 1px solid var(--line); border-radius: 9px; background: #f8fbfc; }
+.metric-definitions strong { color: #8b421d; }
+.metric-definitions p { margin: .25rem 0 0; color: var(--ink-soft); font-size: .84rem; }
+@media (max-width: 720px) { .metric-strip, .metric-definitions { grid-template-columns: 1fr 1fr; } .case-wrap table { min-width: 760px; } }
