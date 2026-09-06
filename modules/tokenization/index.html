@@ -113,11 +113,8 @@
           <div class="bpe-settings">
             <label class="field" for="top-pairs">
               <span>Pairs to rank</span>
-              <select id="top-pairs">
-                <option value="3">Top 3</option>
-                <option value="5" selected>Top 5</option>
-                <option value="10">Top 10</option>
-              </select>
+              <input id="top-pairs" type="number" min="1" max="20" step="1" value="5" inputmode="numeric">
+              <small>Choose any value from 1 to 20.</small>
             </label>
             <div class="bpe-definition">
               <strong>What is being counted?</strong>
@@ -240,6 +237,6 @@
   </main>
 
   <script type="module" src="../../assets/module-nav.js?v=20260904-4"></script>
-  <script type="module" src="activity.js?v=20260906-1"></script>
+  <script type="module" src="activity.js?v=20260906-2"></script>
 </body>
 </html>

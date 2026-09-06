@@ -125,7 +125,7 @@ function vocabularyThroughRound(result, round) {
 
 function renderSubwords() {
   const requestedRound = Number(elements.mergeSlider.value);
-  const topN = Number(elements.topPairs.value);
+  const topN = Math.min(20, Math.max(1, Math.trunc(Number(elements.topPairs.value) || 5)));
   const result = learnBPE(elements.bpeText.value, requestedRound, { lowercase: elements.lowercase.checked });
   const completedRound = result.history.length;
   if (completedRound !== requestedRound) elements.mergeSlider.value = String(completedRound);
@@ -235,7 +235,7 @@ elements.lowercase.addEventListener("change", () => {
 elements.contractions.addEventListener("change", renderComparison);
 elements.hyphens.addEventListener("change", renderComparison);
 elements.mergeSlider.addEventListener("input", renderSubwords);
-elements.topPairs.addEventListener("change", renderSubwords);
+elements.topPairs.addEventListener("input", renderSubwords);
 elements.previousMerge.addEventListener("click", () => {
   elements.mergeSlider.value = String(Math.max(0, Number(elements.mergeSlider.value) - 1));
   renderSubwords();
