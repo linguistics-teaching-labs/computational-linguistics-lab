@@ -1,4 +1,12 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="An interactive lab about thresholds, confusion matrices, precision, recall, F1, individual errors, and subgroup evaluation."><title>Evaluating Language Technology · Computational Linguistics Lab</title><link rel="stylesheet" href="../../assets/styles.css?v=20260904-4"><link rel="stylesheet" href="../../assets/lab.css"><link rel="stylesheet" href="evaluation.css"></head>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="An interactive lab about thresholds, confusion matrices, precision, recall, F1, individual errors, and subgroup evaluation."><title>Evaluating Language Technology · Computational Linguistics Lab</title><link rel="stylesheet" href="../../assets/styles.css?v=20260904-4"><link rel="stylesheet" href="../../assets/lab.css"><link rel="stylesheet" href="evaluation.css">  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQB575CQX3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BQB575CQX3');
+  </script>
+</head>
 <body class="lab-page evaluation-page"><header class="site-header lab-header"><a class="brand" href="../../"><span class="brand-mark" aria-hidden="true">CL</span><span>Computational Linguistics Lab</span></a><nav class="module-nav" data-module-nav data-root="../../" data-active="evaluation" aria-label="Module navigation"></nav></header>
 <main class="lab-shell"><aside class="lab-guide" aria-label="Activity guide"><a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a><p class="eyebrow">Evaluation</p><h1>Evaluating Language Technology</h1><p class="guide-intro">Move a decision threshold, trace every error, and test whether one headline score describes the system adequately.</p><nav class="step-nav" aria-label="Lab steps"><a href="#threshold"><span>1</span> Set a threshold</a><a href="#outcomes"><span>2</span> Trace outcomes</a><a href="#tradeoffs"><span>3</span> Compare metrics</a><a href="#groups"><span>4</span> Audit groups</a></nav><details class="objectives"><summary>Learning objectives</summary><ul><li>Read a binary confusion matrix.</li><li>Calculate precision, recall, accuracy, and F1.</li><li>Explain how thresholds trade false positives for false negatives.</li><li>Compare aggregate and subgroup performance.</li></ul></details></aside>
 <div class="lab-workspace">
