@@ -7,7 +7,12 @@ function buildNavigation(navigation) {
   const root = navigation.dataset.root ?? "./";
   const active = navigation.dataset.active ?? "";
 
-  const allLabs = document.createElement("a");\n  allLabs.className = "nav-home";\n  allLabs.href = "https://linguistics-teaching-labs.github.io/";\n  allLabs.textContent = "All labs";\n\n  const home = document.createElement("a");
+  const allLabs = document.createElement("a");
+  allLabs.className = "nav-home";
+  allLabs.href = "https://linguistics-teaching-labs.github.io/";
+  allLabs.textContent = "All labs";
+
+  const home = document.createElement("a");
   home.className = "nav-home";
   home.href = root;
   home.textContent = "Home";

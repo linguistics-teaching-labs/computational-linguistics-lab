@@ -6,7 +6,7 @@ import {
   modules,
   moduleOrderOptions
 } from "../modules/catalog.js?v=20260904-4";
-import "./module-nav.js?v=20260904-4";
+import "./module-nav.js?v=20260906-1";
 
 const grid = document.querySelector("#module-grid");
 const orderSelect = document.querySelector("#module-order");
