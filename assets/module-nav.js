@@ -7,7 +7,7 @@ function buildNavigation(navigation) {
   const root = navigation.dataset.root ?? "./";
   const active = navigation.dataset.active ?? "";
 
-  const home = document.createElement("a");
+  const allLabs = document.createElement("a");\n  allLabs.className = "nav-home";\n  allLabs.href = "https://linguistics-teaching-labs.github.io/";\n  allLabs.textContent = "All labs";\n\n  const home = document.createElement("a");
   home.className = "nav-home";
   home.href = root;
   home.textContent = "Home";
@@ -48,7 +48,7 @@ function buildNavigation(navigation) {
   }
 
   menu.append(summary, panel);
-  navigation.replaceChildren(home, menu);
+  navigation.replaceChildren(allLabs, home, menu);
 
   document.addEventListener("pointerdown", event => {
     if (menu.open && !menu.contains(event.target)) menu.removeAttribute("open");
