@@ -49,3 +49,33 @@ test("BPE produces no more subword tokens after additional merges", () => {
   const merged = learnBPE("teach teacher teaching", 8);
   assert.ok(merged.subwordTokens <= initial.subwordTokens);
 });
+
+test("BPE ranks every adjacent pair by corpus frequency", () => {
+  const result = learnBPE("teach teach team", 0);
+  assert.deepEqual(result.rankedPairs.slice(0, 3), [
+    { left: "▁", right: "t", merged: "▁t", count: 3 },
+    { left: "t", right: "e", merged: "te", count: 3 },
+    { left: "e", right: "a", merged: "ea", count: 3 }
+  ]);
+});
+
+test("BPE breaks frequency ties by first corpus occurrence", () => {
+  const result = learnBPE("ba ab", 0);
+  assert.deepEqual(result.rankedPairs.map(pair => `${pair.left}+${pair.right}`), ["▁+b", "b+a", "▁+a", "a+b"]);
+});
+
+test("pair rankings are recalculated after every merge", () => {
+  const initial = learnBPE("teach teach team", 0);
+  const next = learnBPE("teach teach team", 1);
+  assert.equal(initial.rankedPairs[0].merged, "▁t");
+  assert.deepEqual(next.rankedPairs[0], { left: "▁t", right: "e", merged: "▁te", count: 3 });
+});
+
+test("the learned vocabulary retains base symbols and adds merge tokens", () => {
+  const initial = learnBPE("teach teach team", 0);
+  const afterTwo = learnBPE("teach teach team", 2);
+  assert.equal(afterTwo.learnedVocabularySize, initial.learnedVocabularySize + 2);
+  assert.ok(afterTwo.learnedVocabulary.includes("▁t"));
+  assert.ok(afterTwo.learnedVocabulary.includes("▁te"));
+  assert.ok(afterTwo.learnedVocabulary.includes("t"));
+});

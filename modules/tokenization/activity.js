@@ -15,12 +15,29 @@ const elements = {
   contractions: document.querySelector("#contraction-toggle"),
   hyphens: document.querySelector("#hyphen-toggle"),
   comparison: document.querySelector("#comparison-grid"),
+  bpeText: document.querySelector("#bpe-text"),
+  topPairs: document.querySelector("#top-pairs"),
   mergeSlider: document.querySelector("#merge-slider"),
   mergeCount: document.querySelector("#merge-count"),
+  previousMerge: document.querySelector("#previous-merge"),
+  nextMerge: document.querySelector("#next-merge"),
+  resetMerges: document.querySelector("#reset-merges"),
   wordTokenCount: document.querySelector("#word-token-count"),
+  currentRound: document.querySelector("#current-round"),
   subwordTokenCount: document.querySelector("#subword-token-count"),
   subwordVocabulary: document.querySelector("#subword-vocabulary"),
   segmentedWords: document.querySelector("#segmented-words"),
+  currentStageLabel: document.querySelector("#current-stage-label"),
+  currentVocabulary: document.querySelector("#current-vocabulary"),
+  currentVocabularySize: document.querySelector("#current-vocabulary-size"),
+  currentPairRanking: document.querySelector("#current-pair-ranking"),
+  tieNote: document.querySelector("#tie-note"),
+  previewTitle: document.querySelector("#preview-title"),
+  previewRule: document.querySelector("#preview-rule"),
+  previewSegmentedWords: document.querySelector("#preview-segmented-words"),
+  previewPairRanking: document.querySelector("#preview-pair-ranking"),
+  previewVocabulary: document.querySelector("#preview-vocabulary"),
+  previewVocabularySize: document.querySelector("#preview-vocabulary-size"),
   mergeHistory: document.querySelector("#merge-history"),
   mergeExplanation: document.querySelector("#merge-explanation"),
   stressButtons: [...document.querySelectorAll("[data-example]")],
@@ -72,28 +89,103 @@ function renderComparison() {
   ].join("");
 }
 
-function renderSubwords() {
-  const mergeLimit = Number(elements.mergeSlider.value);
-  const result = learnBPE(elements.sourceText.value, mergeLimit, { lowercase: elements.lowercase.checked });
-  elements.mergeCount.value = String(mergeLimit);
-  elements.wordTokenCount.textContent = result.wordCount.toLocaleString();
-  elements.subwordTokenCount.textContent = result.subwordTokens.toLocaleString();
-  elements.subwordVocabulary.textContent = result.vocabularySize.toLocaleString();
+function pairMarkup(pair) {
+  return `<code><span>${escapeHTML(pair.left)}</span> + <span>${escapeHTML(pair.right)}</span></code>`;
+}
 
-  elements.segmentedWords.innerHTML = result.words.slice(0, 12).map(item => `
+function renderPairRows(pairs, limit, highlightFirst = false) {
+  if (!pairs.length) return '<tr><td colspan="3" class="bpe-empty-cell">No adjacent pairs remain.</td></tr>';
+  return pairs.slice(0, limit).map((pair, index) => `
+    <tr${highlightFirst && index === 0 ? ' class="selected-pair"' : ""}>
+      <td><span class="rank-number">${index + 1}</span>${highlightFirst && index === 0 ? '<span class="next-label">next</span>' : ""}</td>
+      <td>${pairMarkup(pair)}</td>
+      <td>${pair.count.toLocaleString()}</td>
+    </tr>`).join("");
+}
+
+function renderWords(words, highlightedToken = "") {
+  return words.slice(0, 12).map(item => `
     <div class="segmented-word">
       <span class="word-label" title="${escapeHTML(item.word)}">${escapeHTML(item.word)}${item.count > 1 ? ` ×${item.count}` : ""}</span>
-      <span class="segment-list">${item.segments.map(segment => `<span class="segment-chip">${escapeHTML(segment)}</span>`).join("")}</span>
+      <span class="segment-list">${item.segments.map(segment => `<span class="segment-chip${segment === highlightedToken ? " new-segment" : ""}">${escapeHTML(segment)}</span>`).join("")}</span>
     </div>`).join("") || '<p class="merge-empty">Enter text containing letters or numbers.</p>';
+}
 
-  elements.mergeHistory.innerHTML = result.history.map(item => `
-    <li><code>${escapeHTML(item.left)} + ${escapeHTML(item.right)} → ${escapeHTML(item.merged)}</code> <span class="merge-frequency">${item.count} occurrence${item.count === 1 ? "" : "s"}</span></li>`).join("");
+function renderVocabulary(symbols, highlightedToken = "") {
+  if (!symbols.length) return '<span class="merge-empty">No symbols yet.</span>';
+  return symbols.map(symbol => `<span class="vocabulary-chip${symbol === highlightedToken ? " new-vocabulary-token" : ""}">${escapeHTML(symbol)}</span>`).join("");
+}
+
+function vocabularyThroughRound(result, round) {
+  return [...new Set([
+    ...result.initialVocabulary,
+    ...result.history.slice(0, round).map(item => item.merged)
+  ])];
+}
+
+function renderSubwords() {
+  const requestedRound = Number(elements.mergeSlider.value);
+  const topN = Number(elements.topPairs.value);
+  const result = learnBPE(elements.bpeText.value, requestedRound, { lowercase: elements.lowercase.checked });
+  const completedRound = result.history.length;
+  if (completedRound !== requestedRound) elements.mergeSlider.value = String(completedRound);
+
+  elements.mergeCount.value = String(completedRound);
+  elements.currentRound.textContent = completedRound.toLocaleString();
+  elements.wordTokenCount.textContent = result.wordCount.toLocaleString();
+  elements.subwordTokenCount.textContent = result.subwordTokens.toLocaleString();
+  elements.subwordVocabulary.textContent = result.learnedVocabularySize.toLocaleString();
+  elements.currentStageLabel.textContent = completedRound ? `After round ${completedRound}` : "Character starting point";
+  elements.segmentedWords.innerHTML = renderWords(result.words);
+  elements.currentVocabulary.innerHTML = renderVocabulary(result.learnedVocabulary);
+  elements.currentVocabularySize.textContent = `${result.learnedVocabularySize} symbol${result.learnedVocabularySize === 1 ? "" : "s"}`;
+  elements.currentPairRanking.innerHTML = renderPairRows(result.rankedPairs, topN, true);
+
+  const tiedAtTop = result.rankedPairs.filter(pair => pair.count === result.rankedPairs[0]?.count).length;
+  elements.tieNote.textContent = tiedAtTop > 1
+    ? `${tiedAtTop} pairs tie at ${result.rankedPairs[0].count}. This learner selects the pair encountered first from left to right in the training text.`
+    : result.rankedPairs.length
+      ? "Counts include every occurrence of each word form. The highest count determines the next merge."
+      : "A fully merged one-symbol word has no adjacent pair left to count.";
+
+  const nextPair = result.rankedPairs[0];
+  const preview = nextPair
+    ? learnBPE(elements.bpeText.value, completedRound + 1, { lowercase: elements.lowercase.checked })
+    : null;
+
+  elements.previousMerge.disabled = completedRound === 0;
+  elements.nextMerge.disabled = !nextPair;
+
+  if (preview) {
+    elements.previewTitle.textContent = `Round ${completedRound + 1}: merge the current winner`;
+    elements.previewRule.innerHTML = `${pairMarkup(nextPair)} <span aria-hidden="true">→</span> <code>${escapeHTML(nextPair.merged)}</code><small>${nextPair.count} occurrence${nextPair.count === 1 ? "" : "s"}</small>`;
+    elements.previewSegmentedWords.innerHTML = renderWords(preview.words, nextPair.merged);
+    elements.previewPairRanking.innerHTML = renderPairRows(preview.rankedPairs, topN, true);
+    elements.previewVocabulary.innerHTML = renderVocabulary(preview.learnedVocabulary, nextPair.merged);
+    const vocabularyGrowth = preview.learnedVocabularySize - result.learnedVocabularySize;
+    elements.previewVocabularySize.textContent = `${preview.learnedVocabularySize} symbols · ${vocabularyGrowth} new`;
+  } else {
+    elements.previewTitle.textContent = result.wordCount ? "No further merge is available" : "Enter training text to begin";
+    elements.previewRule.innerHTML = "";
+    elements.previewSegmentedWords.innerHTML = renderWords(result.words);
+    elements.previewPairRanking.innerHTML = renderPairRows([], topN);
+    elements.previewVocabulary.innerHTML = renderVocabulary(result.learnedVocabulary);
+    elements.previewVocabularySize.textContent = `${result.learnedVocabularySize} symbol${result.learnedVocabularySize === 1 ? "" : "s"}`;
+  }
+
+  elements.mergeHistory.innerHTML = result.history.map((item, index) => {
+    const vocabulary = vocabularyThroughRound(result, index + 1);
+    return `<li>
+      <div class="history-rule"><span class="history-round">Round ${index + 1}</span>${pairMarkup(item)} <span aria-hidden="true">→</span> <code>${escapeHTML(item.merged)}</code><span class="merge-frequency">${item.count} occurrence${item.count === 1 ? "" : "s"}</span></div>
+      <details><summary>Vocabulary after this round (${vocabulary.length})</summary><div class="vocabulary-list history-vocabulary">${renderVocabulary(vocabulary, item.merged)}</div></details>
+    </li>`;
+  }).join("");
   if (!result.history.length) {
-    elements.mergeHistory.innerHTML = '<li class="merge-empty">Move the slider to perform a merge.</li>';
-    elements.mergeExplanation.innerHTML = "<strong>Starting point:</strong> each word is represented by individual characters plus <code>▁</code>, a word-boundary symbol.";
+    elements.mergeHistory.innerHTML = '<li class="merge-empty">No merges completed. Select “Merge top pair” to accept the previewed rule.</li>';
+    elements.mergeExplanation.innerHTML = "<strong>Starting point:</strong> each word is represented by grapheme characters plus <code>▁</code>, a word-boundary symbol. The learned vocabulary begins with those symbols.";
   } else {
     const last = result.history.at(-1);
-    elements.mergeExplanation.innerHTML = `<strong>Merge ${result.history.length}:</strong> the most frequent remaining pair was <code>${escapeHTML(last.left)} + ${escapeHTML(last.right)}</code>, observed ${last.count} time${last.count === 1 ? "" : "s"}. Every occurrence became <code>${escapeHTML(last.merged)}</code>.`;
+    elements.mergeExplanation.innerHTML = `<strong>Round ${result.history.length}:</strong> <code>${escapeHTML(last.left)} + ${escapeHTML(last.right)}</code> occurred ${last.count} time${last.count === 1 ? "" : "s"}. Every non-overlapping occurrence became <code>${escapeHTML(last.merged)}</code>, and all adjacent-pair counts were then recalculated.`;
   }
 }
 
@@ -107,6 +199,8 @@ function loadExample(key, isStressTest = false) {
   elements.exampleSelect.value = key;
   elements.exampleNote.textContent = example.note;
   elements.sourceText.value = example.text;
+  elements.bpeText.value = example.text;
+  elements.mergeSlider.value = "0";
   renderAll();
 
   if (isStressTest) {
@@ -124,11 +218,38 @@ for (const [key, example] of Object.entries(examples)) {
 }
 
 elements.exampleSelect.addEventListener("change", event => loadExample(event.target.value));
-elements.sourceText.addEventListener("input", renderAll);
-elements.lowercase.addEventListener("change", renderAll);
+elements.sourceText.addEventListener("input", () => {
+  elements.bpeText.value = elements.sourceText.value;
+  elements.mergeSlider.value = "0";
+  renderAll();
+});
+elements.bpeText.addEventListener("input", () => {
+  elements.sourceText.value = elements.bpeText.value;
+  elements.mergeSlider.value = "0";
+  renderAll();
+});
+elements.lowercase.addEventListener("change", () => {
+  elements.mergeSlider.value = "0";
+  renderAll();
+});
 elements.contractions.addEventListener("change", renderComparison);
 elements.hyphens.addEventListener("change", renderComparison);
 elements.mergeSlider.addEventListener("input", renderSubwords);
+elements.topPairs.addEventListener("change", renderSubwords);
+elements.previousMerge.addEventListener("click", () => {
+  elements.mergeSlider.value = String(Math.max(0, Number(elements.mergeSlider.value) - 1));
+  renderSubwords();
+});
+elements.nextMerge.addEventListener("click", () => {
+  const nextRound = Number(elements.mergeSlider.value) + 1;
+  if (nextRound > Number(elements.mergeSlider.max)) elements.mergeSlider.max = String(nextRound);
+  elements.mergeSlider.value = String(nextRound);
+  renderSubwords();
+});
+elements.resetMerges.addEventListener("click", () => {
+  elements.mergeSlider.value = "0";
+  renderSubwords();
+});
 elements.stressButtons.forEach(button => button.addEventListener("click", () => loadExample(button.dataset.example, true)));
 
 loadExample("edgeCases");

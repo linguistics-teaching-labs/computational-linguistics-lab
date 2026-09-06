@@ -47,6 +47,43 @@ function pairKey(left, right) {
   return `${left}\u0001${right}`;
 }
 
+function splitCharacters(value) {
+  if (typeof Intl !== "undefined" && Intl.Segmenter) {
+    const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+    return [...segmenter.segment(value)].map(item => item.segment);
+  }
+  return Array.from(value);
+}
+
+function sortSymbols(symbols) {
+  return [...symbols].sort((left, right) => {
+    if (left === "▁") return -1;
+    if (right === "▁") return 1;
+    return left.localeCompare(right);
+  });
+}
+
+function rankSequencePairs(sequences, frequencies) {
+  const pairs = new Map();
+  let firstSeen = 0;
+
+  for (const [word, sequence] of sequences) {
+    const frequency = frequencies.get(word);
+    for (let index = 0; index < sequence.length - 1; index += 1) {
+      const left = sequence[index];
+      const right = sequence[index + 1];
+      const key = pairKey(left, right);
+      if (!pairs.has(key)) pairs.set(key, { left, right, merged: `${left}${right}`, count: 0, firstSeen });
+      pairs.get(key).count += frequency;
+      firstSeen += 1;
+    }
+  }
+
+  return [...pairs.values()]
+    .sort((a, b) => b.count - a.count || a.firstSeen - b.firstSeen || pairKey(a.left, a.right).localeCompare(pairKey(b.left, b.right)))
+    .map(({ firstSeen: _firstSeen, ...pair }) => pair);
+}
+
 function mergeSequence(sequence, left, right, merged) {
   const output = [];
   for (let index = 0; index < sequence.length; index += 1) {
@@ -66,36 +103,30 @@ export function learnBPE(text, mergeLimit = 0, { lowercase = true } = {}) {
   for (const word of words) frequencies.set(word, (frequencies.get(word) ?? 0) + 1);
 
   const sequences = new Map(
-    [...frequencies.keys()].map(word => [word, ["▁", ...Array.from(word)]])
+    [...frequencies.keys()].map(word => [word, ["▁", ...splitCharacters(word)]])
   );
+  const initialVocabulary = new Set([...sequences.values()].flat());
   const history = [];
 
   for (let step = 0; step < mergeLimit; step += 1) {
-    const pairCounts = new Map();
-    for (const [word, sequence] of sequences) {
-      const frequency = frequencies.get(word);
-      for (let index = 0; index < sequence.length - 1; index += 1) {
-        const key = pairKey(sequence[index], sequence[index + 1]);
-        pairCounts.set(key, (pairCounts.get(key) ?? 0) + frequency);
-      }
-    }
-    const ranked = [...pairCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    const ranked = rankSequencePairs(sequences, frequencies);
     if (!ranked.length) break;
-    const [key, count] = ranked[0];
-    const [left, right] = key.split("\u0001");
-    const merged = `${left}${right}`;
+    const { left, right, merged, count } = ranked[0];
     for (const [word, sequence] of sequences) {
       sequences.set(word, mergeSequence(sequence, left, right, merged));
     }
     history.push({ left, right, merged, count });
   }
 
-  const vocabulary = new Set();
+  const activeVocabulary = new Set();
   let totalTokens = 0;
   for (const [word, sequence] of sequences) {
-    sequence.forEach(symbol => vocabulary.add(symbol));
+    sequence.forEach(symbol => activeVocabulary.add(symbol));
     totalTokens += sequence.length * frequencies.get(word);
   }
+
+  const learnedVocabulary = new Set(initialVocabulary);
+  history.forEach(item => learnedVocabulary.add(item.merged));
 
   const analyzedWords = [...sequences.entries()]
     .map(([word, segments]) => ({ word, segments, count: frequencies.get(word) }))
@@ -107,6 +138,11 @@ export function learnBPE(text, mergeLimit = 0, { lowercase = true } = {}) {
     wordCount: words.length,
     wordTypes: frequencies.size,
     subwordTokens: totalTokens,
-    vocabularySize: vocabulary.size
+    vocabularySize: activeVocabulary.size,
+    activeVocabulary: sortSymbols(activeVocabulary),
+    initialVocabulary: sortSymbols(initialVocabulary),
+    learnedVocabulary: sortSymbols(learnedVocabulary),
+    learnedVocabularySize: learnedVocabulary.size,
+    rankedPairs: rankSequencePairs(sequences, frequencies)
   };
 }

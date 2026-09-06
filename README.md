@@ -41,7 +41,9 @@ A guided activity in which students:
 - compare whitespace, word-and-punctuation, and configurable rule-based tokenizers;
 - test decisions about contractions and hyphenated forms;
 - observe how tokenization changes token and vocabulary counts;
-- step through a simplified byte-pair encoding procedure; and
+- rank the most frequent adjacent symbol pairs in user-provided text;
+- preview and apply byte-pair encoding merges one round at a time;
+- inspect how each merge changes segmentation, pair rankings, and the learned vocabulary; and
 - stress-test word-boundary assumptions beyond English.
 
 The module focuses on conceptual interpretation. No programming is required.

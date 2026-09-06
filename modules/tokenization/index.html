@@ -7,7 +7,7 @@
   <title>What Counts as a Word? · Computational Linguistics Lab</title>
   <link rel="stylesheet" href="../../assets/styles.css?v=20260904-4">
   <link rel="stylesheet" href="../../assets/lab.css">
-  <link rel="stylesheet" href="tokenization.css">
+  <link rel="stylesheet" href="tokenization.css?v=20260906-1">
 </head>
 <body class="lab-page tokenization-page">
   <header class="site-header lab-header">
@@ -101,29 +101,101 @@
       <section class="lab-section" id="subwords" aria-labelledby="subwords-title">
         <div class="section-heading">
           <span class="step-badge">Step 3</span>
-          <div><h2 id="subwords-title">Build a subword vocabulary</h2><p>Begin with characters and repeatedly merge the most frequent adjacent pair.</p></div>
+          <div><h2 id="subwords-title">Learn BPE tokens, one merge at a time</h2><p>Begin with characters, rank adjacent symbol pairs, and preview how each merge changes the corpus and vocabulary.</p></div>
         </div>
 
-        <label class="range-field" for="merge-slider">
-          <span><strong>Pair merges</strong><output id="merge-count" for="merge-slider">6</output></span>
-          <input id="merge-slider" type="range" min="0" max="20" step="1" value="6">
-        </label>
+        <div class="bpe-input-grid">
+          <label class="field">
+            <span>BPE training text</span>
+            <textarea id="bpe-text" rows="5" spellcheck="true" aria-describedby="bpe-input-note"></textarea>
+            <small id="bpe-input-note">This text is shared with Steps 1–2. Repeated word forms contribute repeated pair counts.</small>
+          </label>
+          <div class="bpe-settings">
+            <label class="field" for="top-pairs">
+              <span>Pairs to rank</span>
+              <select id="top-pairs">
+                <option value="3">Top 3</option>
+                <option value="5" selected>Top 5</option>
+                <option value="10">Top 10</option>
+              </select>
+            </label>
+            <div class="bpe-definition">
+              <strong>What is being counted?</strong>
+              <p>Round 0 counts adjacent characters. Later rounds count adjacent symbols, so a pair may include a previously learned multi-character token. <code>▁</code> marks a word beginning. For visibility, this teaching version begins with Unicode grapheme characters rather than raw bytes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bpe-round-controls" aria-label="BPE round controls">
+          <button id="previous-merge" class="button secondary" type="button">Undo one merge</button>
+          <label class="range-field" for="merge-slider">
+            <span><strong>Completed merge rounds</strong><output id="merge-count" for="merge-slider">0</output></span>
+            <input id="merge-slider" type="range" min="0" max="30" step="1" value="0">
+          </label>
+          <button id="next-merge" class="button primary" type="button">Merge top pair</button>
+          <button id="reset-merges" class="button secondary" type="button">Start over</button>
+        </div>
 
         <div class="subword-metrics" aria-label="Subword summary">
           <div><span id="word-token-count">0</span><small>written words</small></div>
+          <div><span id="current-round">0</span><small>merges completed</small></div>
           <div><span id="subword-token-count">0</span><small>subword tokens</small></div>
-          <div><span id="subword-vocabulary">0</span><small>subword types</small></div>
+          <div><span id="subword-vocabulary">0</span><small>learned vocabulary</small></div>
         </div>
 
-        <div class="subword-layout">
-          <div>
-            <div class="subheading-row"><h3>Segmented word forms</h3><span>▁ marks a word beginning</span></div>
+        <div class="bpe-current-grid">
+          <article class="bpe-panel">
+            <div class="subheading-row"><h3>Current segmentation</h3><span id="current-stage-label">Character starting point</span></div>
             <div id="segmented-words" class="segmented-words"></div>
+            <div class="vocabulary-block">
+              <div class="subheading-row"><h3>Learned vocabulary</h3><span id="current-vocabulary-size">0 symbols</span></div>
+              <div id="current-vocabulary" class="vocabulary-list" aria-label="Current learned vocabulary"></div>
+            </div>
+          </article>
+
+          <article class="bpe-panel pair-ranking-panel">
+            <div class="subheading-row"><h3>Most frequent adjacent pairs</h3><span>Current round</span></div>
+            <div class="table-wrap bpe-table-wrap">
+              <table>
+                <thead><tr><th>Rank</th><th>Pair</th><th>Count</th></tr></thead>
+                <tbody id="current-pair-ranking"></tbody>
+              </table>
+            </div>
+            <p id="tie-note" class="tie-note"></p>
+          </article>
+        </div>
+
+        <article class="bpe-preview" aria-live="polite">
+          <div class="preview-heading">
+            <div><p class="callout-label">Next-round preview</p><h3 id="preview-title">Merge the highest-ranked pair</h3></div>
+            <div id="preview-rule" class="preview-rule"></div>
           </div>
-          <div>
-            <div class="subheading-row"><h3>Merge history</h3><span>Most frequent first</span></div>
-            <ol id="merge-history" class="merge-history"></ol>
+
+          <div class="preview-grid">
+            <div>
+              <div class="subheading-row"><h3>Segmentation after the merge</h3><span>Preview only</span></div>
+              <div id="preview-segmented-words" class="segmented-words"></div>
+            </div>
+            <div>
+              <div class="subheading-row"><h3>Top pairs in the new round</h3><span>Recounted after merging</span></div>
+              <div class="table-wrap bpe-table-wrap">
+                <table>
+                  <thead><tr><th>Rank</th><th>Pair</th><th>Count</th></tr></thead>
+                  <tbody id="preview-pair-ranking"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
+
+          <div class="vocabulary-block preview-vocabulary-block">
+            <div class="subheading-row"><h3>Vocabulary after the next merge</h3><span id="preview-vocabulary-size">0 symbols</span></div>
+            <div id="preview-vocabulary" class="vocabulary-list" aria-label="Preview of learned vocabulary after the next merge"></div>
+          </div>
+        </article>
+
+        <div class="history-block">
+          <div class="subheading-row"><h3>Merge history</h3><span>Open a round to inspect its vocabulary</span></div>
+          <ol id="merge-history" class="merge-history"></ol>
         </div>
 
         <div id="merge-explanation" class="formula-card"></div>
@@ -131,7 +203,7 @@
           <summary>Did the algorithm discover morphemes?</summary>
           <div>
             <p>Sometimes a frequent character sequence aligns with a morpheme. That does not mean the procedure understands its grammatical function or meaning.</p>
-            <p class="answer"><strong>Test it:</strong> Choose “Related word forms.” Move the slider and compare how <em>teach</em>, <em>teacher</em>, and <em>teaching</em> are segmented.</p>
+            <p class="answer"><strong>Test it:</strong> Choose “Related word forms.” Advance several rounds and compare how <em>teach</em>, <em>teacher</em>, and <em>teaching</em> are segmented.</p>
           </div>
         </details>
       </section>
@@ -168,6 +240,6 @@
   </main>
 
   <script type="module" src="../../assets/module-nav.js?v=20260904-4"></script>
-  <script type="module" src="activity.js"></script>
+  <script type="module" src="activity.js?v=20260906-1"></script>
 </body>
 </html>
