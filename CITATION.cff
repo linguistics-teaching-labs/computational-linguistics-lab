@@ -3,10 +3,10 @@ message: "If you use or adapt this instructional project, please cite it as belo
 title: "Computational Linguistics Lab"
 type: software
 authors:
-  - family-names: Lin
-    given-names: Desen
   - family-names: Lai
     given-names: Wei
+  - family-names: Lin
+    given-names: Desen
 repository-code: "https://github.com/linguistics-teaching-labs/computational-linguistics-lab"
 url: "https://linguistics-teaching-labs.github.io/computational-linguistics-lab/"
 license: MIT
