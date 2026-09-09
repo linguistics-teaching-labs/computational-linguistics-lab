@@ -28,9 +28,6 @@ const elements = {
   unitLabel: document.querySelector("#unit-label"),
   traceGate: document.querySelector("#trace-gate"),
   traceActivity: document.querySelector("#trace-activity"),
-  traceRoundLabel: document.querySelector("#trace-round-label"),
-  tracePrompt: document.querySelector("#trace-prompt"),
-  traceInstruction: document.querySelector("#trace-instruction"),
   traceCost: document.querySelector("#trace-cost"),
   traceMatrix: document.querySelector("#trace-matrix"),
   tracePosition: document.querySelector("#trace-position"),
@@ -39,12 +36,11 @@ const elements = {
   operationSummary: document.querySelector("#operation-summary"),
   undoTrace: document.querySelector("#undo-trace"),
   resetTrace: document.querySelector("#reset-trace"),
-  traceFeedback: document.querySelector("#trace-feedback"),
-  startHigherPath: document.querySelector("#start-higher-path"),
-  retryTrace: document.querySelector("#retry-trace"),
-  pathComparison: document.querySelector("#path-comparison"),
-  comparisonPaths: document.querySelector("#comparison-paths"),
-  comparisonConclusion: document.querySelector("#comparison-conclusion")
+  pathResult: document.querySelector("#path-result"),
+  pathResultSummary: document.querySelector("#path-result-summary"),
+  pathJudgment: document.querySelector("#path-judgment"),
+  judgmentFeedback: document.querySelector("#judgment-feedback"),
+  startNewPath: document.querySelector("#start-new-path")
 };
 
 let result;
@@ -319,66 +315,28 @@ function resetCurrentTrace() {
 
 function resetTraceActivity() {
   traceState = {
-    round: 1,
-    minimumPath: null,
     row: result.sourceUnits.length,
     column: result.targetUnits.length,
     operations: [],
     visited: [[result.sourceUnits.length, result.targetUnits.length]],
     complete: result.sourceUnits.length === 0 && result.targetUnits.length === 0
   };
-  elements.traceFeedback.className = "trace-feedback";
-  elements.traceFeedback.innerHTML = "";
-  elements.startHigherPath.hidden = true;
-  elements.retryTrace.hidden = true;
-  elements.pathComparison.hidden = true;
+  elements.pathResult.hidden = true;
+  elements.judgmentFeedback.className = "trace-feedback";
+  elements.judgmentFeedback.innerHTML = "";
 }
 
-function renderComparison() {
-  const minimum = traceState.minimumPath;
-  const higher = { operations: traceOperationsForward(), cost: traceTotal() };
-  const card = (title, path, className) => {
-    const parts = operationParts(path.operations);
-    return `<article class="comparison-path ${className}">
-      <p class="callout-label">${escapeHTML(title)}</p>
-      <p class="comparison-cost"><span>Total cost</span><strong>${formatCost(path.cost)}</strong></p>
-      <div class="alignment-strip compact-alignment">${path.operations.map(item => `
-        <div class="alignment-step ${item.operation}">
-          <span class="alignment-source">${escapeHTML(item.source ?? "∅")}</span>
-          <span class="alignment-operation">${escapeHTML(item.operation)}<small>+${formatCost(item.cost)}</small></span>
-          <span class="alignment-target">${escapeHTML(item.target ?? "∅")}</span>
-        </div>`).join("")}</div>
-      <p>${parts.length ? `Edits: ${escapeHTML(parts.join(", "))}.` : "No non-matching edits."}</p>
-    </article>`;
-  };
-  elements.comparisonPaths.innerHTML = card("Minimum-cost path", minimum, "minimum-path")
-    + card("Higher-cost path", higher, "higher-path");
-  elements.comparisonConclusion.innerHTML = `<strong>Cost difference:</strong> ${formatCost(higher.cost)} − ${formatCost(minimum.cost)} = <strong>${formatCost(higher.cost - minimum.cost)}</strong>. Both paths transform the same source into the same target, but the second path uses a more expensive sequence of edits.`;
-  elements.pathComparison.hidden = false;
-}
-
-function finishTraceRound() {
+function finishTrace() {
   const total = traceTotal();
-  if (traceState.round === 1) {
-    if (Math.abs(total - result.distance) < 1e-9) {
-      traceState.minimumPath = { operations: traceOperationsForward(), cost: total };
-      elements.traceFeedback.className = "trace-feedback success";
-      elements.traceFeedback.innerHTML = `<strong>Minimum path found.</strong> Your edits cost ${formatCost(total)}, exactly the value in the bottom-right cell. Now construct a different path whose cost is higher.`;
-      elements.startHigherPath.hidden = false;
-    } else {
-      elements.traceFeedback.className = "trace-feedback needs-retry";
-      elements.traceFeedback.innerHTML = `<strong>This path costs ${formatCost(total)}, not the minimum ${formatCost(result.distance)}.</strong> Try Round 1 again and choose predecessor cells marked “keeps minimum.”`;
-      elements.retryTrace.hidden = false;
-    }
-  } else if (total > traceState.minimumPath.cost + 1e-9) {
-    elements.traceFeedback.className = "trace-feedback success";
-    elements.traceFeedback.innerHTML = `<strong>Higher-cost path found.</strong> Its edits cost ${formatCost(total)}, compared with ${formatCost(traceState.minimumPath.cost)} for your minimum path.`;
-    renderComparison();
-  } else {
-    elements.traceFeedback.className = "trace-feedback needs-retry";
-    elements.traceFeedback.innerHTML = `<strong>You found another minimum-cost path.</strong> That is a useful tie, but this round asks for a cost above ${formatCost(traceState.minimumPath.cost)}. Try again and include at least one option marked “raises cost.”`;
-    elements.retryTrace.hidden = false;
-  }
+  const operations = traceOperationsForward();
+  const parts = operationParts(operations);
+  elements.pathResultSummary.innerHTML = `
+    <div><small>Your path cost</small><strong>${formatCost(total)}</strong></div>
+    <div><small>Bottom-right minimum</small><strong>${formatCost(result.distance)}</strong></div>
+    <div><small>Edits made</small><strong>${parts.length ? escapeHTML(parts.join(", ")) : "None"}</strong></div>`;
+  elements.pathResult.hidden = false;
+  elements.judgmentFeedback.className = "trace-feedback";
+  elements.judgmentFeedback.innerHTML = "";
 }
 
 function chooseTraceMove(key) {
@@ -389,7 +347,7 @@ function chooseTraceMove(key) {
   traceState.visited.push(choice.previous);
   traceState.complete = traceState.row === 0 && traceState.column === 0;
   renderTraceActivity();
-  if (traceState.complete) finishTraceRound();
+  if (traceState.complete) finishTrace();
 }
 
 function renderTraceActivity() {
@@ -404,11 +362,6 @@ function renderTraceActivity() {
   elements.traceActivity.hidden = !matrixComplete;
   if (!matrixComplete || !traceState) return;
 
-  elements.traceRoundLabel.textContent = `Round ${traceState.round} of 2`;
-  elements.tracePrompt.textContent = traceState.round === 1 ? "Find a minimum-cost path" : "Find a different, higher-cost path";
-  elements.traceInstruction.textContent = traceState.round === 1
-    ? "At every cell, choose a predecessor marked “keeps minimum.” Continue until you reach d(0, 0)."
-    : "Deliberately choose at least one predecessor marked “raises cost,” then continue to d(0, 0).";
   elements.traceCost.textContent = formatCost(traceTotal());
   elements.tracePosition.innerHTML = traceState.complete
     ? `<strong>Reached <code>d(0, 0)</code>.</strong>`
@@ -541,32 +494,34 @@ elements.undoTrace.addEventListener("click", () => {
   traceState.visited.pop();
   [traceState.row, traceState.column] = traceState.visited.at(-1);
   traceState.complete = false;
-  elements.traceFeedback.innerHTML = "";
-  elements.startHigherPath.hidden = true;
-  elements.retryTrace.hidden = true;
-  elements.pathComparison.hidden = true;
+  elements.pathResult.hidden = true;
+  elements.judgmentFeedback.innerHTML = "";
   renderTraceActivity();
 });
 elements.resetTrace.addEventListener("click", () => {
   resetCurrentTrace();
-  elements.traceFeedback.innerHTML = "";
-  elements.startHigherPath.hidden = true;
-  elements.retryTrace.hidden = true;
-  elements.pathComparison.hidden = true;
+  elements.pathResult.hidden = true;
+  elements.judgmentFeedback.innerHTML = "";
   renderTraceActivity();
 });
-elements.retryTrace.addEventListener("click", () => {
-  resetCurrentTrace();
-  elements.traceFeedback.innerHTML = "";
-  elements.retryTrace.hidden = true;
-  elements.pathComparison.hidden = true;
-  renderTraceActivity();
+elements.pathJudgment.addEventListener("click", event => {
+  const answer = event.target.closest("[data-judgment]")?.dataset.judgment;
+  if (!answer) return;
+  const isMinimum = Math.abs(traceTotal() - result.distance) < 1e-9;
+  const correct = (answer === "minimum") === isMinimum;
+  elements.judgmentFeedback.className = `trace-feedback ${correct ? "success" : "needs-retry"}`;
+  elements.judgmentFeedback.innerHTML = correct
+    ? `<strong>Correct.</strong> ${isMinimum
+      ? `Your path cost equals the bottom-right score, so this is a minimum-cost path.`
+      : `Your path costs ${formatCost(traceTotal())}, which is higher than the bottom-right minimum of ${formatCost(result.distance)}.`}`
+    : `<strong>Not quite.</strong> ${isMinimum
+      ? `The two costs are equal, so this is a minimum-cost path.`
+      : `Your path cost is higher than the bottom-right score, so this is not a minimum-cost path.`}`;
 });
-elements.startHigherPath.addEventListener("click", () => {
-  traceState.round = 2;
+elements.startNewPath.addEventListener("click", () => {
   resetCurrentTrace();
-  elements.traceFeedback.innerHTML = "";
-  elements.startHigherPath.hidden = true;
+  elements.pathResult.hidden = true;
+  elements.judgmentFeedback.innerHTML = "";
   renderTraceActivity();
 });
 

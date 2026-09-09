@@ -132,7 +132,7 @@
       <section class="lab-section" id="alignment" aria-labelledby="alignment-title">
         <div class="section-heading">
           <span class="step-badge">Step 4</span>
-          <div><h2 id="alignment-title">Backtrace and compare two paths</h2><p>Begin in the bottom-right cell of the completed matrix. Choose an adjacent predecessor until you reach the top-left corner, recording an edit at every move.</p></div>
+          <div><h2 id="alignment-title">Build and evaluate a backtrace path</h2><p>Begin in the bottom-right cell of the completed matrix. Choose an adjacent predecessor until you reach the top-left corner, recording an edit at every move.</p></div>
         </div>
 
         <div class="distance-summary">
@@ -146,9 +146,9 @@
         <div id="trace-activity" class="trace-activity" hidden>
           <div class="trace-round-heading">
             <div>
-              <p id="trace-round-label" class="callout-label">Round 1 of 2</p>
-              <h3 id="trace-prompt">Find a minimum-cost path</h3>
-              <p id="trace-instruction" class="trace-instruction"></p>
+              <p class="callout-label">Interactive backtrace</p>
+              <h3>Build one path</h3>
+              <p class="trace-instruction">At each cell, choose which neighboring cell the value came from. Continue until you reach <code>d(0, 0)</code>.</p>
             </div>
             <div class="trace-running-cost"><small>Path cost so far</small><strong id="trace-cost">0</strong></div>
           </div>
@@ -174,19 +174,19 @@
             <div id="operation-summary" class="operation-summary" aria-live="polite"></div>
           </div>
 
-          <div id="trace-feedback" class="trace-feedback" aria-live="polite"></div>
-          <div class="action-row trace-next-actions">
-            <button id="start-higher-path" class="button primary" type="button" hidden>Build a higher-cost path</button>
-            <button id="retry-trace" class="button secondary" type="button" hidden>Try this round again</button>
-          </div>
-
-          <div id="path-comparison" class="path-comparison" hidden>
-            <div class="comparison-heading">
-              <p class="callout-label">Path comparison</p>
-              <h3>Different edit sequences can connect the same two forms</h3>
+          <div id="path-result" class="path-result" hidden>
+            <div>
+              <p class="callout-label">Path complete</p>
+              <h3>Is this a minimum-cost path?</h3>
+              <p>Compare your path’s total cost with the minimum score in the bottom-right cell, then choose an answer.</p>
             </div>
-            <div id="comparison-paths" class="comparison-paths"></div>
-            <div id="comparison-conclusion" class="operation-summary"></div>
+            <div id="path-result-summary" class="path-result-summary"></div>
+            <div id="path-judgment" class="action-row path-judgment">
+              <button class="button secondary" type="button" data-judgment="minimum">Yes, it is minimum-cost</button>
+              <button class="button secondary" type="button" data-judgment="higher">No, it costs more</button>
+            </div>
+            <div id="judgment-feedback" class="trace-feedback" aria-live="polite"></div>
+            <button id="start-new-path" class="button primary" type="button">Build another path</button>
           </div>
         </div>
 
@@ -216,6 +216,6 @@
   </main>
 
   <script type="module" src="../../assets/module-nav.js?v=20260906-1"></script>
-  <script type="module" src="activity.js?v=20260909-4"></script>
+  <script type="module" src="activity.js?v=20260909-5"></script>
 </body>
 </html>
