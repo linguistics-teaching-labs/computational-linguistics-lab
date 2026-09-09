@@ -230,6 +230,7 @@ function recompute({ resetMatrix = false } = {}) {
 
 function loadExample(key) {
   const example = distanceExamples[key];
+  elements.example.value = key;
   elements.note.textContent = example.note;
   elements.source.value = example.source;
   elements.target.value = example.target;
