@@ -198,13 +198,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the module conventions.
 
 If you use or adapt the Computational Linguistics Lab in teaching, scholarship, or other published work, please use the following reference:
 
-> Lin, D., & Lai, W. (2026). *Computational Linguistics Lab* (Version 1.2.0) [Interactive teaching collection]. https://linguistics-teaching-labs.github.io/computational-linguistics-lab/
+> Lai, W., & Lin, D. (2026). *Computational Linguistics Lab* (Version 1.2.0) [Interactive teaching collection]. https://linguistics-teaching-labs.github.io/computational-linguistics-lab/
 
 **BibTeX**
 
 ```bibtex
-@misc{lin_lai_2026_computational_linguistics_lab,
-  author       = {Lin, Desen and Lai, Wei},
+@misc{lai_lin_2026_computational_linguistics_lab,
+  author       = {Lai, Wei and Lin, Desen},
   title        = {Computational Linguistics Lab},
   year         = {2026},
   howpublished = {Interactive teaching collection, Version 1.2.0},
