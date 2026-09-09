@@ -202,7 +202,7 @@ function traceChoices() {
     const same = result.sourceUnits[row - 1] === result.targetUnits[column - 1];
     choices.push({
       key: "diagonal",
-      direction: "Diagonal ↖",
+      direction: "From diagonal",
       operation: same ? "match" : "substitute",
       previous: [row - 1, column - 1],
       source: result.sourceUnits[row - 1],
@@ -213,7 +213,7 @@ function traceChoices() {
   if (row > 0) {
     choices.push({
       key: "up",
-      direction: "Up ↑",
+      direction: "From above",
       operation: "delete",
       previous: [row - 1, column],
       source: result.sourceUnits[row - 1],
@@ -224,7 +224,7 @@ function traceChoices() {
   if (column > 0) {
     choices.push({
       key: "left",
-      direction: "Left ←",
+      direction: "From left",
       operation: "insert",
       previous: [row, column - 1],
       source: null,
@@ -232,11 +232,17 @@ function traceChoices() {
       cost: currentCosts.insertion
     });
   }
-  return choices.map(choice => ({
-    ...choice,
-    optimal: Math.abs(result.matrix[choice.previous[0]][choice.previous[1]].cost + choice.cost
-      - result.matrix[row][column].cost) < 1e-9
-  }));
+  return choices.map(choice => {
+    const previousCost = result.matrix[choice.previous[0]][choice.previous[1]].cost;
+    const candidateCost = previousCost + choice.cost;
+    return {
+      ...choice,
+      previousCost,
+      candidateCost,
+      currentCost: result.matrix[row][column].cost,
+      optimal: Math.abs(candidateCost - result.matrix[row][column].cost) < 1e-9
+    };
+  });
 }
 
 function traceOperationsForward() {
@@ -294,7 +300,7 @@ function renderTraceMatrix() {
       ].filter(Boolean).join(" ");
       const interactive = Boolean(choice);
       const title = choice
-        ? `${choice.direction}: ${operationLabel(choice.operation)}, +${formatCost(choice.cost)}`
+        ? `${choice.direction}: ${formatCost(choice.previousCost)} + ${formatCost(choice.cost)} = ${formatCost(choice.candidateCost)}; ${choice.optimal ? "matches" : "does not match"} current score ${formatCost(choice.currentCost)}`
         : `Cell ${row}, ${column}: ${formatCost(result.matrix[row][column].cost)}`;
       cells.push(`<td class="${classes}" title="${escapeHTML(title)}"${interactive ? ` data-trace-move="${choice.key}" role="button" tabindex="0" aria-label="${escapeHTML(title)}"` : ""}>${formatCost(result.matrix[row][column].cost)}</td>`);
     }
@@ -406,12 +412,15 @@ function renderTraceActivity() {
   elements.traceCost.textContent = formatCost(traceTotal());
   elements.tracePosition.innerHTML = traceState.complete
     ? `<strong>Reached <code>d(0, 0)</code>.</strong>`
-    : `Current cell: <strong><code>d(${traceState.row}, ${traceState.column})</code></strong>. Choose where it came from:`;
+    : `Current cell: <strong><code>d(${traceState.row}, ${traceState.column}) = ${formatCost(result.matrix[traceState.row][traceState.column].cost)}</code></strong>. Choose which neighboring cell it came from:`;
   elements.traceOptions.innerHTML = traceChoices().map(choice => `
     <button class="trace-option${choice.optimal ? " optimal" : " costly"}" type="button" data-trace-move="${choice.key}">
       <span>${escapeHTML(choice.direction)}</span>
-      <strong>${escapeHTML(operationLabel(choice.operation))} <small>+${formatCost(choice.cost)}</small></strong>
-      <em>${choice.optimal ? "keeps minimum" : "raises cost"}</em>
+      <strong>${escapeHTML(operationLabel(choice.operation))}</strong>
+      <code class="trace-equation">${formatCost(choice.previousCost)} + ${formatCost(choice.cost)} = ${formatCost(choice.candidateCost)}</code>
+      <em>${choice.optimal
+        ? `matches current score ${formatCost(choice.currentCost)} — keeps minimum`
+        : `does not match current score ${formatCost(choice.currentCost)} — raises cost`}</em>
     </button>`).join("");
   elements.undoTrace.disabled = traceState.operations.length === 0 || traceState.complete;
   elements.resetTrace.disabled = traceState.operations.length === 0;
