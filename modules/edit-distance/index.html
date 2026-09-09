@@ -7,7 +7,7 @@
   <title>How Far Apart Are Two Forms? · Computational Linguistics Lab</title>
   <link rel="stylesheet" href="../../assets/styles.css?v=20260904-4">
   <link rel="stylesheet" href="../../assets/lab.css">
-  <link rel="stylesheet" href="edit-distance.css?v=20260909-1">
+  <link rel="stylesheet" href="edit-distance.css?v=20260909-2">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQB575CQX3"></script>
   <script>
@@ -132,7 +132,7 @@
       <section class="lab-section" id="alignment" aria-labelledby="alignment-title">
         <div class="section-heading">
           <span class="step-badge">Step 4</span>
-          <div><h2 id="alignment-title">Trace and interpret the alignment</h2><p>The final number is the cost of one cheapest path—not a universal measure of linguistic similarity.</p></div>
+          <div><h2 id="alignment-title">Backtrace and compare two paths</h2><p>Begin in the bottom-right cell of the completed matrix. Choose an adjacent predecessor until you reach the top-left corner, recording an edit at every move.</p></div>
         </div>
 
         <div class="distance-summary">
@@ -141,8 +141,54 @@
           <div><small>Unit</small><strong id="unit-label">—</strong></div>
         </div>
 
-        <div id="alignment-strip" class="alignment-strip" aria-live="polite"></div>
-        <div id="operation-summary" class="operation-summary"></div>
+        <div id="trace-gate" class="comparison-callout trace-gate" aria-live="polite"></div>
+
+        <div id="trace-activity" class="trace-activity" hidden>
+          <div class="trace-round-heading">
+            <div>
+              <p id="trace-round-label" class="callout-label">Round 1 of 2</p>
+              <h3 id="trace-prompt">Find a minimum-cost path</h3>
+              <p id="trace-instruction" class="trace-instruction"></p>
+            </div>
+            <div class="trace-running-cost"><small>Path cost so far</small><strong id="trace-cost">0</strong></div>
+          </div>
+
+          <div class="trace-grid">
+            <div class="distance-matrix-wrap">
+              <table id="trace-matrix" class="distance-matrix trace-matrix" aria-label="Interactive backtrace matrix"></table>
+            </div>
+            <div class="trace-controls">
+              <p id="trace-position" class="trace-position"></p>
+              <div id="trace-options" class="trace-options" aria-label="Backtrace directions"></div>
+              <div class="action-row trace-actions">
+                <button id="undo-trace" class="button secondary" type="button">Undo move</button>
+                <button id="reset-trace" class="button secondary" type="button">Restart this path</button>
+              </div>
+              <p class="field-note">You can use the direction buttons or select a highlighted adjacent cell in the matrix.</p>
+            </div>
+          </div>
+
+          <div>
+            <p class="callout-label">Edits on the current path</p>
+            <div id="alignment-strip" class="alignment-strip" aria-live="polite"></div>
+            <div id="operation-summary" class="operation-summary" aria-live="polite"></div>
+          </div>
+
+          <div id="trace-feedback" class="trace-feedback" aria-live="polite"></div>
+          <div class="action-row trace-next-actions">
+            <button id="start-higher-path" class="button primary" type="button" hidden>Build a higher-cost path</button>
+            <button id="retry-trace" class="button secondary" type="button" hidden>Try this round again</button>
+          </div>
+
+          <div id="path-comparison" class="path-comparison" hidden>
+            <div class="comparison-heading">
+              <p class="callout-label">Path comparison</p>
+              <h3>Different edit sequences can connect the same two forms</h3>
+            </div>
+            <div id="comparison-paths" class="comparison-paths"></div>
+            <div id="comparison-conclusion" class="operation-summary"></div>
+          </div>
+        </div>
 
         <details class="prompt-card">
           <summary>Can edit distance measure meaning?</summary>
@@ -170,6 +216,6 @@
   </main>
 
   <script type="module" src="../../assets/module-nav.js?v=20260906-1"></script>
-  <script type="module" src="activity.js?v=20260909-2"></script>
+  <script type="module" src="activity.js?v=20260909-3"></script>
 </body>
 </html>

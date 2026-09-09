@@ -210,8 +210,125 @@
   font-size: 0.88rem;
 }
 
+.trace-gate { margin: 0 0 1rem; }
+.trace-activity { display: grid; gap: 1.25rem; }
+.trace-activity[hidden] { display: none; }
+
+.trace-round-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #a8c8d1;
+  border-radius: 10px;
+  background: #edf7f9;
+}
+.trace-round-heading h3 { margin: 0.15rem 0 0.35rem; }
+.trace-instruction { max-width: 46rem; margin: 0; color: var(--ink-soft); }
+.trace-running-cost {
+  display: grid;
+  flex: 0 0 auto;
+  min-width: 8rem;
+  gap: 0.1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  color: #fff;
+  background: #245160;
+  text-align: right;
+}
+.trace-running-cost small { font-size: 0.68rem; text-transform: uppercase; }
+.trace-running-cost strong { font-size: 1.55rem; font-variant-numeric: tabular-nums; }
+
+.trace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(15rem, 0.75fr);
+  gap: 1rem;
+  align-items: start;
+}
+.trace-controls {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f7fafc;
+}
+.trace-position { margin: 0; }
+.trace-options { display: grid; gap: 0.55rem; }
+.trace-option {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15rem 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+.trace-option:hover { border-color: #2e6171; }
+.trace-option:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.trace-option strong { text-align: right; }
+.trace-option small { font-size: inherit; }
+.trace-option em {
+  grid-column: 1 / -1;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+.trace-option.optimal { border-left: 4px solid #438276; }
+.trace-option.costly { border-left: 4px solid #b5642f; }
+.trace-actions { align-items: stretch; flex-direction: column; }
+.trace-actions .button { width: 100%; }
+
+.trace-matrix td.trace-visited { box-shadow: inset 0 0 0 2px #2e6171; }
+.trace-matrix td.trace-current { outline: 4px solid #245160; outline-offset: 1px; }
+.trace-matrix td.trace-choice { cursor: pointer; border: 2px dashed #b5642f; }
+.trace-matrix td.trace-optimal-choice { border: 3px solid #438276; }
+.trace-matrix td.trace-choice:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(33,75,89,.18); }
+.trace-matrix td.trace-choice:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.trace-feedback {
+  min-height: 0;
+  padding: 0;
+  border-radius: 8px;
+}
+.trace-feedback:not(:empty) { padding: 0.9rem 1rem; }
+.trace-feedback.success { border-left: 4px solid #438276; color: #245f55; background: #eaf7f3; }
+.trace-feedback.needs-retry { border-left: 4px solid #b5642f; color: #7b3f1d; background: #fff3e5; }
+.trace-next-actions:empty { display: none; }
+
+.path-comparison {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--line);
+}
+.path-comparison[hidden] { display: none; }
+.comparison-heading h3 { margin: 0.2rem 0 0; }
+.comparison-paths { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.comparison-path {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f7fafc;
+}
+.comparison-path.minimum-path { border-top: 4px solid #438276; }
+.comparison-path.higher-path { border-top: 4px solid #b5642f; }
+.comparison-cost { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.comparison-cost strong { color: #245160; font-size: 1.65rem; }
+.compact-alignment .alignment-step { min-width: 4.5rem; }
+
 @media (max-width: 680px) {
   .sequence-inputs, .unit-preview, .cost-grid, .distance-summary { grid-template-columns: 1fr; }
   .custom-actions { align-items: stretch; flex-direction: column; }
   .distance-matrix th, .distance-matrix td { width: 2.65rem; min-width: 2.65rem; height: 2.55rem; }
+  .trace-round-heading { align-items: stretch; flex-direction: column; }
+  .trace-running-cost { text-align: left; }
+  .trace-grid, .comparison-paths { grid-template-columns: 1fr; }
 }

@@ -26,12 +26,30 @@ const elements = {
   distanceValue: document.querySelector("#distance-value"),
   editCount: document.querySelector("#edit-count"),
   unitLabel: document.querySelector("#unit-label"),
+  traceGate: document.querySelector("#trace-gate"),
+  traceActivity: document.querySelector("#trace-activity"),
+  traceRoundLabel: document.querySelector("#trace-round-label"),
+  tracePrompt: document.querySelector("#trace-prompt"),
+  traceInstruction: document.querySelector("#trace-instruction"),
+  traceCost: document.querySelector("#trace-cost"),
+  traceMatrix: document.querySelector("#trace-matrix"),
+  tracePosition: document.querySelector("#trace-position"),
+  traceOptions: document.querySelector("#trace-options"),
   alignment: document.querySelector("#alignment-strip"),
-  operationSummary: document.querySelector("#operation-summary")
+  operationSummary: document.querySelector("#operation-summary"),
+  undoTrace: document.querySelector("#undo-trace"),
+  resetTrace: document.querySelector("#reset-trace"),
+  traceFeedback: document.querySelector("#trace-feedback"),
+  startHigherPath: document.querySelector("#start-higher-path"),
+  retryTrace: document.querySelector("#retry-trace"),
+  pathComparison: document.querySelector("#path-comparison"),
+  comparisonPaths: document.querySelector("#comparison-paths"),
+  comparisonConclusion: document.querySelector("#comparison-conclusion")
 };
 
 let result;
 let inspectedCell = null;
+let traceState;
 
 function escapeHTML(value) {
   return String(value).replace(/[&<>'"]/g, character => ({
@@ -175,34 +193,236 @@ function renderMatrix() {
   renderCellExplanation(explanationRow, explanationColumn);
 }
 
-function renderAlignment() {
-  const edited = result.operations.filter(item => item.operation !== "match");
-  const names = { match: "match", substitute: "substitute", delete: "delete", insert: "insert" };
-  elements.distanceValue.textContent = formatCost(result.distance);
-  elements.editCount.textContent = edited.length.toLocaleString();
-  elements.unitLabel.textContent = ({ character: "Character", word: "Word", sound: "Sound symbol" })[selectedMode()];
-  elements.alignment.innerHTML = result.operations.map(item => `
-    <div class="alignment-step ${item.operation}">
-      <span class="alignment-source">${escapeHTML(item.source ?? "∅")}</span>
-      <span class="alignment-operation">${escapeHTML(names[item.operation])}<small>+${formatCost(item.cost)}</small></span>
-      <span class="alignment-target">${escapeHTML(item.target ?? "∅")}</span>
-    </div>`).join("") || '<p class="empty-units">Enter two forms to construct an alignment.</p>';
+function traceChoices() {
+  if (!traceState || traceState.complete) return [];
+  const { row, column } = traceState;
+  const currentCosts = costs();
+  const choices = [];
+  if (row > 0 && column > 0) {
+    const same = result.sourceUnits[row - 1] === result.targetUnits[column - 1];
+    choices.push({
+      key: "diagonal",
+      direction: "Diagonal ↖",
+      operation: same ? "match" : "substitute",
+      previous: [row - 1, column - 1],
+      source: result.sourceUnits[row - 1],
+      target: result.targetUnits[column - 1],
+      cost: same ? 0 : currentCosts.substitution
+    });
+  }
+  if (row > 0) {
+    choices.push({
+      key: "up",
+      direction: "Up ↑",
+      operation: "delete",
+      previous: [row - 1, column],
+      source: result.sourceUnits[row - 1],
+      target: null,
+      cost: currentCosts.deletion
+    });
+  }
+  if (column > 0) {
+    choices.push({
+      key: "left",
+      direction: "Left ←",
+      operation: "insert",
+      previous: [row, column - 1],
+      source: null,
+      target: result.targetUnits[column - 1],
+      cost: currentCosts.insertion
+    });
+  }
+  return choices.map(choice => ({
+    ...choice,
+    optimal: Math.abs(result.matrix[choice.previous[0]][choice.previous[1]].cost + choice.cost
+      - result.matrix[row][column].cost) < 1e-9
+  }));
+}
 
-  const counts = edited.reduce((summary, item) => {
+function traceOperationsForward() {
+  return [...(traceState?.operations ?? [])].reverse();
+}
+
+function traceTotal(operations = traceState?.operations ?? []) {
+  return operations.reduce((sum, item) => sum + item.cost, 0);
+}
+
+function operationParts(operations) {
+  const counts = operations.filter(item => item.operation !== "match").reduce((summary, item) => {
     summary[item.operation] = (summary[item.operation] ?? 0) + 1;
     return summary;
   }, {});
-  const operationNames = {
+  const labels = {
     substitute: ["substitution", "substitutions"],
     insert: ["insertion", "insertions"],
     delete: ["deletion", "deletions"]
   };
-  const parts = ["substitute", "insert", "delete"]
+  return ["substitute", "insert", "delete"]
     .filter(operation => counts[operation])
-    .map(operation => `${counts[operation]} ${operationNames[operation][counts[operation] === 1 ? 0 : 1]}`);
-  elements.operationSummary.textContent = parts.length
-    ? `One cheapest path uses ${parts.join(", ")}. Matches add no cost.`
-    : "The two sequences match under the selected units and normalization.";
+    .map(operation => `${counts[operation]} ${labels[operation][counts[operation] === 1 ? 0 : 1]}`);
+}
+
+function renderOperationStrip(operations, target) {
+  const names = { match: "match", substitute: "substitute", delete: "delete", insert: "insert" };
+  target.innerHTML = operations.map(item => `
+    <div class="alignment-step ${item.operation}">
+      <span class="alignment-source">${escapeHTML(item.source ?? "∅")}</span>
+      <span class="alignment-operation">${escapeHTML(names[item.operation])}<small>+${formatCost(item.cost)}</small></span>
+      <span class="alignment-target">${escapeHTML(item.target ?? "∅")}</span>
+    </div>`).join("") || '<p class="empty-units">No moves chosen yet.</p>';
+}
+
+function renderTraceMatrix() {
+  const choices = traceChoices();
+  const choiceByCell = new Map(choices.map(choice => [choice.previous.join(","), choice]));
+  const visited = new Set((traceState?.visited ?? []).map(cell => cell.join(",")));
+  const header = `<thead><tr><th aria-label="Empty prefix"></th><th class="unit-axis">∅</th>${result.targetUnits.map(unit => `<th class="unit-axis">${escapeHTML(unit)}</th>`).join("")}</tr></thead>`;
+  const rows = [];
+  for (let row = 0; row <= result.sourceUnits.length; row += 1) {
+    const label = row === 0 ? "∅" : result.sourceUnits[row - 1];
+    const cells = [];
+    for (let column = 0; column <= result.targetUnits.length; column += 1) {
+      const key = `${row},${column}`;
+      const choice = choiceByCell.get(key);
+      const current = traceState && row === traceState.row && column === traceState.column;
+      const classes = [
+        `operation-${result.matrix[row][column].operation}`,
+        visited.has(key) ? "trace-visited" : "",
+        current ? "trace-current" : "",
+        choice ? "trace-choice" : "",
+        choice?.optimal ? "trace-optimal-choice" : ""
+      ].filter(Boolean).join(" ");
+      const interactive = Boolean(choice);
+      const title = choice
+        ? `${choice.direction}: ${operationLabel(choice.operation)}, +${formatCost(choice.cost)}`
+        : `Cell ${row}, ${column}: ${formatCost(result.matrix[row][column].cost)}`;
+      cells.push(`<td class="${classes}" title="${escapeHTML(title)}"${interactive ? ` data-trace-move="${choice.key}" role="button" tabindex="0" aria-label="${escapeHTML(title)}"` : ""}>${formatCost(result.matrix[row][column].cost)}</td>`);
+    }
+    rows.push(`<tr><th class="unit-axis">${escapeHTML(label)}</th>${cells.join("")}</tr>`);
+  }
+  elements.traceMatrix.innerHTML = `${header}<tbody>${rows.join("")}</tbody>`;
+}
+
+function resetCurrentTrace() {
+  traceState.row = result.sourceUnits.length;
+  traceState.column = result.targetUnits.length;
+  traceState.operations = [];
+  traceState.visited = [[traceState.row, traceState.column]];
+  traceState.complete = traceState.row === 0 && traceState.column === 0;
+}
+
+function resetTraceActivity() {
+  traceState = {
+    round: 1,
+    minimumPath: null,
+    row: result.sourceUnits.length,
+    column: result.targetUnits.length,
+    operations: [],
+    visited: [[result.sourceUnits.length, result.targetUnits.length]],
+    complete: result.sourceUnits.length === 0 && result.targetUnits.length === 0
+  };
+  elements.traceFeedback.className = "trace-feedback";
+  elements.traceFeedback.innerHTML = "";
+  elements.startHigherPath.hidden = true;
+  elements.retryTrace.hidden = true;
+  elements.pathComparison.hidden = true;
+}
+
+function renderComparison() {
+  const minimum = traceState.minimumPath;
+  const higher = { operations: traceOperationsForward(), cost: traceTotal() };
+  const card = (title, path, className) => {
+    const parts = operationParts(path.operations);
+    return `<article class="comparison-path ${className}">
+      <p class="callout-label">${escapeHTML(title)}</p>
+      <p class="comparison-cost"><span>Total cost</span><strong>${formatCost(path.cost)}</strong></p>
+      <div class="alignment-strip compact-alignment">${path.operations.map(item => `
+        <div class="alignment-step ${item.operation}">
+          <span class="alignment-source">${escapeHTML(item.source ?? "∅")}</span>
+          <span class="alignment-operation">${escapeHTML(item.operation)}<small>+${formatCost(item.cost)}</small></span>
+          <span class="alignment-target">${escapeHTML(item.target ?? "∅")}</span>
+        </div>`).join("")}</div>
+      <p>${parts.length ? `Edits: ${escapeHTML(parts.join(", "))}.` : "No non-matching edits."}</p>
+    </article>`;
+  };
+  elements.comparisonPaths.innerHTML = card("Minimum-cost path", minimum, "minimum-path")
+    + card("Higher-cost path", higher, "higher-path");
+  elements.comparisonConclusion.innerHTML = `<strong>Cost difference:</strong> ${formatCost(higher.cost)} − ${formatCost(minimum.cost)} = <strong>${formatCost(higher.cost - minimum.cost)}</strong>. Both paths transform the same source into the same target, but the second path uses a more expensive sequence of edits.`;
+  elements.pathComparison.hidden = false;
+}
+
+function finishTraceRound() {
+  const total = traceTotal();
+  if (traceState.round === 1) {
+    if (Math.abs(total - result.distance) < 1e-9) {
+      traceState.minimumPath = { operations: traceOperationsForward(), cost: total };
+      elements.traceFeedback.className = "trace-feedback success";
+      elements.traceFeedback.innerHTML = `<strong>Minimum path found.</strong> Your edits cost ${formatCost(total)}, exactly the value in the bottom-right cell. Now construct a different path whose cost is higher.`;
+      elements.startHigherPath.hidden = false;
+    } else {
+      elements.traceFeedback.className = "trace-feedback needs-retry";
+      elements.traceFeedback.innerHTML = `<strong>This path costs ${formatCost(total)}, not the minimum ${formatCost(result.distance)}.</strong> Try Round 1 again and choose predecessor cells marked “keeps minimum.”`;
+      elements.retryTrace.hidden = false;
+    }
+  } else if (total > traceState.minimumPath.cost + 1e-9) {
+    elements.traceFeedback.className = "trace-feedback success";
+    elements.traceFeedback.innerHTML = `<strong>Higher-cost path found.</strong> Its edits cost ${formatCost(total)}, compared with ${formatCost(traceState.minimumPath.cost)} for your minimum path.`;
+    renderComparison();
+  } else {
+    elements.traceFeedback.className = "trace-feedback needs-retry";
+    elements.traceFeedback.innerHTML = `<strong>You found another minimum-cost path.</strong> That is a useful tie, but this round asks for a cost above ${formatCost(traceState.minimumPath.cost)}. Try again and include at least one option marked “raises cost.”`;
+    elements.retryTrace.hidden = false;
+  }
+}
+
+function chooseTraceMove(key) {
+  const choice = traceChoices().find(item => item.key === key);
+  if (!choice) return;
+  traceState.operations.push(choice);
+  [traceState.row, traceState.column] = choice.previous;
+  traceState.visited.push(choice.previous);
+  traceState.complete = traceState.row === 0 && traceState.column === 0;
+  renderTraceActivity();
+  if (traceState.complete) finishTraceRound();
+}
+
+function renderTraceActivity() {
+  const totalCells = result.sourceUnits.length * result.targetUnits.length;
+  const matrixComplete = Number(elements.cellSlider.value) === totalCells;
+  elements.distanceValue.textContent = formatCost(result.distance);
+  elements.editCount.textContent = result.operations.filter(item => item.operation !== "match").length.toLocaleString();
+  elements.unitLabel.textContent = ({ character: "Character", word: "Word", sound: "Sound symbol" })[selectedMode()];
+  elements.traceGate.innerHTML = matrixComplete
+    ? `<strong>Matrix complete.</strong> Backtracing is unlocked. The number in each cell is its minimum prefix cost; your chosen path cost is the sum of the edits you make.`
+    : `<strong>Complete Step 2 first.</strong> Reveal all ${totalCells} interior cells to unlock the backtrace activity.`;
+  elements.traceActivity.hidden = !matrixComplete;
+  if (!matrixComplete || !traceState) return;
+
+  elements.traceRoundLabel.textContent = `Round ${traceState.round} of 2`;
+  elements.tracePrompt.textContent = traceState.round === 1 ? "Find a minimum-cost path" : "Find a different, higher-cost path";
+  elements.traceInstruction.textContent = traceState.round === 1
+    ? "At every cell, choose a predecessor marked “keeps minimum.” Continue until you reach d(0, 0)."
+    : "Deliberately choose at least one predecessor marked “raises cost,” then continue to d(0, 0).";
+  elements.traceCost.textContent = formatCost(traceTotal());
+  elements.tracePosition.innerHTML = traceState.complete
+    ? `<strong>Reached <code>d(0, 0)</code>.</strong>`
+    : `Current cell: <strong><code>d(${traceState.row}, ${traceState.column})</code></strong>. Choose where it came from:`;
+  elements.traceOptions.innerHTML = traceChoices().map(choice => `
+    <button class="trace-option${choice.optimal ? " optimal" : " costly"}" type="button" data-trace-move="${choice.key}">
+      <span>${escapeHTML(choice.direction)}</span>
+      <strong>${escapeHTML(operationLabel(choice.operation))} <small>+${formatCost(choice.cost)}</small></strong>
+      <em>${choice.optimal ? "keeps minimum" : "raises cost"}</em>
+    </button>`).join("");
+  elements.undoTrace.disabled = traceState.operations.length === 0 || traceState.complete;
+  elements.resetTrace.disabled = traceState.operations.length === 0;
+  renderTraceMatrix();
+
+  const operations = traceOperationsForward();
+  renderOperationStrip(operations, elements.alignment);
+  const parts = operationParts(operations);
+  elements.operationSummary.textContent = operations.length
+    ? `${operations.length} move${operations.length === 1 ? "" : "s"} chosen${parts.length ? `: ${parts.join(", ")}` : "; all are matches"}. Current cost: ${formatCost(traceTotal())}.`
+    : "Choose a direction to begin. The edit list will appear here in source-to-target order.";
 }
 
 function recompute({ resetMatrix = false } = {}) {
@@ -223,9 +443,10 @@ function recompute({ resetMatrix = false } = {}) {
   elements.insertionValue.value = Number(elements.insertion.value).toFixed(2);
   elements.deletionValue.value = Number(elements.deletion.value).toFixed(2);
   elements.substitutionValue.value = Number(elements.substitution.value).toFixed(2);
+  resetTraceActivity();
   renderUnits();
   renderMatrix();
-  renderAlignment();
+  renderTraceActivity();
 }
 
 function loadExample(key) {
@@ -250,6 +471,7 @@ function generateCompleteMatrix() {
   elements.cellSlider.value = elements.cellSlider.max;
   inspectedCell = null;
   renderMatrix();
+  renderTraceActivity();
 }
 
 for (const [key, example] of Object.entries(distanceExamples)) {
@@ -270,6 +492,7 @@ elements.revealMatrix.addEventListener("click", () => {
   elements.cellSlider.value = elements.cellSlider.max;
   inspectedCell = null;
   renderMatrix();
+  renderTraceActivity();
 });
 elements.matrix.addEventListener("click", event => {
   const cell = event.target.closest("td[data-row][data-column]");
@@ -286,5 +509,56 @@ elements.matrix.addEventListener("keydown", event => {
   renderMatrix();
 });
 [elements.insertion, elements.deletion, elements.substitution].forEach(input => input.addEventListener("input", recompute));
+
+elements.cellSlider.addEventListener("input", renderTraceActivity);
+elements.traceOptions.addEventListener("click", event => {
+  const option = event.target.closest("[data-trace-move]");
+  if (option) chooseTraceMove(option.dataset.traceMove);
+});
+elements.traceMatrix.addEventListener("click", event => {
+  const cell = event.target.closest("[data-trace-move]");
+  if (cell) chooseTraceMove(cell.dataset.traceMove);
+});
+elements.traceMatrix.addEventListener("keydown", event => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const cell = event.target.closest("[data-trace-move]");
+  if (!cell) return;
+  event.preventDefault();
+  chooseTraceMove(cell.dataset.traceMove);
+});
+elements.undoTrace.addEventListener("click", () => {
+  if (!traceState.operations.length) return;
+  traceState.operations.pop();
+  traceState.visited.pop();
+  [traceState.row, traceState.column] = traceState.visited.at(-1);
+  traceState.complete = false;
+  elements.traceFeedback.innerHTML = "";
+  elements.startHigherPath.hidden = true;
+  elements.retryTrace.hidden = true;
+  elements.pathComparison.hidden = true;
+  renderTraceActivity();
+});
+elements.resetTrace.addEventListener("click", () => {
+  resetCurrentTrace();
+  elements.traceFeedback.innerHTML = "";
+  elements.startHigherPath.hidden = true;
+  elements.retryTrace.hidden = true;
+  elements.pathComparison.hidden = true;
+  renderTraceActivity();
+});
+elements.retryTrace.addEventListener("click", () => {
+  resetCurrentTrace();
+  elements.traceFeedback.innerHTML = "";
+  elements.retryTrace.hidden = true;
+  elements.pathComparison.hidden = true;
+  renderTraceActivity();
+});
+elements.startHigherPath.addEventListener("click", () => {
+  traceState.round = 2;
+  resetCurrentTrace();
+  elements.traceFeedback.innerHTML = "";
+  elements.startHigherPath.hidden = true;
+  renderTraceActivity();
+});
 
 loadExample("classic");
