@@ -291,7 +291,6 @@
   text-transform: uppercase;
 }
 .trace-option.optimal { border-left: 4px solid #438276; }
-.trace-option.costly { border-left: 4px solid #b5642f; }
 .trace-actions { align-items: stretch; flex-direction: column; }
 .trace-actions .button { width: 100%; }
 

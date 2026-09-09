@@ -235,7 +235,6 @@ function traceChoices() {
       ...choice,
       previousCost,
       candidateCost,
-      currentCost: result.matrix[row][column].cost,
       optimal: Math.abs(candidateCost - result.matrix[row][column].cost) < 1e-9
     };
   });
@@ -296,7 +295,7 @@ function renderTraceMatrix() {
       ].filter(Boolean).join(" ");
       const interactive = Boolean(choice);
       const title = choice
-        ? `${choice.direction}: ${formatCost(choice.previousCost)} + ${formatCost(choice.cost)} = ${formatCost(choice.candidateCost)}; ${choice.optimal ? "matches" : "does not match"} current score ${formatCost(choice.currentCost)}`
+        ? `${choice.direction}: ${formatCost(choice.previousCost)} + ${formatCost(choice.cost)} = ${formatCost(choice.candidateCost)}${choice.optimal ? "; keeps minimum" : ""}`
         : `Cell ${row}, ${column}: ${formatCost(result.matrix[row][column].cost)}`;
       cells.push(`<td class="${classes}" title="${escapeHTML(title)}"${interactive ? ` data-trace-move="${choice.key}" role="button" tabindex="0" aria-label="${escapeHTML(title)}"` : ""}>${formatCost(result.matrix[row][column].cost)}</td>`);
     }
@@ -367,13 +366,11 @@ function renderTraceActivity() {
     ? `<strong>Reached <code>d(0, 0)</code>.</strong>`
     : `Current cell: <strong><code>d(${traceState.row}, ${traceState.column}) = ${formatCost(result.matrix[traceState.row][traceState.column].cost)}</code></strong>. Choose which neighboring cell it came from:`;
   elements.traceOptions.innerHTML = traceChoices().map(choice => `
-    <button class="trace-option${choice.optimal ? " optimal" : " costly"}" type="button" data-trace-move="${choice.key}">
+    <button class="trace-option${choice.optimal ? " optimal" : ""}" type="button" data-trace-move="${choice.key}">
       <span>${escapeHTML(choice.direction)}</span>
       <strong>${escapeHTML(operationLabel(choice.operation))}</strong>
       <code class="trace-equation">${formatCost(choice.previousCost)} + ${formatCost(choice.cost)} = ${formatCost(choice.candidateCost)}</code>
-      <em>${choice.optimal
-        ? `matches current score ${formatCost(choice.currentCost)} — keeps minimum`
-        : `does not match current score ${formatCost(choice.currentCost)} — raises cost`}</em>
+      ${choice.optimal ? "<em>keeps minimum</em>" : ""}
     </button>`).join("");
   elements.undoTrace.disabled = traceState.operations.length === 0 || traceState.complete;
   elements.resetTrace.disabled = traceState.operations.length === 0;
