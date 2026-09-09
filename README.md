@@ -194,9 +194,27 @@ The sample corpora and multilingual examples are deliberately compact so student
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the module conventions.
 
-## Citation
+## Cite this project
 
-Citation metadata is provided in [`CITATION.cff`](CITATION.cff). GitHub can generate APA and BibTeX formats from the repository's **Cite this repository** control.
+If you use or adapt the Computational Linguistics Lab in teaching, scholarship, or other published work, please use the following reference:
+
+> Lin, D., & Lai, W. (2026). *Computational Linguistics Lab* (Version 1.2.0) [Interactive teaching collection]. https://linguistics-teaching-labs.github.io/computational-linguistics-lab/
+
+**BibTeX**
+
+```bibtex
+@misc{lin_lai_2026_computational_linguistics_lab,
+  author       = {Lin, Desen and Lai, Wei},
+  title        = {Computational Linguistics Lab},
+  year         = {2026},
+  howpublished = {Interactive teaching collection, Version 1.2.0},
+  url          = {https://linguistics-teaching-labs.github.io/computational-linguistics-lab/}
+}
+```
+
+The [`CITATION.cff`](CITATION.cff) file provides the canonical, machine-readable citation metadata used by GitHub and reference managers. When referring to a particular activity, include the module URL in addition to the lab citation above.
+
+Computational Linguistics Lab is part of the broader [Linguistics Teaching Labs](https://linguistics-teaching-labs.github.io/) collection.
 
 ## License
 
