@@ -63,7 +63,9 @@ A guided activity in which students:
 A guided activity in which students:
 
 - compare forms as characters, words, or space-separated sound symbols;
+- enter a custom pair and generate a matrix whose axes use those forms;
 - reveal an edit-distance matrix one cell at a time;
+- inspect how every cell is calculated from its three adjacent predecessors;
 - trace one minimum-cost alignment;
 - change insertion, deletion, and substitution costs; and
 - explain why similarity in form is not the same as similarity in meaning.

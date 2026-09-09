@@ -41,3 +41,20 @@ test("an expensive substitution is replaced by deletion plus insertion", () => {
   assert.equal(result.distance, 2);
   assert.deepEqual(result.operations.map(item => item.operation), ["insert", "delete"]);
 });
+
+test("each interior cell records calculations from its three adjacent predecessors", () => {
+  const result = editDistance(toUnits("ba"), toUnits("c"));
+  const cell = result.matrix[2][1];
+
+  assert.deepEqual(cell.candidates.map(candidate => ({
+    operation: candidate.operation,
+    previous: candidate.previous,
+    cost: candidate.cost
+  })), [
+    { operation: "substitute", previous: [1, 0], cost: 2 },
+    { operation: "delete", previous: [1, 1], cost: 2 },
+    { operation: "insert", previous: [2, 0], cost: 3 }
+  ]);
+  assert.equal(cell.cost, 2);
+  assert.equal(cell.operation, "substitute");
+});

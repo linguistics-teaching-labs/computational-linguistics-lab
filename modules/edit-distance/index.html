@@ -7,7 +7,7 @@
   <title>How Far Apart Are Two Forms? · Computational Linguistics Lab</title>
   <link rel="stylesheet" href="../../assets/styles.css?v=20260904-4">
   <link rel="stylesheet" href="../../assets/lab.css">
-  <link rel="stylesheet" href="edit-distance.css">
+  <link rel="stylesheet" href="edit-distance.css?v=20260909-1">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQB575CQX3"></script>
   <script>
@@ -53,11 +53,11 @@
       <section class="lab-section" id="units" aria-labelledby="units-title">
         <div class="section-heading">
           <span class="step-badge">Step 1</span>
-          <div><h2 id="units-title">Choose the units</h2><p>The algorithm compares sequences. The analyst decides what each element represents.</p></div>
+          <div><h2 id="units-title">Choose the units and forms</h2><p>Start with an example or enter your own pair. The rows and columns of the matrix will update to use your selected units.</p></div>
         </div>
 
         <label class="field">
-          <span>Example</span>
+          <span>Starting example</span>
           <select id="distance-example"></select>
         </label>
         <p id="distance-note" class="field-note"></p>
@@ -72,8 +72,12 @@
         </fieldset>
 
         <div class="sequence-inputs">
-          <label class="field"><span>Source form</span><input id="source-form" type="text" value="kitten" autocomplete="off"></label>
-          <label class="field"><span>Target form</span><input id="target-form" type="text" value="sitting" autocomplete="off"></label>
+          <label class="field"><span>Source word or form</span><input id="source-form" type="text" value="kitten" autocomplete="off"></label>
+          <label class="field"><span>Target word or form</span><input id="target-form" type="text" value="sitting" autocomplete="off"></label>
+        </div>
+        <div class="action-row custom-actions">
+          <button id="compare-forms" class="button primary" type="button">Generate the complete matrix</button>
+          <span class="status-text">Typing a new pair resets the step-by-step reveal.</span>
         </div>
         <label class="toggle-row case-toggle">
           <input id="distance-lowercase" type="checkbox" checked>
@@ -89,7 +93,7 @@
       <section class="lab-section" id="matrix" aria-labelledby="matrix-title">
         <div class="section-heading">
           <span class="step-badge">Step 2</span>
-          <div><h2 id="matrix-title">Fill the matrix</h2><p>Each cell stores the cheapest cost of aligning two prefixes.</p></div>
+          <div><h2 id="matrix-title">Fill the matrix</h2><p>Each cell stores the cheapest cost of transforming one prefix into another. Select any revealed interior cell to revisit its calculation.</p></div>
         </div>
 
         <label class="range-field" for="cell-slider">
@@ -166,6 +170,6 @@
   </main>
 
   <script type="module" src="../../assets/module-nav.js?v=20260906-1"></script>
-  <script type="module" src="activity.js"></script>
+  <script type="module" src="activity.js?v=20260909-1"></script>
 </body>
 </html>

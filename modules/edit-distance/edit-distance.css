@@ -11,6 +11,7 @@
 
 .case-toggle { margin: 1rem 0; }
 .case-toggle input { accent-color: #2e6171; }
+.custom-actions { align-items: center; margin-bottom: 1rem; }
 
 .unit-preview {
   display: grid;
@@ -105,6 +106,9 @@
 }
 
 .distance-matrix td { color: var(--ink); background: #fff; font-weight: 800; }
+.distance-matrix td[role="button"] { cursor: pointer; }
+.distance-matrix td[role="button"]:hover { border-color: #2e6171; }
+.distance-matrix td[role="button"]:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
 .distance-matrix td.operation-match { border-color: #aad2c8; background: #eaf7f3; }
 .distance-matrix td.operation-substitute { border-color: #edc69c; background: #fff3e5; }
 .distance-matrix td.operation-insert { border-color: #b8cae7; background: #edf3fc; }
@@ -112,6 +116,21 @@
 .distance-matrix td.operation-start { color: var(--ink-soft); background: #edf2f5; }
 .distance-matrix td.unrevealed { color: #9aa9b5; border-style: dashed; border-color: var(--line); background: #f9fbfc; }
 .distance-matrix td.current-cell { outline: 3px solid var(--focus); outline-offset: 1px; }
+
+.calculation-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.8rem 0;
+  padding-left: 1.25rem;
+}
+.calculation-list li { padding-left: 0.2rem; }
+.calculation-list .selected-calculation {
+  padding: 0.55rem 0.7rem;
+  border-left: 3px solid #b5642f;
+  border-radius: 4px;
+  background: rgba(255,255,255,.55);
+}
+.calculation-note, .calculation-result { margin-bottom: 0; }
 
 .cost-grid {
   display: grid;
@@ -193,5 +212,6 @@
 
 @media (max-width: 680px) {
   .sequence-inputs, .unit-preview, .cost-grid, .distance-summary { grid-template-columns: 1fr; }
+  .custom-actions { align-items: stretch; flex-direction: column; }
   .distance-matrix th, .distance-matrix td { width: 2.65rem; min-width: 2.65rem; height: 2.55rem; }
 }

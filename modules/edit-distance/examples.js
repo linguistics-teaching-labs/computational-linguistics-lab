@@ -1,4 +1,11 @@
 export const distanceExamples = {
+  custom: {
+    label: "Custom word or form pair",
+    mode: "character",
+    source: "",
+    target: "",
+    note: "Enter any two forms below. The rows represent source units, and the columns represent target units."
+  },
   classic: {
     label: "Classic spelling example",
     mode: "character",
@@ -26,12 +33,5 @@ export const distanceExamples = {
     source: "k æ t",
     target: "k ʌ t",
     note: "Space-separated IPA symbols let the same algorithm align sound sequences."
-  },
-  meaning: {
-    label: "A semantic warning",
-    mode: "character",
-    source: "cat",
-    target: "bat",
-    note: "A small form distance does not imply similar meanings. Try replacing “bat” with “dog.”"
   }
 };
