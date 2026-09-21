@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A guided interactive lab about word embeddings, cosine similarity, analogies, semantic neighborhoods, and representational bias.">
+  <meta name="description" content="A guided interactive lab comparing sparse, dense static, and contextual word vectors, with activities on cosine similarity, analogies, semantic neighborhoods, and representational bias.">
   <title>Meaning as Geometry · Computational Linguistics Lab</title>
   <link rel="stylesheet" href="../../assets/styles.css?v=20260904-4">
   <link rel="stylesheet" href="../../assets/lab.css">
@@ -31,17 +31,19 @@
       <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
       <p class="eyebrow">Distributional semantics</p>
       <h1>Meaning as Geometry</h1>
-      <p class="guide-intro">Explore neighbors, similarities, and analogies in a small word-embedding space—then examine what its geometry can inherit from data.</p>
+      <p class="guide-intro">Compare sparse, dense, and contextual vectors, then explore what embedding geometry can reveal and inherit from data.</p>
       <nav class="step-nav" aria-label="Lab steps">
-        <a href="#neighbors"><span>1</span> Find neighbors</a>
-        <a href="#similarity"><span>2</span> Compare vectors</a>
-        <a href="#analogies"><span>3</span> Solve an analogy</a>
-        <a href="#associations"><span>4</span> Audit associations</a>
+        <a href="#representations"><span>1</span> Compare representations</a>
+        <a href="#neighbors"><span>2</span> Find neighbors</a>
+        <a href="#similarity"><span>3</span> Compare directions</a>
+        <a href="#analogies"><span>4</span> Solve an analogy</a>
+        <a href="#associations"><span>5</span> Audit associations</a>
       </nav>
       <details class="objectives">
         <summary>Learning objectives</summary>
         <ul>
-          <li>Interpret an embedding as a vector learned from distributional patterns.</li>
+          <li>Distinguish sparse count, dense static, and contextual word vectors.</li>
+          <li>Explain why contextual vectors vary across word tokens.</li>
           <li>Use cosine similarity to compare directions.</li>
           <li>Explain analogy solving as vector arithmetic.</li>
           <li>Recognize projections and associations as model-dependent evidence.</li>
@@ -50,9 +52,62 @@
     </aside>
 
     <div class="lab-workspace">
-      <section class="lab-section" id="neighbors" aria-labelledby="neighbors-title">
+      <section class="lab-section" id="representations" aria-labelledby="representations-title">
         <div class="section-heading">
           <span class="step-badge">Step 1</span>
+          <div><h2 id="representations-title">One word, three representations</h2><p>Switch the sentence and observe which representations assign a new vector to the word <em>bank</em>.</p></div>
+        </div>
+
+        <div class="embedding-note"><strong>Miniature teaching vectors:</strong> the dimensions and values below are simplified so that you can inspect every coordinate. Real models use much larger vectors learned from corpora.</div>
+
+        <div class="representation-tabs" role="tablist" aria-label="Representation type">
+          <button type="button" role="tab" aria-selected="true" data-representation="sparse">Sparse count</button>
+          <button type="button" role="tab" aria-selected="false" data-representation="dense">Dense static</button>
+          <button type="button" role="tab" aria-selected="false" data-representation="contextual">Contextual</button>
+        </div>
+
+        <fieldset class="context-picker">
+          <legend>Choose an occurrence of <em>bank</em></legend>
+          <button type="button" class="context-option" data-context="financial" aria-pressed="true">
+            <span>Financial institution</span>
+            <q>Maya deposited the check at the <mark>bank</mark>.</q>
+          </button>
+          <button type="button" class="context-option" data-context="river" aria-pressed="false">
+            <span>River edge</span>
+            <q>The hikers rested on the <mark>bank</mark> beside the river.</q>
+          </button>
+        </fieldset>
+
+        <div class="representation-explainer" aria-live="polite">
+          <div class="representation-heading">
+            <div><p class="callout-label" id="representation-kicker">Count-based embedding</p><h3 id="representation-title">Sparse count vector</h3></div>
+            <p id="representation-description"></p>
+          </div>
+          <div class="representation-metrics">
+            <div><small>Represents</small><strong id="representation-unit"></strong></div>
+            <div><small>Typical size</small><strong id="representation-size"></strong></div>
+            <div><small>Common examples</small><strong id="representation-examples"></strong></div>
+            <div><small>Sentence-to-sentence cosine</small><strong id="representation-cosine"></strong></div>
+          </div>
+          <div class="subheading-row"><h3 id="selected-vector-label">Vector for bank</h3><span id="coordinate-change"></span></div>
+          <div id="representation-vector" class="representation-vector"></div>
+          <div id="representation-result" class="representation-result"></div>
+        </div>
+
+        <div class="concept-check">
+          <div><p class="callout-label">Prediction check</p><h3>Which representation can give these two occurrences of <em>bank</em> different vectors?</h3></div>
+          <div class="concept-options" role="group" aria-label="Choose the representation that changes across contexts">
+            <button type="button" data-concept-answer="sparse">Sparse count</button>
+            <button type="button" data-concept-answer="dense">Dense static</button>
+            <button type="button" data-concept-answer="contextual">Contextual</button>
+          </div>
+          <p id="concept-feedback" class="concept-feedback" aria-live="polite">Choose an answer, then test it by switching the sentence above.</p>
+        </div>
+      </section>
+
+      <section class="lab-section" id="neighbors" aria-labelledby="neighbors-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 2</span>
           <div><h2 id="neighbors-title">Find a word’s neighborhood</h2><p>Words used in similar contexts tend to point in similar directions.</p></div>
         </div>
 
@@ -77,7 +132,7 @@
 
       <section class="lab-section" id="similarity" aria-labelledby="similarity-title">
         <div class="section-heading">
-          <span class="step-badge">Step 2</span>
+          <span class="step-badge">Step 3</span>
           <div><h2 id="similarity-title">Compare two directions</h2><p>Cosine similarity measures the angle between vectors rather than their raw distance from the origin.</p></div>
         </div>
 
@@ -96,7 +151,7 @@
 
       <section class="lab-section" id="analogies" aria-labelledby="analogies-title">
         <div class="section-heading">
-          <span class="step-badge">Step 3</span>
+          <span class="step-badge">Step 4</span>
           <div><h2 id="analogies-title">Solve an analogy with arithmetic</h2><p>Apply the displacement from A to B to a new starting word C, then search for the nearest vector.</p></div>
         </div>
 
@@ -120,7 +175,7 @@
 
       <section class="lab-section" id="associations" aria-labelledby="associations-title">
         <div class="section-heading">
-          <span class="step-badge">Step 4</span>
+          <span class="step-badge">Step 5</span>
           <div><h2 id="associations-title">Audit an association axis</h2><p>Compare profession vectors with two anchors. The score reflects this embedding’s geometry—not a property of the people or occupations.</p></div>
         </div>
 

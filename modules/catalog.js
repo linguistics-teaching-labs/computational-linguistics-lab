@@ -61,8 +61,8 @@ export const modules = [
     title: "Meaning as Geometry: Word-Embedding Explorer",
     topic: "Distributional semantics",
     category: "structure-meaning",
-    description: "Explore semantic neighborhoods, cosine similarity, vector analogies, and model-dependent associations in a transparent teaching embedding.",
-    concepts: ["Cosine similarity", "Vector arithmetic", "Representation bias"],
+    description: "Compare sparse, dense static, and contextual vectors, then explore cosine similarity, analogies, and model-dependent associations.",
+    concepts: ["Word embeddings", "Cosine similarity", "Contextual vectors"],
     href: "modules/embeddings/"
   },
   {

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { teachingEmbeddings } from "../modules/embeddings/data.js";
+import { representationComparison, teachingEmbeddings } from "../modules/embeddings/data.js";
 import {
   anchorAssociation,
   analogyVector,
@@ -55,4 +55,13 @@ test("removing the anchor direction equalizes the two anchor associations", () =
   const direction = subtract(vector("man"), vector("woman"));
   const projected = projectAway(vector("nurse"), direction);
   assert.ok(Math.abs(anchorAssociation(projected, vector("woman"), vector("man"))) < 1e-12);
+});
+
+test("the representation comparison preserves the static and contextual distinction", () => {
+  const financial = representationComparison.contexts.financial.contextualVector;
+  const river = representationComparison.contexts.river.contextualVector;
+  assert.equal(representationComparison.sparse.vector.length, representationComparison.sparse.labels.length);
+  assert.equal(representationComparison.denseStatic.vector.length, representationComparison.denseStatic.labels.length);
+  assert.notDeepEqual(financial, river);
+  assert.ok(cosineSimilarity(financial, river) < 0.5);
 });

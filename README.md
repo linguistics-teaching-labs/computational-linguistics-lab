@@ -84,6 +84,8 @@ A guided activity in which students:
 
 A guided activity in which students:
 
+- compare sparse count, dense static, and contextual representations of the same word;
+- test which representations change when a word appears in a different sentence;
 - inspect nearest neighbors in a transparent teaching embedding;
 - compare vectors using cosine similarity;
 - solve selected analogies with vector arithmetic;

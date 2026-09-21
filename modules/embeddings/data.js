@@ -1,5 +1,31 @@
 export const embeddingDimensions = ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8"];
 
+export const representationComparison = {
+  target: "bank",
+  contexts: {
+    financial: {
+      label: "Financial institution",
+      sentence: "Maya deposited the check at the bank.",
+      contextualVector: [0.82, 0.48, -0.36, 0.63, -0.18, 0.31, 0.12, -0.44],
+      neighbors: ["money", "loan", "deposit"]
+    },
+    river: {
+      label: "River edge",
+      sentence: "The hikers rested on the bank beside the river.",
+      contextualVector: [-0.52, 0.61, 0.74, -0.28, 0.56, -0.39, 0.45, 0.21],
+      neighbors: ["shore", "river", "slope"]
+    }
+  },
+  sparse: {
+    labels: ["deposit", "loan", "river", "water", "shore", "dance", "purple", "teach", "orbit", "sleepy", "violin", "cloud"],
+    vector: [9, 7, 6, 5, 4, 0, 0, 0, 0, 0, 0, 0]
+  },
+  denseStatic: {
+    labels: embeddingDimensions,
+    vector: [0.42, 0.53, 0.16, 0.29, 0.25, -0.06, 0.31, -0.11]
+  }
+};
+
 export const teachingEmbeddings = {
   man:       { vector: [0, 1, 1, 0.2, 0.1, 0.1, 0.1, 0], group: "people", plot: [22, 45] },
   woman:     { vector: [0, 1, -1, 0.2, 0.1, 0.1, 0.1, 0], group: "people", plot: [22, 58] },
