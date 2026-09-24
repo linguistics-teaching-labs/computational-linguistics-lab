@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A guided interactive lab comparing sparse, dense static, and contextual word vectors, with activities on cosine similarity, analogies, semantic neighborhoods, and representational bias.">
+  <meta name="description" content="Explore word embedding geometry with neighbors, cosine similarity, analogies, associations, and contextual vectors from your own sentences.">
   <title>Meaning as Geometry · Computational Linguistics Lab</title>
   <link rel="stylesheet" href="../../assets/styles.css?v=20260904-4">
   <link rel="stylesheet" href="../../assets/lab.css">
@@ -31,19 +31,19 @@
       <a class="back-link" href="../../"><span aria-hidden="true">←</span> All modules</a>
       <p class="eyebrow">Distributional semantics</p>
       <h1>Meaning as Geometry</h1>
-      <p class="guide-intro">Compare sparse, dense, and contextual vectors, then explore what embedding geometry can reveal and inherit from data.</p>
+      <p class="guide-intro">Explore word embedding geometry, then compare contextual vectors for words in your own sentences.</p>
       <nav class="step-nav" aria-label="Lab steps">
-        <a href="#representations"><span>1</span> Compare representations</a>
-        <a href="#neighbors"><span>2</span> Find neighbors</a>
-        <a href="#similarity"><span>3</span> Compare directions</a>
-        <a href="#analogies"><span>4</span> Solve an analogy</a>
-        <a href="#associations"><span>5</span> Audit associations</a>
+        <a href="#neighbors"><span>1</span> Find neighbors</a>
+        <a href="#similarity"><span>2</span> Compare directions</a>
+        <a href="#analogies"><span>3</span> Solve an analogy</a>
+        <a href="#associations"><span>4</span> Audit associations</a>
+        <a href="#contextual"><span>5</span> Compare words in context</a>
       </nav>
       <details class="objectives">
         <summary>Learning objectives</summary>
         <ul>
-          <li>Distinguish sparse count, dense static, and contextual word vectors.</li>
-          <li>Explain why contextual vectors vary across word tokens.</li>
+          <li>Distinguish the teaching embedding's static vectors from contextual word vectors.</li>
+          <li>Explain why a contextual vector can vary across word occurrences.</li>
           <li>Use cosine similarity to compare directions.</li>
           <li>Explain analogy solving as vector arithmetic.</li>
           <li>Recognize projections and associations as model-dependent evidence.</li>
@@ -52,62 +52,9 @@
     </aside>
 
     <div class="lab-workspace">
-      <section class="lab-section" id="representations" aria-labelledby="representations-title">
-        <div class="section-heading">
-          <span class="step-badge">Step 1</span>
-          <div><h2 id="representations-title">One word, three representations</h2><p>Switch the sentence and observe which representations assign a new vector to the word <em>bank</em>.</p></div>
-        </div>
-
-        <div class="embedding-note"><strong>Miniature teaching vectors:</strong> the dimensions and values below are simplified so that you can inspect every coordinate. Real models use much larger vectors learned from corpora.</div>
-
-        <div class="representation-tabs" role="tablist" aria-label="Representation type">
-          <button type="button" role="tab" aria-selected="true" data-representation="sparse">Sparse count</button>
-          <button type="button" role="tab" aria-selected="false" data-representation="dense">Dense static</button>
-          <button type="button" role="tab" aria-selected="false" data-representation="contextual">Contextual</button>
-        </div>
-
-        <fieldset class="context-picker">
-          <legend>Choose an occurrence of <em>bank</em></legend>
-          <button type="button" class="context-option" data-context="financial" aria-pressed="true">
-            <span>Financial institution</span>
-            <q>Maya deposited the check at the <mark>bank</mark>.</q>
-          </button>
-          <button type="button" class="context-option" data-context="river" aria-pressed="false">
-            <span>River edge</span>
-            <q>The hikers rested on the <mark>bank</mark> beside the river.</q>
-          </button>
-        </fieldset>
-
-        <div class="representation-explainer" aria-live="polite">
-          <div class="representation-heading">
-            <div><p class="callout-label" id="representation-kicker">Count-based embedding</p><h3 id="representation-title">Sparse count vector</h3></div>
-            <p id="representation-description"></p>
-          </div>
-          <div class="representation-metrics">
-            <div><small>Represents</small><strong id="representation-unit"></strong></div>
-            <div><small>Typical size</small><strong id="representation-size"></strong></div>
-            <div><small>Common examples</small><strong id="representation-examples"></strong></div>
-            <div><small>Sentence-to-sentence cosine</small><strong id="representation-cosine"></strong></div>
-          </div>
-          <div class="subheading-row"><h3 id="selected-vector-label">Vector for bank</h3><span id="coordinate-change"></span></div>
-          <div id="representation-vector" class="representation-vector"></div>
-          <div id="representation-result" class="representation-result"></div>
-        </div>
-
-        <div class="concept-check">
-          <div><p class="callout-label">Prediction check</p><h3>Which representation can give these two occurrences of <em>bank</em> different vectors?</h3></div>
-          <div class="concept-options" role="group" aria-label="Choose the representation that changes across contexts">
-            <button type="button" data-concept-answer="sparse">Sparse count</button>
-            <button type="button" data-concept-answer="dense">Dense static</button>
-            <button type="button" data-concept-answer="contextual">Contextual</button>
-          </div>
-          <p id="concept-feedback" class="concept-feedback" aria-live="polite">Choose an answer, then test it by switching the sentence above.</p>
-        </div>
-      </section>
-
       <section class="lab-section" id="neighbors" aria-labelledby="neighbors-title">
         <div class="section-heading">
-          <span class="step-badge">Step 2</span>
+          <span class="step-badge">Step 1</span>
           <div><h2 id="neighbors-title">Find a word’s neighborhood</h2><p>Words used in similar contexts tend to point in similar directions.</p></div>
         </div>
 
@@ -132,7 +79,7 @@
 
       <section class="lab-section" id="similarity" aria-labelledby="similarity-title">
         <div class="section-heading">
-          <span class="step-badge">Step 3</span>
+          <span class="step-badge">Step 2</span>
           <div><h2 id="similarity-title">Compare two directions</h2><p>Cosine similarity measures the angle between vectors rather than their raw distance from the origin.</p></div>
         </div>
 
@@ -151,7 +98,7 @@
 
       <section class="lab-section" id="analogies" aria-labelledby="analogies-title">
         <div class="section-heading">
-          <span class="step-badge">Step 4</span>
+          <span class="step-badge">Step 3</span>
           <div><h2 id="analogies-title">Solve an analogy with arithmetic</h2><p>Apply the displacement from A to B to a new starting word C, then search for the nearest vector.</p></div>
         </div>
 
@@ -175,7 +122,7 @@
 
       <section class="lab-section" id="associations" aria-labelledby="associations-title">
         <div class="section-heading">
-          <span class="step-badge">Step 5</span>
+          <span class="step-badge">Step 4</span>
           <div><h2 id="associations-title">Audit an association axis</h2><p>Compare profession vectors with two anchors. The score reflects this embedding’s geometry—not a property of the people or occupations.</p></div>
         </div>
 
@@ -200,6 +147,50 @@
         </div>
       </section>
 
+      <section class="lab-section" id="contextual" aria-labelledby="contextual-title">
+        <div class="section-heading">
+          <span class="step-badge">Step 5</span>
+          <div><h2 id="contextual-title">Compare words in context</h2><p>Write two sentences, select one word in each, and compare the vectors produced for those occurrences.</p></div>
+        </div>
+        <div class="embedding-note"><strong>Real model:</strong> this activity runs MiniLM, a compact BERT-style encoder, in your browser. The first comparison downloads the model (about 23 MB); later comparisons reuse it. English sentences work best.</div>
+        <div class="context-examples" role="group" aria-label="Example comparisons">
+          <button type="button" class="button secondary" data-context-example="different">Bank: money and river</button>
+          <button type="button" class="button secondary" data-context-example="related">Bank: two financial contexts</button>
+        </div>
+        <div class="context-sentences">
+          <div class="context-sentence">
+            <label class="field" for="context-sentence-a"><span>Sentence A</span></label>
+            <textarea id="context-sentence-a" rows="2" maxlength="300">I withdrew money from the bank.</textarea>
+            <p>Click the word to compare:</p>
+            <div class="context-words" id="context-words-a" role="group" aria-label="Select a word in sentence A"></div>
+          </div>
+          <div class="context-sentence">
+            <label class="field" for="context-sentence-b"><span>Sentence B</span></label>
+            <textarea id="context-sentence-b" rows="2" maxlength="300">The river bank is wet.</textarea>
+            <p>Click the word to compare:</p>
+            <div class="context-words" id="context-words-b" role="group" aria-label="Select a word in sentence B"></div>
+          </div>
+        </div>
+        <div class="context-actions">
+          <button type="button" class="button" id="context-compare">Compare selected words</button>
+          <p id="context-status" role="status" aria-live="polite">Select a word in each sentence, then compare.</p>
+        </div>
+        <div class="context-results" id="context-results" hidden>
+          <div class="cosine-summary">
+            <div><small>Cosine similarity</small><strong id="context-cosine">—</strong></div>
+            <p id="context-interpretation"></p>
+          </div>
+          <p class="field-note">This score compares the selected word vectors. It is not the similarity of the whole sentences or a percentage of shared meaning.</p>
+          <div class="context-vectors" id="context-vectors"></div>
+          <p class="field-note">Each vector has 384 dimensions. If a word is split into model tokens, their vectors are averaged. Values shown are rounded; cosine uses the full-precision vectors. MiniLM was trained for sentence similarity, so its word-level scores are exploratory.</p>
+          <div class="exit-ticket">
+            <p class="callout-label">Try another pair</p>
+            <h3>Is the same word necessarily more similar across related contexts?</h3>
+            <p>Compare <em>bank</em> in the money and river examples, then compare the two financial examples. Change the sentences or target words to test your own prediction. The model may not follow it.</p>
+          </div>
+        </div>
+      </section>
+
       <footer class="lab-footer">
         <div>
           <p>Created and maintained by <a href="https://github.com/weilaiPhonetics">Wei Lai</a> and <a href="https://github.com/desenlin">Desen Lin</a> as an instructional project.</p>
@@ -212,5 +203,6 @@
 
   <script type="module" src="../../assets/module-nav.js?v=20260906-1"></script>
   <script type="module" src="activity.js"></script>
+  <script type="module" src="contextual.js"></script>
 </body>
 </html>
