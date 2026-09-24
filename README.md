@@ -89,7 +89,7 @@ A guided activity in which students:
 - solve selected analogies with vector arithmetic;
 - examine model-dependent associations with profession words; and
 - test why removing one association direction is not a complete solution to bias; and
-- enter their own sentences, select word occurrences, and compare contextual vectors produced by DistilBERT.
+- enter their own sentences, select word occurrences, and compare contextual vectors produced by MiniLM.
 
 The embeddings in the first four steps are synthetic instructional data. The final step downloads a pretrained model and runs it locally in the browser; its cosine scores are exploratory and model-dependent.
 
