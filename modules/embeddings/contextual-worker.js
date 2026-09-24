@@ -4,7 +4,7 @@ let extractorPromise;
 function getExtractor() {
   if (!extractorPromise) {
     extractorPromise = import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1")
-      .then(({ pipeline }) => pipeline("feature-extraction", "Xenova/distilbert-base-uncased", {
+      .then(({ pipeline }) => pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2", {
         dtype: "q8",
         progress_callback: event => {
           if (event.status === "progress" && event.progress != null) {
@@ -51,7 +51,7 @@ async function selectedVector(extractor, { sentence, start, end }) {
 self.onmessage = async ({ data }) => {
   if (data.type !== "compare") return;
   try {
-    self.postMessage({ type: "status", message: "Loading DistilBERT (the first download may take a while)…" });
+    self.postMessage({ type: "status", message: "Loading MiniLM (the first download may take a while)…" });
     const extractor = await getExtractor();
     self.postMessage({ type: "status", message: "Computing the two word vectors…" });
     const a = await selectedVector(extractor, data.a);
