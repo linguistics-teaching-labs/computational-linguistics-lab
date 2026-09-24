@@ -152,7 +152,7 @@
           <span class="step-badge">Step 5</span>
           <div><h2 id="contextual-title">Compare words in context</h2><p>Write two sentences, select one word in each, and compare the vectors produced for those occurrences.</p></div>
         </div>
-        <div class="embedding-note"><strong>Real model:</strong> this activity runs DistilBERT, a compact BERT-family model, in your browser. The first comparison downloads the model (about 68 MB); later comparisons reuse it. English sentences work best.</div>
+        <div class="embedding-note"><strong>Real model:</strong> this activity runs MiniLM, a compact BERT-style encoder, in your browser. The first comparison downloads the model (about 23 MB); later comparisons reuse it. English sentences work best.</div>
         <div class="context-examples" role="group" aria-label="Example comparisons">
           <button type="button" class="button secondary" data-context-example="different">Bank: money and river</button>
           <button type="button" class="button secondary" data-context-example="related">Bank: two financial contexts</button>
@@ -182,7 +182,7 @@
           </div>
           <p class="field-note">This score compares the selected word vectors. It is not the similarity of the whole sentences or a percentage of shared meaning.</p>
           <div class="context-vectors" id="context-vectors"></div>
-          <p class="field-note">Each vector has 768 dimensions. If a word is split into model tokens, their vectors are averaged. Values shown are rounded; cosine uses the full-precision vectors.</p>
+          <p class="field-note">Each vector has 384 dimensions. If a word is split into model tokens, their vectors are averaged. Values shown are rounded; cosine uses the full-precision vectors. MiniLM was trained for sentence similarity, so its word-level scores are exploratory.</p>
           <div class="exit-ticket">
             <p class="callout-label">Try another pair</p>
             <h3>Is the same word necessarily more similar across related contexts?</h3>
