@@ -89,7 +89,7 @@ function showResult(data) {
   const score = cosineSimilarity(data.a.vector, data.b.vector);
   document.querySelector("#context-cosine").textContent = score.toFixed(3);
   document.querySelector("#context-interpretation").textContent =
-    `The selected occurrences of “${selected[0].text}” and “${selected[1].text}” have this similarity in DistilBERT. Compare it with another pair; the score alone does not establish whether their meanings match.`;
+    `The selected occurrences of “${selected[0].text}” and “${selected[1].text}” have this similarity in MiniLM. Compare it with another pair; the score alone does not establish whether their meanings match.`;
   document.querySelector("#context-vectors").replaceChildren(
     vectorCard("Sentence A", selected[0].text, data.a),
     vectorCard("Sentence B", selected[1].text, data.b)
