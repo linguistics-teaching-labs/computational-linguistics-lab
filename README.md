@@ -84,15 +84,14 @@ A guided activity in which students:
 
 A guided activity in which students:
 
-- compare sparse count, dense static, and contextual representations of the same word;
-- test which representations change when a word appears in a different sentence;
 - inspect nearest neighbors in a transparent teaching embedding;
 - compare vectors using cosine similarity;
 - solve selected analogies with vector arithmetic;
 - examine model-dependent associations with profession words; and
-- test why removing one association direction is not a complete solution to bias.
+- test why removing one association direction is not a complete solution to bias; and
+- enter their own sentences, select word occurrences, and compare contextual vectors produced by DistilBERT.
 
-The included embeddings are synthetic instructional data. They make the calculations traceable and should not be interpreted as empirical evidence about English.
+The embeddings in the first four steps are synthetic instructional data. The final step downloads a pretrained model and runs it locally in the browser; its cosine scores are exploratory and model-dependent.
 
 ### Speech Sounds Made Visible
 
