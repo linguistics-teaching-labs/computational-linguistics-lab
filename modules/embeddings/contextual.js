@@ -52,7 +52,7 @@ function selectExample(which) {
   fields[0].value = "I withdrew money from the bank.";
   fields[1].value = which === "different"
     ? "The river bank is wet."
-    : "Bank of America is next to the restaurant.";
+    : "She waited in line at the bank to withdraw cash.";
   for (let index = 0; index < 2; index++) {
     selected[index] = words(fields[index].value).find(word => word.text.toLowerCase() === "bank") || null;
     renderWords(index);
