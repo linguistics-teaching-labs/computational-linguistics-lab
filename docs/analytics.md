@@ -10,7 +10,7 @@ text, student answers, or activity results.
 ## Automated coverage
 
 The **Analytics coverage** GitHub Actions workflow runs on pushes to `main`, pull
-requests, completed successful Pages deployments, manual runs, and weekly on Wednesday. It discovers
+requests, Pages build events, manual runs, and weekly on Wednesday. It discovers
 all `.html` and `.htm` files recursively, including newly added modules and pages
 outside the module catalog. Hidden directories and dependency directories are
 excluded. Keep test HTML fixtures in Python strings rather than published files.
@@ -18,7 +18,7 @@ excluded. Keep test HTML fixtures in Python strings rather than published files.
 Checks reject missing tags, wrong IDs, duplicate or conflicting analytics scripts,
 disabled automatic pageviews, and tags placed in comments, templates, or the body.
 The bootstrap intentionally follows one standard pattern; review the checker if
-the tracking architecture changes. After successful Pages deployments, on scheduled runs, and on
+the tracking architecture changes. On Pages build events, scheduled runs, and
 manual runs, the workflow also retrieves every deployed page and checks its tag.
 Live checks retry transient HTTP failures and never execute scripts or send visits
 to Google Analytics. Push and PR checks use source files to avoid a deployment race.
