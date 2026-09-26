@@ -4,7 +4,10 @@ on:
   push:
     branches: [main]
   pull_request:
-  page_build:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: '39 11 * * 3'
   workflow_dispatch:
@@ -18,19 +21,21 @@ concurrency:
 
 jobs:
   analytics:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: Test analytics checker
         run: python3 -m unittest discover -s scripts -p 'test_check_analytics.py'
       - name: Check every source HTML page
         id: audit
         run: python3 scripts/check_analytics.py
       - name: Check published pages after deployment and on schedule
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'page_build'
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_run'
         run: python3 scripts/check_analytics.py --live https://linguistics-teaching-labs.github.io/computational-linguistics-lab/
       - name: Prepare safe missing-tag repairs
         id: repair

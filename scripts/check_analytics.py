@@ -133,7 +133,7 @@ def published_url(base, relative):
 def fetch_html(url, base):
     for attempt in range(3):
         try:
-            request = Request(url, headers={"User-Agent": "LinguisticsLabs-AnalyticsAudit/1.0", "Cache-Control": "no-cache"})
+            request = Request(url + "?analytics_audit=" + str(time.time_ns()), headers={"User-Agent": "LinguisticsLabs-AnalyticsAudit/1.0", "Cache-Control": "no-cache"})
             with urlopen(request, timeout=25) as response:
                 final = urlsplit(response.url)
                 expected = urlsplit(base.rstrip("/") + "/")
