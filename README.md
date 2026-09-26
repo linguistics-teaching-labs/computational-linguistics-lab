@@ -221,3 +221,7 @@ Computational Linguistics Lab is part of the broader [Linguistics Teaching Labs]
 
 - Source code is licensed under the [MIT License](LICENSE).
 - Original instructional text and teaching corpora are licensed under [CC BY 4.0](LICENSE-CONTENT.md).
+
+## Analytics maintenance
+
+Google Analytics coverage is checked automatically for every HTML page, including new modules. See [analytics checks and missing-tag repairs](docs/analytics.md) for the workflow schedule, repair commands, and verification limits.

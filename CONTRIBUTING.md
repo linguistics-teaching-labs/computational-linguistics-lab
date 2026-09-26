@@ -26,3 +26,5 @@ npm test
 ```
 
 Also confirm that the collection page and affected module load through a local web server.
+
+New HTML pages must include the shared GA4 tag. Before committing, run `python3 scripts/check_analytics.py --fix` and `python3 scripts/check_analytics.py`. See [analytics maintenance](docs/analytics.md) for details.

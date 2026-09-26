@@ -1,0 +1,51 @@
+name: Analytics coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  page_build:
+  schedule:
+    - cron: '39 11 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: analytics-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analytics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test analytics checker
+        run: python3 -m unittest discover -s scripts -p 'test_check_analytics.py'
+      - name: Check every source HTML page
+        id: audit
+        run: python3 scripts/check_analytics.py
+      - name: Check published pages after deployment and on schedule
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'page_build'
+        run: python3 scripts/check_analytics.py --live https://linguistics-teaching-labs.github.io/computational-linguistics-lab/
+      - name: Prepare safe missing-tag repairs
+        id: repair
+        if: failure() && steps.audit.outcome == 'failure'
+        run: |
+          python3 scripts/check_analytics.py --fix || true
+          git diff --binary -- '*.html' '*.htm' '*.HTML' '*.HTM' > analytics-repair.patch
+          if [ -s analytics-repair.patch ]; then
+            echo 'available=true' >> "$GITHUB_OUTPUT"
+            echo 'A missing-tag repair patch is attached. Review and apply it, then commit and push; the failed check remains visible.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload repair patch
+        if: failure() && steps.repair.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: analytics-repair
+          path: analytics-repair.patch
+          retention-days: 7
