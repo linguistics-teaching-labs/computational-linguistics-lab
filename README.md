@@ -89,7 +89,7 @@ A guided calculation lab in which students:
 - apply add-one smoothing and handle test words unseen in training; and
 - sum log probabilities to classify a new sentence.
 
-It opens with a music-versus-sports example; the example from the lecture slides remains available as an option. Each checkpoint checks student answers and reveals worked calculations on request.
+It opens with the example from the lecture slides; a music-versus-sports example is also available. Each checkpoint checks student answers and reveals worked calculations on request.
 
 ### Meaning as Geometry: Word-Embedding Explorer
 
