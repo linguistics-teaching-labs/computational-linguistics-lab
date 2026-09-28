@@ -22,8 +22,19 @@ export const modules = [
     href: "modules/tokenization/"
   },
   {
-    id: "parsing",
+    id: "naive-bayes",
     sequence: 3,
+    shortTitle: "Naive Bayes by hand",
+    title: "Build a Naive Bayes Classifier",
+    topic: "Text classification",
+    category: "models-evaluation",
+    description: "Enter a small labeled corpus and calculate class priors, vocabulary, word counts, smoothed probabilities, and a prediction one step at a time.",
+    concepts: ["Bag of words", "Laplace smoothing", "Class priors"],
+    href: "modules/naive-bayes/"
+  },
+  {
+    id: "parsing",
+    sequence: 4,
     shortTitle: "Parsing",
     title: "Why Can a Sentence Have Two Structures?",
     topic: "Syntax and parsing",
@@ -34,7 +45,7 @@ export const modules = [
   },
   {
     id: "edit-distance",
-    sequence: 4,
+    sequence: 5,
     shortTitle: "Edit distance",
     title: "How Far Apart Are Two Forms?",
     topic: "Linguistic similarity",
@@ -45,7 +56,7 @@ export const modules = [
   },
   {
     id: "classification",
-    sequence: 5,
+    sequence: 6,
     shortTitle: "Classification",
     title: "How Text Classifiers Make Mistakes",
     topic: "Text classification",
@@ -56,7 +67,7 @@ export const modules = [
   },
   {
     id: "embeddings",
-    sequence: 6,
+    sequence: 7,
     shortTitle: "Embeddings",
     title: "Meaning as Geometry: Word-Embedding Explorer",
     topic: "Distributional semantics",
@@ -66,30 +77,8 @@ export const modules = [
     href: "modules/embeddings/"
   },
   {
-    id: "acoustics",
-    sequence: 7,
-    shortTitle: "Acoustic phonetics",
-    title: "Speech Sounds Made Visible",
-    topic: "Acoustic phonetics",
-    category: "speech-sound",
-    description: "Generate an inspectable vowel-like signal and connect its waveform, spectrum, and spectrogram to fundamental frequency and formant patterns.",
-    concepts: ["Waveforms", "Fundamental frequency", "Formants"],
-    href: "modules/acoustics/"
-  },
-  {
-    id: "phonology",
-    sequence: 8,
-    shortTitle: "Phonology",
-    title: "From Sounds to Phonemes",
-    topic: "Phonological features",
-    category: "speech-sound",
-    description: "Compare speech sounds as feature bundles, inspect minimal pairs, and build natural classes from shared phonological properties.",
-    concepts: ["Distinctive features", "Minimal pairs", "Natural classes"],
-    href: "modules/phonology/"
-  },
-  {
     id: "corpus",
-    sequence: 9,
+    sequence: 8,
     shortTitle: "Corpus statistics",
     title: "Corpus Frequencies and Collocations",
     topic: "Corpus linguistics",
@@ -100,7 +89,7 @@ export const modules = [
   },
   {
     id: "evaluation",
-    sequence: 10,
+    sequence: 9,
     shortTitle: "Evaluation",
     title: "Evaluating Language Technology",
     topic: "Model evaluation",
@@ -111,7 +100,7 @@ export const modules = [
   },
   {
     id: "attention",
-    sequence: 11,
+    sequence: 10,
     shortTitle: "Attention",
     title: "How Attention Distributes Context",
     topic: "Attention mechanisms",
@@ -122,7 +111,7 @@ export const modules = [
   },
   {
     id: "coreference",
-    sequence: 12,
+    sequence: 11,
     shortTitle: "Coreference",
     title: "Coreference and Discourse",
     topic: "Discourse processing",
@@ -132,15 +121,26 @@ export const modules = [
     href: "modules/coreference/"
   },
   {
-    id: "naive-bayes",
+    id: "acoustics",
+    sequence: 12,
+    shortTitle: "Acoustic phonetics",
+    title: "Speech Sounds Made Visible",
+    topic: "Acoustic phonetics",
+    category: "speech-sound",
+    description: "Generate an inspectable vowel-like signal and connect its waveform, spectrum, and spectrogram to fundamental frequency and formant patterns.",
+    concepts: ["Waveforms", "Fundamental frequency", "Formants"],
+    href: "modules/acoustics/"
+  },
+  {
+    id: "phonology",
     sequence: 13,
-    shortTitle: "Naive Bayes by hand",
-    title: "Build a Naive Bayes Classifier",
-    topic: "Text classification",
-    category: "models-evaluation",
-    description: "Enter a small labeled corpus and calculate class priors, vocabulary, word counts, smoothed probabilities, and a prediction one step at a time.",
-    concepts: ["Bag of words", "Laplace smoothing", "Class priors"],
-    href: "modules/naive-bayes/"
+    shortTitle: "Phonology",
+    title: "From Sounds to Phonemes",
+    topic: "Phonological features",
+    category: "speech-sound",
+    description: "Compare speech sounds as feature bundles, inspect minimal pairs, and build natural classes from shared phonological properties.",
+    concepts: ["Distinctive features", "Minimal pairs", "Natural classes"],
+    href: "modules/phonology/"
   }
 ];
 

@@ -5,8 +5,8 @@ import {
   moduleCategories,
   modules,
   moduleOrderOptions
-} from "../modules/catalog.js?v=20260928-1";
-import "./module-nav.js?v=20260906-1";
+} from "../modules/catalog.js?v=20260928-2";
+import "./module-nav.js?v=20260928-2";
 
 const grid = document.querySelector("#module-grid");
 const orderSelect = document.querySelector("#module-order");
