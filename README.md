@@ -87,7 +87,7 @@ A guided calculation lab in which students:
 - enter 3–8 short training documents with 2–4 class labels;
 - calculate document priors, vocabulary size, token totals, and word counts;
 - apply add-one smoothing and handle test words unseen in training; and
-- sum log probabilities to classify a new sentence.
+- multiply raw probabilities, then sum provided log values to classify a new sentence.
 
 It opens with the example from the lecture slides; a music-versus-sports example is also available. Each checkpoint checks student answers and reveals worked calculations on request.
 
