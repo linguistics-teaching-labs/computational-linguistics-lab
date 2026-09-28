@@ -130,6 +130,17 @@ export const modules = [
     description: "Compare candidate antecedents, change discourse-salience weights, and test how pronoun interpretations affect coherence across sentences.",
     concepts: ["Antecedents", "Discourse salience", "Coherence"],
     href: "modules/coreference/"
+  },
+  {
+    id: "naive-bayes",
+    sequence: 13,
+    shortTitle: "Naive Bayes by hand",
+    title: "Build a Naive Bayes Classifier",
+    topic: "Text classification",
+    category: "models-evaluation",
+    description: "Enter a small labeled corpus and calculate class priors, vocabulary, word counts, smoothed probabilities, and a prediction one step at a time.",
+    concepts: ["Bag of words", "Laplace smoothing", "Class priors"],
+    href: "modules/naive-bayes/"
   }
 ];
 

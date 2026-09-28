@@ -5,7 +5,7 @@ import {
   moduleCategories,
   modules,
   moduleOrderOptions
-} from "../modules/catalog.js?v=20260904-4";
+} from "../modules/catalog.js?v=20260928-1";
 import "./module-nav.js?v=20260906-1";
 
 const grid = document.querySelector("#module-grid");

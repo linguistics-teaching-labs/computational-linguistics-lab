@@ -80,6 +80,17 @@ A guided activity in which students:
 - interpret a confusion matrix and audit individual test cases; and
 - diagnose negation failures, domain shift, and spurious shortcuts.
 
+### Build a Naive Bayes Classifier
+
+A guided calculation lab in which students:
+
+- enter 3–8 short training documents with 2–4 class labels;
+- calculate document priors, vocabulary size, token totals, and word counts;
+- apply add-one smoothing and handle test words unseen in training; and
+- sum log probabilities to classify a new sentence.
+
+It opens with a music-versus-sports example; the example from the lecture slides remains available as an option. Each checkpoint checks student answers and reveals worked calculations on request.
+
 ### Meaning as Geometry: Word-Embedding Explorer
 
 A guided activity in which students:
