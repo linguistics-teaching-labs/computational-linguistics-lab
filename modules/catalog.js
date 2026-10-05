@@ -152,6 +152,17 @@ export const modules = [
     description: "Compare speech sounds as feature bundles, inspect minimal pairs, and build natural classes from shared phonological properties.",
     concepts: ["Distinctive features", "Minimal pairs", "Natural classes"],
     href: "modules/phonology/"
+  },
+  {
+    id: "sentence-endings",
+    sequence: 15,
+    shortTitle: "Sentence endings",
+    title: "Where Does a Sentence End?",
+    topic: "Rule-based classification",
+    category: "models-evaluation",
+    description: "Select and reorder sentence-ending rules, inspect highlighted predictions, and compare correct EOS words, false alarms, and missed endings.",
+    concepts: ["Sentence boundaries", "Rule order", "Precision and recall"],
+    href: "modules/sentence-endings/"
   }
 ];
 

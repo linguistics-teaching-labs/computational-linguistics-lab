@@ -166,6 +166,12 @@ A guided activity in which students:
 - distinguish an antecedent ranking from an intended interpretation; and
 - use possible continuations to evaluate coherence across sentences.
 
+### Where Does a Sentence End?
+
+Select any subset of four sentence-ending rules, arrange their execution order, and inspect predictions on the lecture examples, challenge excerpts, or custom labeled text. Words display correct EOS predictions, false alarms, and missed endings. Clicking a word reveals its features and the first matching rule. Students can save and restore attempts and download their results.
+
+[Open the sentence-ending lab](https://linguistics-teaching-labs.github.io/computational-linguistics-lab/modules/sentence-endings/)
+
 ## Run locally
 
 Because the project uses JavaScript modules, serve the repository with any simple local web server. For example:
