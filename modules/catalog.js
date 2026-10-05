@@ -132,6 +132,17 @@ export const modules = [
     href: "modules/acoustics/"
   },
   {
+    id: "fitting",
+    sequence: 14,
+    shortTitle: "Underfitting & overfitting",
+    title: "Finding the Pattern: Underfitting and Overfitting",
+    topic: "Model evaluation",
+    category: "models-evaluation",
+    description: "Change model complexity across four simulated patterns, compare training and test error, and see how a model can memorize its sample without generalizing.",
+    concepts: ["Underfitting", "Overfitting", "Generalization"],
+    href: "modules/fitting/"
+  },
+  {
     id: "phonology",
     sequence: 13,
     shortTitle: "Phonology",
