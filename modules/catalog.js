@@ -163,6 +163,18 @@ export const modules = [
     description: "Select and reorder sentence-ending rules, inspect highlighted predictions, and compare correct EOS words, false alarms, and missed endings.",
     concepts: ["Sentence boundaries", "Rule order", "Precision and recall"],
     href: "modules/sentence-endings/"
+  },
+
+  {
+    id: "jeopardy",
+    sequence: 16,
+    shortTitle: "LING 350 Jeopardy",
+    title: "LING 350 Jeopardy: Terminology Review",
+    topic: "Course review game",
+    category: "models-evaluation",
+    description: "Choose from 30 terminology clues across text processing, vector representations, classification, language models, neural networks, and Python tools. Reveal answers and grey out completed questions.",
+    concepts: ["Terminology review", "Classification", "Language models"],
+    href: "modules/jeopardy/"
   }
 ];
 
