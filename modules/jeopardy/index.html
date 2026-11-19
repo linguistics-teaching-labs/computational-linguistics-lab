@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="LING 350 terminology review game: choose a category and point value, reveal a clue, and mark completed questions.">
+<title>LING 350 Jeopardy Review · Computational Linguistics Lab</title>
+<link rel="stylesheet" href="../../assets/styles.css">
+<style>
+:root{color-scheme:light;--navy:#173b79;--gold:#f5d78a;--ink:#162238}
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.game-wrap{max-width:1500px;margin:auto;padding:clamp(16px,3vw,42px)}
+.game-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:12px 0 24px}
+.game-header h1{font-size:clamp(1.6rem,3vw,2.5rem);margin:0 0 8px}
+.game-header p{margin:0;color:#4e5a6c;line-height:1.5}
+.game-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.action{border:1px solid #a6afbb;background:white;color:#26364a;padding:11px 16px;border-radius:9px;font:inherit;font-weight:650;cursor:pointer}
+.action:focus-visible,.tile:focus-visible,.dialog-button:focus-visible{outline:4px solid #eab64c;outline-offset:3px}
+.progress{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.board-scroll{overflow-x:auto;padding-bottom:8px}
+.board{display:grid;grid-template-columns:repeat(6,minmax(145px,1fr));gap:7px;min-width:890px}
+.heading{min-height:92px;padding:15px 7px;display:flex;align-items:center;justify-content:center;text-align:center;background:#102e63;color:#fff;font-size:clamp(.85rem,1.25vw,1.13rem);line-height:1.25;font-weight:800;border-radius:6px}
+.tile{min-height:102px;border:0;border-radius:6px;background:var(--navy);color:var(--gold);font-weight:900;font-size:clamp(1.65rem,2.6vw,2.5rem);cursor:pointer;transition:background .15s,transform .15s}
+.tile:hover:not(:disabled){background:#24549e;transform:translateY(-1px)}
+.tile.completed{background:#c6cbd3;color:#737b85;text-decoration:line-through;cursor:default;box-shadow:inset 0 0 0 1px #aeb6c0}
+.game-hint{color:#526074;font-size:.96rem;margin:12px 0 0}
+.overlay{position:fixed;inset:0;background:rgba(9,20,42,.88);display:flex;align-items:center;justify-content:center;z-index:999;padding:clamp(12px,3vw,44px)}
+.overlay[hidden]{display:none}
+.dialog{background:#fff;box-shadow:0 20px 60px #0006;border-radius:20px;width:min(1050px,100%);max-height:96vh;overflow:auto;padding:clamp(22px,5vw,58px);text-align:center}
+.dialog-meta{font-size:clamp(.95rem,1.7vw,1.3rem);font-weight:750;color:#365989;margin:0 0 28px}
+.dialog-clue{font-weight:750;font-size:clamp(1.8rem,4.4vw,4rem);line-height:1.18;margin:0 auto 28px;max-width:900px;overflow-wrap:break-word}
+.answer{background:#edf3fa;border-radius:12px;padding:18px;font-size:clamp(1.5rem,3.1vw,2.7rem);font-weight:800;color:#153e7d;margin:0 0 25px}
+.answer[hidden]{display:none}
+.dialog-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+.dialog-button{font:inherit;font-size:1.05rem;font-weight:750;cursor:pointer;border-radius:10px;padding:14px 20px;border:2px solid #183e7b;background:#fff;color:#183e7b}
+.dialog-button.primary{background:#173b79;color:#fff}
+.dialog-button.done{background:#4c596a;color:#fff;border-color:#4c596a}
+@media(max-width:700px){.tile{min-height:76px}.heading{min-height:76px}.dialog-clue{font-size:clamp(1.65rem,6vw,3rem)}}
+@media(prefers-reduced-motion:reduce){.tile{transition:none}}
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BQB575CQX3"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-BQB575CQX3');</script>
+</head>
+<body>
+<header class="site-header"><a class="brand" href="../../" aria-label="Computational Linguistics Lab home"><span class="brand-mark" aria-hidden="true">CL</span><span>Computational Linguistics Lab</span></a><nav class="module-nav" data-module-nav data-root="../../" data-active="jeopardy" aria-label="Module navigation"></nav></header>
+<main class="game-wrap">
+<div class="game-header"><div><h1>LING 350 · Jeopardy Review</h1><p>Choose a category and point value. Show the clue to the class, reveal the answer when ready, and mark it completed to grey out its tile.</p></div><div class="game-actions"><span class="progress" id="progress" aria-live="polite">0 of 30 completed</span><button class="action" id="reset" type="button">Reset board</button></div></div>
+<div class="board-scroll"><div class="board" id="board" aria-label="Jeopardy question board"></div></div>
+<p class="game-hint">Question values indicate difficulty, not tracked scores. Progress is remembered in this browser. Click a completed tile to reopen it or restore it.</p>
+</main>
+<div id="overlay" class="overlay" hidden>
+<section class="dialog" role="dialog" aria-modal="true" aria-labelledby="clue-title">
+<p id="meta" class="dialog-meta"></p>
+<h2 id="clue-title" class="dialog-clue"></h2>
+<p id="answer" class="answer" hidden></p>
+<div class="dialog-actions">
+<button class="dialog-button" id="reveal" type="button">Reveal answer</button>
+<button class="dialog-button done" id="complete" type="button">Mark completed</button>
+<button class="dialog-button" id="close" type="button">Back to board</button>
+</div>
+</section>
+</div>
+<script id="question-data" type="application/json">[{"category":"Text Processing & Word Meaning","questions":[["This process breaks text into individual words, punctuation marks, or other units.","Tokenization"],["This pattern-matching notation is used to find strings matching specified patterns, such as a sequence of digits.","Regular expression (regex)"],["This is the minimum number of insertions, deletions, and substitutions needed to change one string into another, assuming each operation costs one.","Minimum edit distance"],["Two words share the same form but have different, unrelated meanings, such as bank (financial institution) and bank (river edge).","Homonymy"],["This spelling-correction model treats the observed text as a possibly corrupted version of the intended text and seeks the most probable original.","Noisy Channel Model"]]},{"category":"Text & Vector Representations","questions":[["This representation records which words occur, or how often they occur, while ignoring word order.","Bag of Words (BoW)"],["This measure compares vectors using the cosine of the angle between them.","Cosine similarity"],["This operation multiplies corresponding elements of two vectors and adds the products.","Dot product"],["Words such as run, runs, ran, and running share the same dictionary form. What is that dictionary form called?","Lemma"],["This kind of vector has many zero-valued elements, as is common in bag-of-words representations.","Sparse vector"]]},{"category":"Classification & Evaluation","questions":[["This classifier makes a sequence of binary decisions by comparing feature values with thresholds, eventually assigning an input to a class.","Decision tree"],["This classifier uses Bayes' theorem and assumes features are conditionally independent given the class.","Naïve Bayes"],["Assuming spam is the positive class, a spam email is mistakenly classified as 'not spam.' What kind of statistical error is this?","Type II error (false negative)"],["This metric is the harmonic mean of precision and recall.","F1 score"],["This happens when a model performs very well on its training examples but poorly on unseen data.","Overfitting"]]},{"category":"Language Models","questions":[["This kind of language model predicts a word using a fixed number of preceding words.","N-gram language model"],["This metric summarizes how well a language model predicts a test sequence; lower values are better when evaluating the same tokens.","Perplexity"],["This technique adjusts language-model probabilities so that previously unseen sequences can receive nonzero probability.","Smoothing"],["This strategy combines probability estimates from several n-gram orders with weights.","Interpolation"],["If a higher-order n-gram has insufficient evidence, this strategy falls back to a lower-order estimate.","Backoff"]]},{"category":"Neural Networks","questions":[["These learned parameters determine how strongly inputs contribute to a neural unit's output.","Weights"],["This activation function outputs zero for negative inputs and outputs the input itself for positive inputs.","ReLU"],["This S-shaped function maps any real number to a value strictly between 0 and 1.","Sigmoid function"],["This function measures the discrepancy between a model's predictions and the correct targets and is minimized during training.","Loss function"],["This layer sits between input and output layers and computes an intermediate representation.","Hidden layer"]]},{"category":"Python & NLP Tools","questions":[["This NLP task assigns categories such as noun, verb, and adjective to words.","Part-of-speech (POS) tagging"],["This NLP task identifies mentions of people, organizations, locations, and other named entities.","Named Entity Recognition (NER)"],["This Python machine-learning library includes classifiers, train/test splitting, and evaluation metrics.","scikit-learn (sklearn)"],["This built-in Python module provides functions such as search() and findall() for pattern matching.","re"],["This Python library provides DataFrames for organizing, filtering, and analyzing tabular data.","pandas"]]}]</script>
+<script>
+(function(){
+"use strict";
+const categories=JSON.parse(document.getElementById("question-data").textContent);
+const storageKey="ling350-jeopardy-completed-v1";
+let completed=new Set();
+try{const saved=JSON.parse(localStorage.getItem(storageKey)||"[]");if(Array.isArray(saved)) completed=new Set(saved.filter(x=>typeof x==="string"));}catch(e){}
+const board=document.getElementById("board"),overlay=document.getElementById("overlay");
+const meta=document.getElementById("meta"),clue=document.getElementById("clue-title"),answer=document.getElementById("answer");
+const reveal=document.getElementById("reveal"),complete=document.getElementById("complete"),close=document.getElementById("close");
+const progress=document.getElementById("progress");
+let active=null, lastFocus=null;
+function key(c,q){return c+"-"+q}
+function save(){try{localStorage.setItem(storageKey,JSON.stringify([...completed]))}catch(e){}}
+function draw(){
+board.replaceChildren();
+categories.forEach(c=>{const h=document.createElement("div");h.className="heading";h.textContent=c.category;board.appendChild(h)});
+for(let q=0;q<5;q++){categories.forEach((c,ci)=>{
+const b=document.createElement("button");b.type="button";b.className="tile";
+const id=key(ci,q);if(completed.has(id))b.classList.add("completed");
+b.textContent=String((q+1)*100);
+b.setAttribute("aria-label",c.category+", "+((q+1)*100)+" points"+(completed.has(id)?", completed":""));
+b.addEventListener("click",()=>open(ci,q,b));board.appendChild(b);
+})}
+progress.textContent=completed.size+" of 30 completed";
+}
+function open(ci,qi,button){
+active={ci,qi};lastFocus=button;
+meta.textContent=categories[ci].category+" · "+((qi+1)*100)+" points";
+clue.textContent=categories[ci].questions[qi][0];
+answer.textContent="Answer: "+categories[ci].questions[qi][1];
+answer.hidden=true;reveal.textContent="Reveal answer";
+complete.textContent=completed.has(key(ci,qi))?"Mark available again":"Mark completed";
+overlay.hidden=false;document.body.style.overflow="hidden";reveal.focus();
+}
+function hide(){overlay.hidden=true;document.body.style.overflow="";active=null;if(lastFocus&&lastFocus.isConnected)lastFocus.focus();}
+reveal.addEventListener("click",()=>{answer.hidden=!answer.hidden;reveal.textContent=answer.hidden?"Reveal answer":"Hide answer"});
+complete.addEventListener("click",()=>{if(!active)return;const id=key(active.ci,active.qi);if(completed.has(id))completed.delete(id);else completed.add(id);save();hide();draw()});
+close.addEventListener("click",hide);
+overlay.addEventListener("click",e=>{if(e.target===overlay)hide()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!overlay.hidden)hide();if(e.key==="Tab"&&!overlay.hidden){const controls=[reveal,complete,close];const first=controls[0],last=controls[2];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
+document.getElementById("reset").addEventListener("click",()=>{if(confirm("Reset all 30 questions to available?")){completed.clear();save();draw()}});
+draw();
+})();
+</script>
+<script type="module" src="../../assets/module-nav.js"></script>
+</body></html>
