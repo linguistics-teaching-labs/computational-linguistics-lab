@@ -36,6 +36,9 @@ body{margin:0;background:#f4f6fa;color:var(--ink);font-family:system-ui,-apple-s
 .dialog-button{font:inherit;font-size:1.05rem;font-weight:750;cursor:pointer;border-radius:10px;padding:14px 20px;border:2px solid #183e7b;background:#fff;color:#183e7b}
 .dialog-button.primary{background:#173b79;color:#fff}
 .dialog-button.done{background:#4c596a;color:#fff;border-color:#4c596a}
+.wager-prompt{font-weight:900;font-size:clamp(3rem,8vw,6.5rem);color:#173b79;margin:10px auto 15px}
+.wager-help{font-size:clamp(1.1rem,2.4vw,1.65rem);color:#475569;margin-bottom:32px}
+.wager-prompt[hidden],.wager-help[hidden],.dialog-button[hidden]{display:none}
 @media(max-width:700px){.tile{min-height:76px}.heading{min-height:76px}.dialog-clue{font-size:clamp(1.65rem,6vw,3rem)}}
 @media(prefers-reduced-motion:reduce){.tile{transition:none}}
 </style>
@@ -46,16 +49,19 @@ body{margin:0;background:#f4f6fa;color:var(--ink);font-family:system-ui,-apple-s
 <body>
 <header class="site-header"><a class="brand" href="../../" aria-label="Computational Linguistics Lab home"><span class="brand-mark" aria-hidden="true">CL</span><span>Computational Linguistics Lab</span></a><nav class="module-nav" data-module-nav data-root="../../" data-active="jeopardy" aria-label="Module navigation"></nav></header>
 <main class="game-wrap">
-<div class="game-header"><div><h1>LING 350 · Jeopardy Review</h1><p>Choose a category and point value. Show the clue to the class, reveal the answer when ready, and mark it completed to grey out its tile.</p></div><div class="game-actions"><span class="progress" id="progress" aria-live="polite">0 of 30 completed</span><button class="action" id="reset" type="button">Reset board</button></div></div>
+<div class="game-header"><div><h1>LING 350 · Jeopardy Review</h1><p>Choose a category and point value. Four surprise wager questions ask for a wager before revealing the clue. Reveal answers and grey out completed tiles.</p></div><div class="game-actions"><span class="progress" id="progress" aria-live="polite">0 of 30 completed</span><button class="action" id="reset" type="button">Reset board</button></div></div>
 <div class="board-scroll"><div class="board" id="board" aria-label="Jeopardy question board"></div></div>
 <p class="game-hint">Question values indicate difficulty, not tracked scores. Progress is remembered in this browser. Click a completed tile to reopen it or restore it.</p>
 </main>
 <div id="overlay" class="overlay" hidden>
 <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="clue-title">
 <p id="meta" class="dialog-meta"></p>
+<div id="wager-prompt" class="wager-prompt" hidden>WAGER!</div>
+<p id="wager-help" class="wager-help" hidden>Ask the student how many points they want to wager before revealing the question.</p>
 <h2 id="clue-title" class="dialog-clue"></h2>
 <p id="answer" class="answer" hidden></p>
 <div class="dialog-actions">
+<button class="dialog-button primary" id="show-question" type="button" hidden>Show question</button>
 <button class="dialog-button" id="reveal" type="button">Reveal answer</button>
 <button class="dialog-button done" id="complete" type="button">Mark completed</button>
 <button class="dialog-button" id="close" type="button">Back to board</button>
@@ -74,6 +80,11 @@ const board=document.getElementById("board"),overlay=document.getElementById("ov
 const meta=document.getElementById("meta"),clue=document.getElementById("clue-title"),answer=document.getElementById("answer");
 const reveal=document.getElementById("reveal"),complete=document.getElementById("complete"),close=document.getElementById("close");
 const progress=document.getElementById("progress");
+const wagerPrompt=document.getElementById("wager-prompt"),wagerHelp=document.getElementById("wager-help");
+const showQuestion=document.getElementById("show-question");
+// Four hidden Daily Double-style questions. The board shows ordinary values until clicked.
+const wagerQuestions=new Set(["0-4","2-3","3-3","4-3"]);
+let wagerPending=false;
 let active=null, lastFocus=null;
 function key(c,q){return c+"-"+q}
 function save(){try{localStorage.setItem(storageKey,JSON.stringify([...completed]))}catch(e){}}
@@ -92,18 +103,28 @@ progress.textContent=completed.size+" of 30 completed";
 function open(ci,qi,button){
 active={ci,qi};lastFocus=button;
 meta.textContent=categories[ci].category+" · "+((qi+1)*100)+" points";
+wagerPending=wagerQuestions.has(key(ci,qi))&&!completed.has(key(ci,qi));
+wagerPrompt.hidden=!wagerPending;
+wagerHelp.hidden=!wagerPending;
+clue.hidden=wagerPending;
 clue.textContent=categories[ci].questions[qi][0];
+showQuestion.hidden=!wagerPending;reveal.hidden=wagerPending;complete.hidden=wagerPending;
 answer.textContent="Answer: "+categories[ci].questions[qi][1];
 answer.hidden=true;reveal.textContent="Reveal answer";
 complete.textContent=completed.has(key(ci,qi))?"Mark available again":"Mark completed";
-overlay.hidden=false;document.body.style.overflow="hidden";reveal.focus();
+overlay.hidden=false;document.body.style.overflow="hidden";(wagerPending?showQuestion:reveal).focus();
 }
 function hide(){overlay.hidden=true;document.body.style.overflow="";active=null;if(lastFocus&&lastFocus.isConnected)lastFocus.focus();}
+showQuestion.addEventListener("click",()=>{
+if(!wagerPending)return;
+wagerPending=false;wagerPrompt.hidden=true;wagerHelp.hidden=true;clue.hidden=false;
+showQuestion.hidden=true;reveal.hidden=false;complete.hidden=false;reveal.focus();
+});
 reveal.addEventListener("click",()=>{answer.hidden=!answer.hidden;reveal.textContent=answer.hidden?"Reveal answer":"Hide answer"});
 complete.addEventListener("click",()=>{if(!active)return;const id=key(active.ci,active.qi);if(completed.has(id))completed.delete(id);else completed.add(id);save();hide();draw()});
 close.addEventListener("click",hide);
 overlay.addEventListener("click",e=>{if(e.target===overlay)hide()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!overlay.hidden)hide();if(e.key==="Tab"&&!overlay.hidden){const controls=[reveal,complete,close];const first=controls[0],last=controls[2];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!overlay.hidden)hide();if(e.key==="Tab"&&!overlay.hidden){const controls=[showQuestion,reveal,complete,close].filter(b=>!b.hidden);const first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
 document.getElementById("reset").addEventListener("click",()=>{if(confirm("Reset all 30 questions to available?")){completed.clear();save();draw()}});
 draw();
 })();
